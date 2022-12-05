@@ -1,0 +1,220 @@
+{
+	"textures": [
+		{
+			"image": "interface.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 610,
+				"h": 750
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "workshopInterface.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 608,
+						"h": 469
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 608,
+						"h": 469
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 608,
+						"h": 469
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "upperScreen.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 492,
+						"h": 167
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 492,
+						"h": 167
+					},
+					"frame": {
+						"x": 1,
+						"y": 472,
+						"w": 492,
+						"h": 167
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "lowerScreen.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 492,
+						"h": 108
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 492,
+						"h": 108
+					},
+					"frame": {
+						"x": 1,
+						"y": 641,
+						"w": 492,
+						"h": 108
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "partsPlate.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 90,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 90,
+						"h": 22
+					},
+					"frame": {
+						"x": 495,
+						"y": 472,
+						"w": 90,
+						"h": 22
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "launchButtonOver.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 82,
+						"h": 29
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 81,
+						"h": 28
+					},
+					"frame": {
+						"x": 495,
+						"y": 496,
+						"w": 81,
+						"h": 28
+					},
+					"anchor": {
+						"x": 0.487805,
+						"y": 0.448276
+					}
+				},
+				{
+					"filename": "launchButtonUp.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 80,
+						"h": 26
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 80,
+						"h": 26
+					},
+					"frame": {
+						"x": 495,
+						"y": 526,
+						"w": 80,
+						"h": 26
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "saveButtonOver.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 60,
+						"h": 28
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 59,
+						"h": 27
+					},
+					"frame": {
+						"x": 495,
+						"y": 554,
+						"w": 59,
+						"h": 27
+					},
+					"anchor": {
+						"x": 0.483333,
+						"y": 0.464286
+					}
+				},
+				{
+					"filename": "saveButtonUp.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 57,
+						"h": 26
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 57,
+						"h": 26
+					},
+					"frame": {
+						"x": 495,
+						"y": 583,
+						"w": 57,
+						"h": 26
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:661ded5c0d5746a53ae1e286d22fdd09:34ad4cee8e3dff98cb4b178259061528:8141c0d8370228a8661c55b8bcf20981$"
+	}
+}

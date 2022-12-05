@@ -1,0 +1,17 @@
+{
+  "name": "subterraingen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "phaser": "^3.55.2",
+    "polygon-offset": "^0.3.2"
+  }
+}

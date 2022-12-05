@@ -1,0 +1,145 @@
+{
+	"textures": [
+		{
+			"image": "monsters.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 125,
+				"h": 92
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "wormHead.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 86,
+						"h": 59
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 86,
+						"h": 59
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 86,
+						"h": 59
+					},
+					"anchor": {
+						"x": 0.01162791,
+						"y": 0.52542373
+					}
+				},
+				{
+					"filename": "wormBody2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 35,
+						"h": 34
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 35,
+						"h": 34
+					},
+					"frame": {
+						"x": 89,
+						"y": 1,
+						"w": 35,
+						"h": 34
+					},
+					"anchor": {
+						"x": 0.05714286,
+						"y": 0.52941176
+					}
+				},
+				{
+					"filename": "wormBody1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 35,
+						"h": 33
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 35,
+						"h": 33
+					},
+					"frame": {
+						"x": 89,
+						"y": 37,
+						"w": 35,
+						"h": 33
+					},
+					"anchor": {
+						"x": 0.08571429,
+						"y": 0.51515152
+					}
+				},
+				{
+					"filename": "wormBody3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 35,
+						"h": 29
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 35,
+						"h": 29
+					},
+					"frame": {
+						"x": 1,
+						"y": 62,
+						"w": 35,
+						"h": 29
+					},
+					"anchor": {
+						"x": 0.05714286,
+						"y": 0.51724138
+					}
+				},
+				{
+					"filename": "wormTail.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 47,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 47,
+						"h": 20
+					},
+					"frame": {
+						"x": 38,
+						"y": 62,
+						"w": 47,
+						"h": 20
+					},
+					"anchor": {
+						"x": 0.25531915,
+						"y": 0.45
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:3ae1a699bb1c9e57dba064fe76cfb96d:fc017a7e3ca1f63ab02e54ef454770a2:8fc4d3ec51ba7bc700054b5f64cf62b1$"
+	}
+}
