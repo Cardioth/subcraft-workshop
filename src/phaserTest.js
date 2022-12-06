@@ -23,35 +23,47 @@ var workshopInterfaceX = 600;
 var workshopInterfaceY = 400;
 var totalPartsListWidth;
 
-var buildNodes = [
-    //Root node
-    {
-    engaged: false, x: -22.75, y: -102.5, accepts: [
-        {part:'middle_hull',x:0,y:0}, 
-        {part:'front_hull',x:0,y:0}, 
-        {part:'back_hull',x:0,y:0}],
-    },
-];
+var rootNode;
+var allNodes = [];
+var allPingGraphics = [];
+
+//Hull widths cause I got lazy
+var BHW = 343;
+var FHW = 252;
+var MHW = 171;
 
 var nodeStructure = {
+    rootNode:{
+        x: -22.75, y: -102.5, subNodes: [
+            {part:'middle_hull',x:0,y:0,engaged: false, connectedWith: 'A'}, 
+            {part:'front_hull',x:0,y:0,engaged: false, connectedWith: 'A'}, 
+            {part:'back_hull',x:0,y:0,engaged: false, connectedWith: 'A'},
+        ],
+    },
     front_hull:{
-        engaged:false, x:200, y:200, accepts: [
-            {part:'middle_hull',x:0,y:0},
-            {part:'window',x:0,y:0}
+        subNodes: [
+            {part:'middle_hull',x:(MHW+FHW)/2,y:0,engaged: false},
+            {part:'window',x:0,y:0,engaged: false},
         ], 
     },
     middle_hull:{
-        engaged:false, x:200, y:200, accepts: [
-            {part:'front_hull',x:0,y:0},
-            {part:'back_hull',x:0,y:0}
+        subNodes: [
+            {part:'front_hull',x:(FHW+MHW)/2,y:0,engaged: false, connectedWith: 'A'},
+            {part:'front_hull',x:-(FHW+MHW)/2,y:0,engaged: false,flipped:true, connectedWith: 'B'},
+            {part:'middle_hull',x:MHW,y:0,engaged: false, connectedWith: 'A'},
+            {part:'middle_hull',x:-MHW,y:0,engaged: false, connectedWith: 'B'},
+            {part:'back_hull',x:(BHW+MHW)/2,y:0,engaged: false, connectedWith: 'A'},
         ], 
     },
     back_hull:{
-        engaged:false, x:200, y:200, accepts: [
-            {part:'middle_hull',x:0,y:0},
-            {part:'window',x:0,y:0}
+        subNodes: [
+            {part:'middle_hull',x:-(MHW+BHW)/2,y:0,engaged: false},
+            {part:'window',x:-50,y:0,engaged: false},
         ], 
     },
+    window:{
+        subNodes: [], 
+    }
 }
 
 function preload()
@@ -72,7 +84,7 @@ function create ()
     var saveButtonUp = this.add.image(62,134,'interface','saveButtonUp.png').setInteractive();
     var saveButtonOver = this.add.image(62,134,'interface','saveButtonOver.png').setInteractive();
     var launchButtonUp = this.add.image(132,134,'interface','launchButtonUp.png').setInteractive();
-    var launchButtonOver = this.add.image(132,134,'interface','launchButtonOver.png').setInteractive();
+    var launchButtonOver = this.add.image(132,134,'interface','launchButtonOver.png').setInteractive();6
 
     workshopInterface.add(workshopInterfaceBackground);
     workshopInterface.add(saveButtonUp);
@@ -167,12 +179,20 @@ function create ()
     totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 30);
 
     //Building Sub Screen
-    buildInterface = this.add.container();
-    var upperScreen = this.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
-    upperScreen.alpha = 0.1;
-    buildInterface.add(upperScreen);
 
-    pingGraphic(-22.75,-102.5);
+    //Create Root Node
+    rootNode = this.add.container();
+    rootNode = Object.assign(rootNode, nodeStructure.rootNode);
+    rootNode.scale = 0.4;
+    allNodes.push(rootNode);
+    rootNode.add(pingGraphic(0,0));
+
+    buildInterface = this.add.container();
+    buildInterface.add(rootNode);
+
+    var upperScreen = this.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
+    upperScreen.alpha = 0.01;
+    buildInterface.add(upperScreen);
     
     //global positioned cause mask
     var lowerScreenMask = this.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
@@ -235,7 +255,7 @@ function create ()
             scanStrength: 0.3,
             //CRT
             crtWidth: 1,
-            crtHeight: 1,
+            crtHeight: 5,
     }
     var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
     var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings); 
@@ -301,43 +321,63 @@ function setTintPart(part,color){
     }
 }
 
-function addPartToBuildInterface(part,x,y){
-    part.scale = 0.4;
-    part.x = x;
-    part.y = y;
-    buildInterface.add(part);
-    setTintPart(part,0x3B9459);
-
-    console.log('buildNodes Before: ' + buildNodes);
-    buildNodes.push(nodeStructure[part.partType]);
-    console.log('buildNodes After: ' + buildNodes);
-
+function addPartToBuildInterface(part,x,y,node,partType){
+    var partContainer = scene.add.container();
+    partContainer.x = x;
+    partContainer.y = y;
+    partContainer = Object.assign(partContainer, nodeStructure[partType]);
+    setTintPart(part,0x3BAA59);
+    partContainer.add(part);
+    node.add(partContainer);
+    allNodes.push(partContainer);
 }
 
 function addPartToBuild(partType){
     //search buildNodes for a place to put it.
-    var foundBuildNodes = [];
-    for(var nodes of buildNodes){
-        for(var accepts of nodes.accepts){
-            if(accepts.part == partType && nodes.engaged == false){
-                foundBuildNodes.push({PartType:partType, x:nodes.x,y:nodes.y,node:nodes});
+    var foundNodes = [];
+    for(var nodes of allNodes){
+        for(var subNodes of nodes.subNodes){
+            if(subNodes.part == partType && subNodes.engaged == false){
+                foundNodes.push({PartType:partType,node:nodes,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith});
             }
         }
     }
-    if(foundBuildNodes.length == 1){
-        var buildNode = foundBuildNodes[0];
-        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y);
+    if(foundNodes.length == 1){
+        var buildNode = foundNodes[0];
+        buildNode.subNodes.engaged = true;
+        for(var nodes of buildNode.node.subNodes){
+            if(nodes.connectedWith == buildNode.connectionType){
+                nodes.engaged = true;
+            }
+        }
+        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType);
     }
-
-    if(foundBuildNodes.length > 1){
-
+    for(var pings of allPingGraphics){
+        pings.destroy();
+    }
+    allPingGraphics = [];
+    if(foundNodes.length > 1){
+        for(var nodes of foundNodes){
+            var pingGraphic2 = pingGraphic(nodes.x,nodes.y);
+            nodes.node.add(pingGraphic2);
+            allPingGraphics.push(pingGraphic2)
+        }
     }
 }
 
 function pingGraphic(x,y){
-    var pingGraphic = scene.add.circle(x,y,5, 0xFF0000);
+    var pingGraphic = scene.add.circle(x,y,10, 0xFF0000);
     pingGraphic.setStrokeStyle(2,0xFF0000);
-    buildInterface.add(pingGraphic);
+    pingGraphic.setInteractive();
+    pingGraphic.on('pointerover', function () {
+        pingGraphic.tarScale = 2;
+        document.body.style.cursor = 'pointer'; 
+    });
+    pingGraphic.on('pointerout', function () {
+        pingGraphic.scale = 1;
+        document.body.style.cursor = 'default';
+    });
+    return pingGraphic;
 }
 
 var shopScrollTar = 0;
