@@ -35,9 +35,9 @@ var MHW = 252;
 var nodeStructure = {
     rootNode:{
         x: -22.75, y: -102.5, subNodes: [
-            {part:'middle_hull',x:0,y:0,engaged: false, connectedWith: 'A'}, 
-            {part:'front_hull',x:0,y:0,engaged: false, connectedWith: 'A'}, 
-            {part:'back_hull',x:0,y:0,engaged: false, connectedWith: 'A'},
+            {part:'middle_hull',x:0,y:0,engaged: false, connectedWith: 'M'}, 
+            {part:'front_hull',x:0,y:0,engaged: false, connectedWith: 'M'}, 
+            {part:'back_hull',x:0,y:0,engaged: false, connectedWith: 'M'},
         ],
     },
     front_hull:{
@@ -48,11 +48,12 @@ var nodeStructure = {
     },
     middle_hull:{
         subNodes: [
-            {part:'front_hull',x:(FHW+MHW)/2,y:0,engaged: false, connectedWith: 'A'},
-            {part:'front_hull',x:-(FHW+MHW)/2,y:0,engaged: false,flipped:true, connectedWith: 'B'},
+            {part:'front_hull',x:(FHW+MHW)/2,y:0,engaged: false, flipped:true, connectedWith: 'A'},
+            {part:'front_hull',x:-(FHW+MHW)/2,y:0,engaged: false, connectedWith: 'B'},
             {part:'middle_hull',x:MHW,y:0,engaged: false, connectedWith: 'A'},
             {part:'middle_hull',x:-MHW,y:0,engaged: false, connectedWith: 'B'},
             {part:'back_hull',x:(BHW+MHW)/2,y:0,engaged: false, connectedWith: 'A'},
+            {part:'back_hull',x:-(BHW+MHW)/2,y:0,engaged: false, flipped:true, connectedWith: 'B'},
         ], 
     },
     back_hull:{
@@ -322,12 +323,29 @@ function setTintPart(part,color){
     }
 }
 
-function addPartToBuildInterface(part,x,y,node,partType){
+function addPartToBuildInterface(part,x,y,node,partType,flipped,originNode){
     var partContainer = scene.add.container();
     partContainer.x = x;
     partContainer.y = y;
+    if(flipped == true){
+        partContainer.scaleX = -1;
+    }
     var newStructure = JSON.parse(nodeStructure);
     partContainer = Object.assign(partContainer, newStructure[partType]);
+    //Preventing reverse connections
+    if(partType == 'middle_hull' || partType == 'back_hull' || partType == 'front_hull'){
+        if(originNode.connectedWith == 'A'){
+            partContainer.subNodes = partContainer.subNodes.filter(function(obj){
+                return obj.connectedWith === 'A';
+            });
+        }
+        if(originNode.connectedWith == 'B'){
+            partContainer.subNodes = partContainer.subNodes.filter(function(obj){
+                return obj.connectedWith === 'B';
+            });
+        }
+    }
+   
     setTintPart(part,0x3BAA59);
     partContainer.add(part);
     node.add(partContainer);
@@ -340,7 +358,7 @@ function addPartToBuild(partType){
     for(var nodes of allNodes){
         for(var subNodes of nodes.subNodes){
             if(subNodes.part == partType && subNodes.engaged == false){
-                foundNodes.push({PartType:partType,node:nodes,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith});
+                foundNodes.push({PartType:partType,node:nodes,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith, flipped:subNodes.flipped});
             }
         }
     }
@@ -352,7 +370,7 @@ function addPartToBuild(partType){
                 nodes.engaged = true;
             }
         }
-        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType);
+        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType,buildNode.flipped, buildNode.subNodes);
     }
     removePings();
     if(foundNodes.length > 1){
@@ -362,7 +380,6 @@ function addPartToBuild(partType){
             allPingGraphics.push(pingGraphic2)
         }
     }
-    console.log(allNodes);
 }
 function removePings(){
     for(var pings of allPingGraphics){
@@ -392,7 +409,7 @@ function pingGraphic(x,y,node){
                 nodes.engaged = true;
             }
         }
-        addPartToBuildInterface(createPart(node.PartType), node.x, node.y,node.node,node.PartType);
+        addPartToBuildInterface(createPart(node.PartType), node.x, node.y,node.node,node.PartType,node.flipped, node.subNodes);
         removePings();
     });
 
