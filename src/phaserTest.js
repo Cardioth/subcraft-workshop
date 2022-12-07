@@ -538,6 +538,7 @@ var pointerX;
 var pointerY;
 var buildTargetX;
 var buildTargetY;
+var scaleTar = 0.2;
 
 function update ()
 {
@@ -548,7 +549,11 @@ function update ()
         partsList[i].scale -= (partsList[i].scale - partsList[i].tarScale)/12;
     }
     if(rootNode.getBounds().width > 1){
-        rootNode.scaleX -= ((rootNode.getBounds().width/1200) - 0.25)/20
+        var scale_X = ((rootNode.getBounds().width+rootNode.getBounds().height)/2/1000);
+        rootNode.scaleX -= (scale_X - scaleTar)/20
+    }
+    if(rootNode.scaleX > .4){
+        rootNode.scaleX = .4
     }
     rootNode.scaleY = rootNode.scaleX;
     for(var j=0;j<allNodes.length;j++){
