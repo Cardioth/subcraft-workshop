@@ -29,8 +29,8 @@ var allPingGraphics = [];
 
 //Hull widths cause I got lazy
 var BHW = 343;
-var FHW = 252;
-var MHW = 171;
+var FHW = 171;
+var MHW = 252;
 
 var nodeStructure = {
     rootNode:{
@@ -42,8 +42,8 @@ var nodeStructure = {
     },
     front_hull:{
         subNodes: [
-            {part:'middle_hull',x:(MHW+FHW)/2,y:0,engaged: false},
-            {part:'window',x:0,y:0,engaged: false},
+            {part:'middle_hull',x:(MHW+FHW)/2,y:0,engaged: false, connectedWith: 'A'},
+            {part:'window',x:0,y:0,engaged: false, connectedWith: 'B'},
         ], 
     },
     middle_hull:{
@@ -57,14 +57,15 @@ var nodeStructure = {
     },
     back_hull:{
         subNodes: [
-            {part:'middle_hull',x:-(MHW+BHW)/2,y:0,engaged: false},
-            {part:'window',x:-50,y:0,engaged: false},
+            {part:'middle_hull',x:-(MHW+BHW)/2,y:0,engaged: false, connectedWith: 'A'},
+            {part:'window',x:-50,y:0,engaged: false, connectedWith: 'B'},
         ], 
     },
     window:{
         subNodes: [], 
     }
 }
+nodeStructure = JSON.stringify(nodeStructure);
 
 function preload()
 {  
@@ -182,7 +183,8 @@ function create ()
 
     //Create Root Node
     rootNode = this.add.container();
-    rootNode = Object.assign(rootNode, nodeStructure.rootNode);
+    var newStructure = JSON.parse(nodeStructure);
+    rootNode = Object.assign(rootNode, newStructure.rootNode);
     rootNode.scale = 0.4;
     allNodes.push(rootNode);
     rootNode.add(pingGraphic(0,0));
@@ -254,12 +256,11 @@ function create ()
             // Scanlines
             scanStrength: 0.3,
             //CRT
-            crtWidth: 1,
+            crtWidth: 5,
             crtHeight: 5,
     }
     var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
     var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings); 
-
 
 }
 
@@ -325,7 +326,8 @@ function addPartToBuildInterface(part,x,y,node,partType){
     var partContainer = scene.add.container();
     partContainer.x = x;
     partContainer.y = y;
-    partContainer = Object.assign(partContainer, nodeStructure[partType]);
+    var newStructure = JSON.parse(nodeStructure);
+    partContainer = Object.assign(partContainer, newStructure[partType]);
     setTintPart(part,0x3BAA59);
     partContainer.add(part);
     node.add(partContainer);
@@ -352,31 +354,48 @@ function addPartToBuild(partType){
         }
         addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType);
     }
-    for(var pings of allPingGraphics){
-        pings.destroy();
-    }
-    allPingGraphics = [];
+    removePings();
     if(foundNodes.length > 1){
         for(var nodes of foundNodes){
-            var pingGraphic2 = pingGraphic(nodes.x,nodes.y);
+            var pingGraphic2 = pingGraphic(nodes.x,nodes.y,nodes);
             nodes.node.add(pingGraphic2);
             allPingGraphics.push(pingGraphic2)
         }
     }
+    console.log(allNodes);
+}
+function removePings(){
+    for(var pings of allPingGraphics){
+        pings.destroy();
+    }
+    allPingGraphics = [];
 }
 
-function pingGraphic(x,y){
+function pingGraphic(x,y,node){
     var pingGraphic = scene.add.circle(x,y,10, 0xFF0000);
     pingGraphic.setStrokeStyle(2,0xFF0000);
     pingGraphic.setInteractive();
     pingGraphic.on('pointerover', function () {
-        pingGraphic.tarScale = 2;
+        pingGraphic.scale = 2;
         document.body.style.cursor = 'pointer'; 
     });
     pingGraphic.on('pointerout', function () {
         pingGraphic.scale = 1;
         document.body.style.cursor = 'default';
     });
+
+    pingGraphic.on('pointerdown', function () {
+        document.body.style.cursor = 'default';
+        node.subNodes.engaged = true;
+        for(var nodes of node.node.subNodes){
+            if(nodes.connectedWith == node.connectionType){
+                nodes.engaged = true;
+            }
+        }
+        addPartToBuildInterface(createPart(node.PartType), node.x, node.y,node.node,node.PartType);
+        removePings();
+    });
+
     return pingGraphic;
 }
 
