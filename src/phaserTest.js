@@ -68,6 +68,7 @@ var nodeStructure = {
             {part:'window',x:0,y:0,engaged: false, connectedWith: 'F'},
             {part:'flair1',x:0,y:-40,engaged: false, connectedWith: 'F'},
             {part:'flair2',x:0,y:-40,engaged: false, connectedWith: 'F'},
+            {part:'gun_assembly',x:0,y:135,engaged: false, connectedWith: 'H', rotated:180},
         ], 
     },
     back_hull:{
@@ -80,6 +81,7 @@ var nodeStructure = {
             {part:'flair1',x:-50,y:-40,engaged: false, connectedWith: 'F'},
             {part:'flair2',x:-50,y:-40,engaged: false, connectedWith: 'F'},
             {part:'propeller',x:200,y:-20,engaged: false, connectedWith: 'D'},
+            {part:'gun_assembly',x:-20,y:100,engaged: false, connectedWith: 'H', rotated:158},
         ], 
     },
     window:{
@@ -380,8 +382,11 @@ function setTintPart(part,color){
     }
 }
 
-function addPartToBuildInterface(part,x,y,node,partType,flipped,originNode){
+function addPartToBuildInterface(part,x,y,node,partType,flipped,originNode,rotated){
     var partContainer = scene.add.container();
+    if(rotated != undefined){
+        partContainer.angle = rotated;
+    }
     partContainer.x = x;
     partContainer.y = y;
     if(flipped == true){
@@ -438,7 +443,7 @@ function addPartToBuild(partType){
                 if(partType == 'top_hatch' && hatchPlaced){return;}//quick and dirty preventing more than one hatch
                 let  newPartType = partType; //I'm sorry
                 if(partType == 'gun_assembly'){newPartType = [['gun_turret','gun_base'],false,'gun_assembly']}; //quick and dirty way of adding the turret           
-                foundNodes.push({PartType:newPartType,node:nodes,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith, flipped:subNodes.flipped});
+                foundNodes.push({PartType:newPartType,node:nodes,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith, flipped:subNodes.flipped, rotated:subNodes.rotated});
             }
         }
     }
@@ -450,7 +455,7 @@ function addPartToBuild(partType){
                 nodes.engaged = true;
             }
         }
-        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType,buildNode.flipped, buildNode.subNodes);
+        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
     }
     removePings();
     if(foundNodes.length > 1){
@@ -468,7 +473,7 @@ function removePings(){
     allPingGraphics = [];
 }
 
-function pingGraphic(x,y,node){
+function pingGraphic(x,y,buildNode){
     var pingGraphic = scene.add.circle(x,y,10, 0xFF0000);
     pingGraphic.setStrokeStyle(2,0xFF0000);
     pingGraphic.setInteractive();
@@ -483,13 +488,15 @@ function pingGraphic(x,y,node){
 
     pingGraphic.on('pointerdown', function () {
         document.body.style.cursor = 'default';
-        node.subNodes.engaged = true;
-        for(var nodes of node.node.subNodes){
-            if(nodes.connectedWith == node.connectionType){
+        buildNode.subNodes.engaged = true;
+        for(var nodes of buildNode.node.subNodes){
+            if(nodes.connectedWith == buildNode.connectionType){
                 nodes.engaged = true;
             }
         }
-        addPartToBuildInterface(createPart(node.PartType), node.x, node.y,node.node,node.PartType,node.flipped, node.subNodes);
+        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
+        console.log(buildNode);
+        console.log(buildNode.rotated);
         removePings();
     });
 
