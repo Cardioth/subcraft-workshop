@@ -16,6 +16,7 @@ var scene;
 
 var partsList = [];
 
+var rootNode;
 var shopInterface;
 var buildInterface;
 var pointerOnShop;
@@ -218,20 +219,22 @@ function create ()
     //Add all the parts to the screen interface
     for(var i=0;i<partsList.length;i++){
         addPartToShopInterface(partsList[i]);
-        partsList[i].x = sumOfPreviousPartsWidth(i, partsList, 30)+(partsList[i].width/3/2)-220;
+        partsList[i].x = sumOfPreviousPartsWidth(i, partsList, 50)-220;
         partsList[i].y = 53.1;
         partsList[i].originalX = partsList[i].x;
     }
-    totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 30);
+    totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 50);
 
     //Building Sub Screen
 
     //Create Root Node
-    var rootNode = this.add.container();
+    rootNode = this.add.container();
     var newStructure = JSON.parse(nodeStructure);
     rootNode = Object.assign(rootNode, newStructure.rootNode);
     rootNode.scale = 0.3;
     allNodes.push(rootNode);
+    buildTargetX = workshopInterfaceX+rootNode.x;
+    buildTargetY = workshopInterfaceY+rootNode.y;
 
     buildInterface = this.add.container();
     buildInterface.add(rootNode);
@@ -300,11 +303,36 @@ function create ()
             // Scanlines
             scanStrength: 0.3,
             //CRT
-            crtWidth: 5,
-            crtHeight: 5,
+            crtWidth: 1.5,
+            crtHeight: 1.5,
     }
+    var horrifiSettings2 = {
+        enable: true,
+        // Bloom
+        bloomRadius: 0.08,
+        bloomIntensity: 1,
+        bloomThreshold: 0.03,
+        bloomTexelWidth: 0.05,
+        bloomTexelHeight: 0.05,
+        // Chromatic abberation
+        chabIntensity: .1,
+        // Vignette
+        vignetteStrength: 0.1,
+        vignetteIntensity: 0.1,
+        vignetteEnable: false,
+        // Noise
+        noiseEnable: false,
+        noiseStrength: 0.2,
+        // VHS
+        vhsStrength: 0.2,
+        // Scanlines
+        scanStrength: 0.3,
+        //CRT
+        crtWidth: 5,
+        crtHeight: 5,
+}
     var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
-    var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings); 
+    var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
 
 }
 
@@ -336,14 +364,16 @@ function createPart(partName, addingToShop){
 function sumOfPreviousPartsWidth(i,parts, margin){
     var totalWidth = 0;
     for(var j=0;j<i;j++){
-        totalWidth += (parts[j].width/3)+margin;
+        totalWidth += (parts[j].width/6)+margin;
     }
     return totalWidth;
 }
 
 function addPartToShopInterface(part){
     part.scale = 0.3;
-    part.tarScale = 0.3;
+    part.originalHeight = part.getBounds().height/500;
+    part.tarScale = .4-part.originalHeight;
+    
     shopInterface.add(part);
 
     //Can't set tint on a container so had to do this
@@ -352,13 +382,13 @@ function addPartToShopInterface(part){
     part.on('pointerover', function () {
         if(!pointerOnShop){return;}
         setTintPart(part,0x57FF77);
-        part.tarScale = 0.39;
+        part.tarScale = .5-part.originalHeight;
         document.body.style.cursor = 'pointer'; 
     });
     part.on('pointerout', function () {
         if(!pointerOnShop){return;}
         setTintPart(part,0x3B9459);
-        part.tarScale = 0.3;
+        part.tarScale = .4-part.originalHeight;
         document.body.style.cursor = 'grab';
     });
     part.on('pointerdown', function () {
@@ -387,6 +417,7 @@ function addPartToBuildInterface(part,x,y,node,partType,flipped,originNode,rotat
     if(rotated != undefined){
         partContainer.angle = rotated;
     }
+    partContainer.alpha = 0;
     partContainer.x = x;
     partContainer.y = y;
     if(flipped == true){
@@ -398,8 +429,6 @@ function addPartToBuildInterface(part,x,y,node,partType,flipped,originNode,rotat
     }
     partContainer = Object.assign(partContainer, newStructure[partType]);
     
-
-
     //Preventing reverse connections
     if(partType == 'middle_hull'){
         if(originNode.connectedWith == 'A'){
@@ -495,8 +524,6 @@ function pingGraphic(x,y,buildNode){
             }
         }
         addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
-        console.log(buildNode);
-        console.log(buildNode.rotated);
         removePings();
     });
 
@@ -509,13 +536,25 @@ var pointerDelta = 0;
 var pointerState;
 var pointerX;
 var pointerY;
+var buildTargetX;
+var buildTargetY;
 
 function update ()
 {
-    for(var i=0;i<partsList.length;i++){6
+    rootNode.x -= (rootNode.getBounds().centerX - buildTargetX)/70
+    rootNode.y -= (rootNode.getBounds().centerY - buildTargetY)/70
+    for(var i=0;i<partsList.length;i++){
         partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
         partsList[i].scale -= (partsList[i].scale - partsList[i].tarScale)/12;
     }
+    if(rootNode.getBounds().width > 1){
+        rootNode.scaleX -= ((rootNode.getBounds().width/1200) - 0.25)/20
+    }
+    rootNode.scaleY = rootNode.scaleX;
+    for(var j=0;j<allNodes.length;j++){
+        allNodes[j].alpha -= (allNodes[j].alpha - 1)/30;
+    }
+
 
     pointerDelta = pointerX - prevPointerX;
     if(pointerState == 'down'){
