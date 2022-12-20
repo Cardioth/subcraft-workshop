@@ -26,7 +26,6 @@ var workshopInterfaceY = 400;
 var totalPartsListWidth;
 
 var allParts = [];
-var hatchPlaced = false;
 var allPingGraphics = [];
 
 //Hull widths
@@ -36,7 +35,7 @@ var MHW = 251;
 
 var nodeStructure = {
     rootNode:{
-        name:'rootNode', x: -22.75, y: -102.5, subNodes: [
+        name:'rootNode', x: -12.75, y: -102.5, subNodes: [
             {part:'middle_hull',x:0,y:0,engaged: false, connectedWith: 'M'}, 
             {part:'front_hull',x:0,y:0,engaged: false, connectedWith: 'M'}, 
             {part:'back_hull',x:0,y:0,engaged: false, connectedWith: 'M'},
@@ -158,19 +157,19 @@ function create ()
     workshopInterface.add(launchButtonOver);
     launchButtonOver.setVisible(false);
 
-    loadButtonUp.on('pointerover', function () {
+    loadButtonUp.on('pointerover', () => {
         loadButtonUp.setVisible(false);
         loadButtonOver.setVisible(true);
         document.body.style.cursor = 'pointer';
     });
 
-    loadButtonOver.on('pointerout', function () {
+    loadButtonOver.on('pointerout', () => {
         loadButtonUp.setVisible(true);
         loadButtonOver.setVisible(false);
         document.body.style.cursor = 'default';
     });
 
-    loadButtonOver.on('pointerdown', function () {
+    loadButtonOver.on('pointerdown', () => {
         loadButtonUp.setVisible(true);
         loadButtonOver.setVisible(false);
         const savedSubJSON = localStorage.getItem('savedSub');
@@ -181,37 +180,36 @@ function create ()
         loadSub(loadedSub, rootNode);
     });
 
-    saveButtonUp.on('pointerover', function () {
+    saveButtonUp.on('pointerover', () => {
         saveButtonUp.setVisible(false);
         saveButtonOver.setVisible(true);
         document.body.style.cursor = 'pointer';
     });
 
-    saveButtonOver.on('pointerout', function () {
+    saveButtonOver.on('pointerout', () => {
         saveButtonUp.setVisible(true);
         saveButtonOver.setVisible(false);
         document.body.style.cursor = 'default';
     });
 
-    saveButtonOver.on('pointerdown', function () {
+    saveButtonOver.on('pointerdown', () => {
         saveButtonUp.setVisible(true);
         saveButtonOver.setVisible(false);
         const savedSubJSON = JSON.stringify(saveSub(rootNode.list[0]));
         localStorage.setItem('savedSub',savedSubJSON);
     });
-
-    launchButtonUp.on('pointerover', function () {
+    launchButtonUp.on('pointerover', () => {
         launchButtonUp.setVisible(false);
         launchButtonOver.setVisible(true);
         document.body.style.cursor = 'pointer';
     });
 
-    launchButtonOver.on('pointerout', function () {
+    launchButtonOver.on('pointerout', () => {
         launchButtonUp.setVisible(true);
         launchButtonOver.setVisible(false);
         document.body.style.cursor = 'default';
     });
-    launchButtonOver.on('pointerdown', function () {
+    launchButtonOver.on('pointerdown', () => {
         launchButtonUp.setVisible(true);
         launchButtonOver.setVisible(false);
     });
@@ -222,22 +220,22 @@ function create ()
     lowerScreen.alpha = 0.1;
     shopInterface.add(lowerScreen);
 
-    this.input.on('pointerup', function(pointer){
+    this.input.on('pointerup', function (pointer){
         pointerState = 'up';
     });
     this.input.on('pointermove', function (pointer) {
         pointerX = pointer.x;
         pointerY = pointer.y;
     });
-    lowerScreen.on('pointerout', function(){
+    lowerScreen.on('pointerout', () =>{
         document.body.style.cursor = 'default';
         pointerOnShop = false;
     });
-    lowerScreen.on('pointerover', function () {
+    lowerScreen.on('pointerover', () => {
         document.body.style.cursor = 'grab';
         pointerOnShop = true;
     });
-    lowerScreen.on('pointerdown', function () {
+    lowerScreen.on('pointerdown', () => {
         pointerState = 'down'
     });
 
@@ -273,6 +271,8 @@ function create ()
     var upperScreen = this.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
     upperScreen.alpha = 0.01;
     buildInterface.add(upperScreen);
+    var binIcon = this.add.image(200,-164,'interface','binIcon.png').setInteractive();
+    buildInterface.add(binIcon);
     
     //global positioned because that's how masks do
     var lowerScreenMask = this.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
@@ -363,15 +363,15 @@ function create ()
         crtHeight: 5,
     }
     //I have two sets of settings because I wanted the CRT effect on one but not the other
-    var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
-    var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
+    //var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
+    //var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
 
 }
 
 function saveSub(obj) {
     var subCopy = {};
     for (var key in obj) {
-      if ((key === "x" || key === "y" || key === "list" || key === "name" || key === "flipped" || key === "rotated")) {
+      if ((key === "x" || key === "y" || key === "list" || key === "name" || key === "flipped" || key === "rotated" || key === "connectedVia")) {
         if (typeof obj[key] === "object") {
           if (Array.isArray(obj[key])) {
             subCopy[key] = obj[key].filter(object => object.type === "Container" && object.name !== "").map(item => saveSub(item));
@@ -385,16 +385,26 @@ function saveSub(obj) {
   }
 
 function loadSub(obj,parentPart) {
+    let newPartType = buildRules(obj.name);
+    const currentPart = addPartToBuildInterface(createPart(newPartType), obj.x, obj.y,parentPart,newPartType,obj.flipped, {connectedWith: obj.connectedVia}, obj.rotated);
+    for(var nodes of parentPart.subNodes){
+        if(nodes.connectedWith == currentPart.connectedVia){
+            nodes.engaged = true;
+        }
+    }
     for (var key in obj) {
         if (typeof obj[key] === "object") {
           if (Array.isArray(obj[key])) {
-            obj[key].map(item => loadSub(item,obj));
+            obj[key].map(item => loadSub(item,currentPart));
           }
         }
     }
 }
 
 function createPart(partName, addingToShop){
+    if(partName === 'skip'){
+        return;
+    }
     if(typeof partName === 'string'){
         var part = scene.add.image(0,0,'submarine',partName+'.png').setInteractive(); 
         part.partType = partName;
@@ -416,7 +426,6 @@ function createPart(partName, addingToShop){
         }
         return assembly;
     }
-
 }
 
 function sumOfPreviousPartsWidth(i,parts, margin){
@@ -437,24 +446,24 @@ function addPartToShopInterface(part){
     //Can't set tint on a container so had to do this
     setTintPart(part,0x3B9459);
 
-    part.on('pointerover', function () {
+    part.on('pointerover', () => {
         if(!pointerOnShop){return;}
         setTintPart(part,0x57FF77);
         part.tarScale = .5-part.originalHeight;
         document.body.style.cursor = 'pointer'; 
     });
-    part.on('pointerout', function () {
+    part.on('pointerout', () => {
         if(!pointerOnShop){return;}
         setTintPart(part,0x3B9459);
         part.tarScale = .4-part.originalHeight;
         document.body.style.cursor = 'grab';
     });
-    part.on('pointerdown', function () {
+    part.on('pointerdown', () => {
         if(!pointerOnShop){return;}
         addPartToBuild(part.partType);
         document.body.style.cursor = 'pointer';
     });
-    part.on('pointerup', function () {
+    part.on('pointerup', () => {
         if(!pointerOnShop){return;}
         document.body.style.cursor = 'pointer';
     });
@@ -471,6 +480,9 @@ function setTintPart(part,color){
 }
 
 function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode,rotated){
+    if(partType === 'skip'){
+        return;
+    }
     var partContainer = scene.add.container();
     if(rotated != undefined){
         partContainer.angle = rotated;
@@ -509,6 +521,8 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
             });
         }
     }
+    
+    partContainer.connectedVia = originNode.connectedWith;
     //Only one hatch
     if(partType == 'top_hatch'){
         hatchPlaced = true;
@@ -520,6 +534,20 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
     partContainer.add(part);
     parentPart.add(partContainer);
     allParts.push(partContainer);
+
+    return partContainer;
+}
+
+var hatchPlaced = false;
+
+function buildRules(partType){
+    if(partType == 'gun_assembly'){
+        return [['gun_turret','gun_base'],false,'gun_assembly'];
+    }
+    if(partType == 'top_hatch' && hatchPlaced){
+        return 'skip';
+    }
+    return partType;
 }
 
 function addPartToBuild(partType){
@@ -528,11 +556,8 @@ function addPartToBuild(partType){
     for(var parts of allParts){
         for(var subNodes of parts.subNodes){
             if(subNodes.part == partType && subNodes.engaged == false){
-                //Add rules here
-                if(partType == 'top_hatch' && hatchPlaced){return;}//Only one hatch rule
-                let  newPartType = partType; if(partType == 'gun_assembly'){newPartType = [['gun_turret','gun_base'],false,'gun_assembly']}; //Rule for adding gun assembly
-
-                //Add node to found parts
+                let newPartType = buildRules(partType); //apply rules
+                if(newPartType == 'skip'){return};
                 foundNodes.push({PartType:newPartType,part:parts,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith, flipped:subNodes.flipped, rotated:subNodes.rotated});
             }
         }
@@ -552,7 +577,7 @@ function addPartToBuild(partType){
         for(var nodes of foundNodes){
             var pingGraphic2 = pingGraphic(nodes.x,nodes.y,nodes);
             nodes.part.add(pingGraphic2);
-            allPingGraphics.push(pingGraphic2)
+            allPingGraphics.push(pingGraphic2);
         }
     }
 }
@@ -567,16 +592,16 @@ function pingGraphic(x,y,buildNode){
     var pingGraphic = scene.add.circle(x,y,10, 0xFF0000);
     pingGraphic.setStrokeStyle(2,0xFF0000);
     pingGraphic.setInteractive();
-    pingGraphic.on('pointerover', function () {
+    pingGraphic.on('pointerover', () => {
         pingGraphic.scale = 2;
         document.body.style.cursor = 'pointer'; 
     });
-    pingGraphic.on('pointerout', function () {
+    pingGraphic.on('pointerout', () => {
         pingGraphic.scale = 1;
         document.body.style.cursor = 'default';
     });
 
-    pingGraphic.on('pointerdown', function () {
+    pingGraphic.on('pointerdown', () => {
         document.body.style.cursor = 'default';
         buildNode.subNodes.engaged = true;
         for(var nodes of buildNode.part.subNodes){
@@ -612,8 +637,8 @@ function interfaceMovement(){
         var scale_X = ((rootNode.getBounds().width+rootNode.getBounds().height)/2/1000);
         rootNode.scaleX -= (scale_X - scaleTar)/20
     }
-    if(rootNode.scaleX > .4){
-        rootNode.scaleX = .4
+    if(rootNode.scaleX > .35){
+        rootNode.scaleX = .35
     }
     rootNode.scaleY = rootNode.scaleX;
     for(var j=0;j<allParts.length;j++){

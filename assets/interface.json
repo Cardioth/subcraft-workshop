@@ -235,6 +235,31 @@
 					}
 				},
 				{
+					"filename": "binIcon.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 20,
+						"h": 24
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 20,
+						"h": 24
+					},
+					"frame": {
+						"x": 672,
+						"y": 338,
+						"w": 20,
+						"h": 24
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
 					"filename": "partsPlate.png",
 					"rotated": false,
 					"trimmed": false,
@@ -249,8 +274,8 @@
 						"h": 22
 					},
 					"frame": {
-						"x": 672,
-						"y": 338,
+						"x": 611,
+						"y": 396,
 						"w": 90,
 						"h": 22
 					},
@@ -265,6 +290,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:2c85266ce0b5e178562a06d7eff1d9c3:8eea3f67d022c01287896d1e396bec19:8141c0d8370228a8661c55b8bcf20981$"
+		"smartupdate": "$TexturePacker:SmartUpdate:d4d31cba2dd09a6251e344ffbfe6224d:75cdcbd3433425a7e6921da71edc3155:8141c0d8370228a8661c55b8bcf20981$"
 	}
 }
