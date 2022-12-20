@@ -14,6 +14,7 @@ var config = {
 var game = new Phaser.Game(config);
 var scene;
 
+var savedSubs = [];
 var partsList = [];
 
 var rootNode;
@@ -24,7 +25,7 @@ var workshopInterfaceX = 600;
 var workshopInterfaceY = 400;
 var totalPartsListWidth;
 
-var allNodes = [];
+var allParts = [];
 var hatchPlaced = false;
 var allPingGraphics = [];
 
@@ -139,18 +140,46 @@ function create ()
     var workshopInterface = this.add.container(workshopInterfaceX,workshopInterfaceY);
 
     var workshopInterfaceBackground = this.add.image(0,0,'interface','workshopInterface.png');
-    var saveButtonUp = this.add.image(62,134,'interface','saveButtonUp.png').setInteractive();
-    var saveButtonOver = this.add.image(62,134,'interface','saveButtonOver.png').setInteractive();
-    var launchButtonUp = this.add.image(132,134,'interface','launchButtonUp.png').setInteractive();
-    var launchButtonOver = this.add.image(132,134,'interface','launchButtonOver.png').setInteractive();6
+    var loadButtonUp = this.add.image(-28,133,'interface','loadButtonUp.png').setInteractive();
+    var loadButtonOver = this.add.image(-28,133,'interface','loadButtonOver.png').setInteractive();
+    var saveButtonUp = this.add.image(37.4,133,'interface','saveButtonUp.png').setInteractive();
+    var saveButtonOver = this.add.image(37.4,133,'interface','saveButtonOver.png').setInteractive();
+    var launchButtonUp = this.add.image(125,133,'interface','launchButtonUp.png').setInteractive();
+    var launchButtonOver = this.add.image(125,133,'interface','launchButtonOver.png').setInteractive();
 
     workshopInterface.add(workshopInterfaceBackground);
+    workshopInterface.add(loadButtonUp);
+    workshopInterface.add(loadButtonOver);
+    loadButtonOver.setVisible(false);
     workshopInterface.add(saveButtonUp);
     workshopInterface.add(saveButtonOver);
     saveButtonOver.setVisible(false);
     workshopInterface.add(launchButtonUp);
     workshopInterface.add(launchButtonOver);
     launchButtonOver.setVisible(false);
+
+    loadButtonUp.on('pointerover', function () {
+        loadButtonUp.setVisible(false);
+        loadButtonOver.setVisible(true);
+        document.body.style.cursor = 'pointer';
+    });
+
+    loadButtonOver.on('pointerout', function () {
+        loadButtonUp.setVisible(true);
+        loadButtonOver.setVisible(false);
+        document.body.style.cursor = 'default';
+    });
+
+    loadButtonOver.on('pointerdown', function () {
+        loadButtonUp.setVisible(true);
+        loadButtonOver.setVisible(false);
+        const savedSubJSON = localStorage.getItem('savedSub');
+        //clear existing sub
+
+        //build loaded sub
+        const loadedSub = JSON.parse(savedSubJSON);
+        loadSub(loadedSub, rootNode);
+    });
 
     saveButtonUp.on('pointerover', function () {
         saveButtonUp.setVisible(false);
@@ -167,6 +196,8 @@ function create ()
     saveButtonOver.on('pointerdown', function () {
         saveButtonUp.setVisible(true);
         saveButtonOver.setVisible(false);
+        const savedSubJSON = JSON.stringify(saveSub(rootNode.list[0]));
+        localStorage.setItem('savedSub',savedSubJSON);
     });
 
     launchButtonUp.on('pointerover', function () {
@@ -210,8 +241,8 @@ function create ()
         pointerState = 'down'
     });
 
-    var allParts = ['front_hull','middle_hull','back_hull','flipper','propeller','top_hatch','top_plate','back_armor','frontHardpoint','window','flair1','flair2','miningLaser'];
-    for(var parts of allParts){
+    var allSubParts = ['front_hull','middle_hull','back_hull','flipper','propeller','top_hatch','top_plate','back_armor','frontHardpoint','window','flair1','flair2','miningLaser'];
+    for(var parts of allSubParts){
         createPart(parts, true);
     }
     createPart([['gun_turret','gun_base'],true,'gun_assembly']);
@@ -232,7 +263,7 @@ function create ()
     var newStructure = JSON.parse(nodeStructure);
     rootNode = Object.assign(rootNode, newStructure.rootNode);
     rootNode.scale = 0.3;
-    allNodes.push(rootNode);
+    allParts.push(rootNode);
     buildTargetX = workshopInterfaceX+rootNode.x;
     buildTargetY = workshopInterfaceY+rootNode.y;
 
@@ -243,7 +274,7 @@ function create ()
     upperScreen.alpha = 0.01;
     buildInterface.add(upperScreen);
     
-    //global positioned cause mask
+    //global positioned because that's how masks do
     var lowerScreenMask = this.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
     workshopInterface.add(lowerScreenMask)
     lowerScreenMask.setVisible(false);
@@ -284,9 +315,9 @@ function create ()
     var horrifiSettings = {
             enable: true,
             // Bloom
-            bloomRadius: 0.08,
-            bloomIntensity: 1,
-            bloomThreshold: 0.03,
+            bloomRadius: 0.2,
+            bloomIntensity: 1.2,
+            bloomThreshold: 0.05,
             bloomTexelWidth: 0.05,
             bloomTexelHeight: 0.05,
             // Chromatic abberation
@@ -330,10 +361,37 @@ function create ()
         //CRT
         crtWidth: 5,
         crtHeight: 5,
-}
+    }
+    //I have two sets of settings because I wanted the CRT effect on one but not the other
     var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
     var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
 
+}
+
+function saveSub(obj) {
+    var subCopy = {};
+    for (var key in obj) {
+      if ((key === "x" || key === "y" || key === "list" || key === "name" || key === "flipped" || key === "rotated")) {
+        if (typeof obj[key] === "object") {
+          if (Array.isArray(obj[key])) {
+            subCopy[key] = obj[key].filter(object => object.type === "Container" && object.name !== "").map(item => saveSub(item));
+          }
+        } else {
+          subCopy[key] = obj[key];
+        }
+      }
+    }
+    return subCopy;
+  }
+
+function loadSub(obj,parentPart) {
+    for (var key in obj) {
+        if (typeof obj[key] === "object") {
+          if (Array.isArray(obj[key])) {
+            obj[key].map(item => loadSub(item,obj));
+          }
+        }
+    }
 }
 
 function createPart(partName, addingToShop){
@@ -412,15 +470,17 @@ function setTintPart(part,color){
     }
 }
 
-function addPartToBuildInterface(part,x,y,node,partType,flipped,originNode,rotated){
+function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode,rotated){
     var partContainer = scene.add.container();
     if(rotated != undefined){
         partContainer.angle = rotated;
+        partContainer.rotated = rotated;        
     }
     partContainer.alpha = 0;
     partContainer.x = x;
     partContainer.y = y;
     if(flipped == true){
+        partContainer.flipped = flipped;
         partContainer.scaleX = -1;
     }
     var newStructure = JSON.parse(nodeStructure);
@@ -458,39 +518,40 @@ function addPartToBuildInterface(part,x,y,node,partType,flipped,originNode,rotat
         setTintPart(part,0x3BFF59);
     }
     partContainer.add(part);
-    node.add(partContainer);
-    allNodes.push(partContainer);
+    parentPart.add(partContainer);
+    allParts.push(partContainer);
 }
 
 function addPartToBuild(partType){
     //search buildNodes for a place to put it.
     var foundNodes = [];
-    for(var nodes of allNodes){
-        for(var subNodes of nodes.subNodes){
+    for(var parts of allParts){
+        for(var subNodes of parts.subNodes){
             if(subNodes.part == partType && subNodes.engaged == false){
-                //There's some bandaids here, sorry
-                if(partType == 'top_hatch' && hatchPlaced){return;}//quick and dirty preventing more than one hatch
-                let  newPartType = partType; //I'm sorry
-                if(partType == 'gun_assembly'){newPartType = [['gun_turret','gun_base'],false,'gun_assembly']}; //quick and dirty way of adding the turret           
-                foundNodes.push({PartType:newPartType,node:nodes,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith, flipped:subNodes.flipped, rotated:subNodes.rotated});
+                //Add rules here
+                if(partType == 'top_hatch' && hatchPlaced){return;}//Only one hatch rule
+                let  newPartType = partType; if(partType == 'gun_assembly'){newPartType = [['gun_turret','gun_base'],false,'gun_assembly']}; //Rule for adding gun assembly
+
+                //Add node to found parts
+                foundNodes.push({PartType:newPartType,part:parts,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith, flipped:subNodes.flipped, rotated:subNodes.rotated});
             }
         }
     }
     if(foundNodes.length == 1){
         var buildNode = foundNodes[0];
         buildNode.subNodes.engaged = true;
-        for(var nodes of buildNode.node.subNodes){
+        for(var nodes of buildNode.part.subNodes){
             if(nodes.connectedWith == buildNode.connectionType){
                 nodes.engaged = true;
             }
         }
-        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
+        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.part,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
     }
     removePings();
     if(foundNodes.length > 1){
         for(var nodes of foundNodes){
             var pingGraphic2 = pingGraphic(nodes.x,nodes.y,nodes);
-            nodes.node.add(pingGraphic2);
+            nodes.part.add(pingGraphic2);
             allPingGraphics.push(pingGraphic2)
         }
     }
@@ -518,12 +579,12 @@ function pingGraphic(x,y,buildNode){
     pingGraphic.on('pointerdown', function () {
         document.body.style.cursor = 'default';
         buildNode.subNodes.engaged = true;
-        for(var nodes of buildNode.node.subNodes){
+        for(var nodes of buildNode.part.subNodes){
             if(nodes.connectedWith == buildNode.connectionType){
                 nodes.engaged = true;
             }
         }
-        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.node,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
+        addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.part,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
         removePings();
     });
 
@@ -540,8 +601,7 @@ var buildTargetX;
 var buildTargetY;
 var scaleTar = 0.2;
 
-function update ()
-{
+function interfaceMovement(){
     rootNode.x -= (rootNode.getBounds().centerX - buildTargetX)/70
     rootNode.y -= (rootNode.getBounds().centerY - buildTargetY)/70
     for(var i=0;i<partsList.length;i++){
@@ -556,11 +616,9 @@ function update ()
         rootNode.scaleX = .4
     }
     rootNode.scaleY = rootNode.scaleX;
-    for(var j=0;j<allNodes.length;j++){
-        allNodes[j].alpha -= (allNodes[j].alpha - 1)/30;
+    for(var j=0;j<allParts.length;j++){
+        allParts[j].alpha -= (allParts[j].alpha - 1)/30;
     }
-
-
     pointerDelta = pointerX - prevPointerX;
     if(pointerState == 'down'){
         if(Math.abs(pointerDelta < 10)){
@@ -574,4 +632,9 @@ function update ()
         }
     }
     prevPointerX = pointerX;
+}
+
+function update ()
+{
+    interfaceMovement();
 }
