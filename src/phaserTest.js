@@ -497,6 +497,7 @@ function trashSub(){
     createRootNode();
     buildInterface.add(rootNode);
     hatchPlaced = false;
+    middleHullsPlaced = 0;
 }
 
 function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode,rotated){
@@ -523,6 +524,7 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
     
     //Preventing reverse connections
     if(partType == 'middle_hull'){
+        middleHullsPlaced ++;
         if(originNode.connectedWith == 'A'){
             partContainer.subNodes = partContainer.subNodes.filter(function(obj){
                 return obj.connectedWith !== 'B';
@@ -559,12 +561,16 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
 }
 
 var hatchPlaced = false;
+var middleHullsPlaced = 0;
 
 function buildRules(partType){
     if(partType == 'gun_assembly'){
         return [['gun_turret','gun_base'],false,'gun_assembly'];
     }
     if(partType == 'top_hatch' && hatchPlaced){
+        return 'skip';
+    }
+    if(partType == 'middle_hull' && middleHullsPlaced >= 2){
         return 'skip';
     }
     return partType;
