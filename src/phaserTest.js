@@ -14,7 +14,6 @@ var config = {
 var game = new Phaser.Game(config);
 var scene;
 
-var savedSubs = [];
 var partsList = [];
 
 var rootNode;
@@ -162,22 +161,20 @@ function create ()
         loadButtonOver.setVisible(true);
         document.body.style.cursor = 'pointer';
     });
-
     loadButtonOver.on('pointerout', () => {
         loadButtonUp.setVisible(true);
         loadButtonOver.setVisible(false);
         document.body.style.cursor = 'default';
     });
-
     loadButtonOver.on('pointerdown', () => {
         loadButtonUp.setVisible(true);
         loadButtonOver.setVisible(false);
         const savedSubJSON = localStorage.getItem('savedSub');
-        //clear existing sub
-
-        //build loaded sub
+        trashSub();
         const loadedSub = JSON.parse(savedSubJSON);
-        loadSub(loadedSub, rootNode);
+        if(Object.keys(loadedSub).length !== 0){
+            loadSub(loadedSub, rootNode);
+        }
     });
 
     saveButtonUp.on('pointerover', () => {
@@ -185,25 +182,23 @@ function create ()
         saveButtonOver.setVisible(true);
         document.body.style.cursor = 'pointer';
     });
-
     saveButtonOver.on('pointerout', () => {
         saveButtonUp.setVisible(true);
         saveButtonOver.setVisible(false);
         document.body.style.cursor = 'default';
     });
-
     saveButtonOver.on('pointerdown', () => {
         saveButtonUp.setVisible(true);
         saveButtonOver.setVisible(false);
         const savedSubJSON = JSON.stringify(saveSub(rootNode.list[0]));
         localStorage.setItem('savedSub',savedSubJSON);
     });
+
     launchButtonUp.on('pointerover', () => {
         launchButtonUp.setVisible(false);
         launchButtonOver.setVisible(true);
         document.body.style.cursor = 'pointer';
     });
-
     launchButtonOver.on('pointerout', () => {
         launchButtonUp.setVisible(true);
         launchButtonOver.setVisible(false);
@@ -257,11 +252,7 @@ function create ()
     //Building Sub Screen
 
     //Create Root Node
-    rootNode = this.add.container();
-    var newStructure = JSON.parse(nodeStructure);
-    rootNode = Object.assign(rootNode, newStructure.rootNode);
-    rootNode.scale = 0.3;
-    allParts.push(rootNode);
+    createRootNode();
     buildTargetX = workshopInterfaceX+rootNode.x;
     buildTargetY = workshopInterfaceY+rootNode.y;
 
@@ -273,6 +264,16 @@ function create ()
     buildInterface.add(upperScreen);
     var binIcon = this.add.image(200,-164,'interface','binIcon.png').setInteractive();
     buildInterface.add(binIcon);
+    
+    binIcon.on('pointerover', () => {
+        document.body.style.cursor = 'pointer';
+    });
+    binIcon.on('pointerout', () => {
+        document.body.style.cursor = 'default';
+    });
+    binIcon.on('pointerdown', () => {
+        trashSub();
+    });
     
     //global positioned because that's how masks do
     var lowerScreenMask = this.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
@@ -313,29 +314,29 @@ function create ()
     });
 
     var horrifiSettings = {
-            enable: true,
-            // Bloom
-            bloomRadius: 0.2,
-            bloomIntensity: 1.2,
-            bloomThreshold: 0.05,
-            bloomTexelWidth: 0.05,
-            bloomTexelHeight: 0.05,
-            // Chromatic abberation
-            chabIntensity: .1,
-            // Vignette
-            vignetteStrength: 0.1,
-            vignetteIntensity: 0.1,
-            vignetteEnable: false,
-            // Noise
-            noiseEnable: false,
-            noiseStrength: 0.2,
-            // VHS
-            vhsStrength: 0.2,
-            // Scanlines
-            scanStrength: 0.3,
-            //CRT
-            crtWidth: 1.5,
-            crtHeight: 1.5,
+        enable: true,
+        // Bloom
+        bloomRadius: 0.2,
+        bloomIntensity: 1.2,
+        bloomThreshold: 0.05,
+        bloomTexelWidth: 0.05,
+        bloomTexelHeight: 0.05,
+        // Chromatic abberation
+        chabIntensity: .1,
+        // Vignette
+        vignetteStrength: 0.1,
+        vignetteIntensity: 0.1,
+        vignetteEnable: false,
+        // Noise
+        noiseEnable: false,
+        noiseStrength: 0.2,
+        // VHS
+        vhsStrength: 0.2,
+        // Scanlines
+        scanStrength: 0.3,
+        //CRT
+        crtWidth: 1.5,
+        crtHeight: 1.5,
     }
     var horrifiSettings2 = {
         enable: true,
@@ -362,9 +363,9 @@ function create ()
         crtWidth: 5,
         crtHeight: 5,
     }
-    //I have two sets of settings because I wanted the CRT effect on one but not the other
-    //var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
-    //var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
+
+    var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
+    var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
 
 }
 
@@ -477,6 +478,25 @@ function setTintPart(part,color){
             components.setTint(color);
         }
     }
+}
+
+function createRootNode(){
+    rootNode = scene.add.container();
+    var newStructure = JSON.parse(nodeStructure);
+    rootNode = Object.assign(rootNode, newStructure.rootNode);
+    rootNode.scale = 0.3;
+    allParts.push(rootNode);
+}
+
+function trashSub(){
+    for(var parts of allParts){
+        parts.destroy();
+    }
+    allParts = [];
+    removePings();
+    createRootNode();
+    buildInterface.add(rootNode);
+    hatchPlaced = false;
 }
 
 function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode,rotated){
