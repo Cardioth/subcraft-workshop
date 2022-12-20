@@ -1,8 +1,8 @@
 'use strict'
 
 var config = {
-    width: 1250,
-    height: 850,
+    width: 650,
+    height: 600,
     type: Phaser.AUTO,
     scene: {
         preload:preload,
@@ -14,14 +14,18 @@ var config = {
 var game = new Phaser.Game(config);
 var scene;
 
+var credits = 1000;
 var partsList = [];
+var allSubParts;
+var partCosts;
 
 var rootNode;
 var shopInterface;
 var buildInterface;
+var buildScreenText;
 var pointerOnShop;
-var workshopInterfaceX = 600;
-var workshopInterfaceY = 400;
+var workshopInterfaceX = 325;
+var workshopInterfaceY = 300;
 var totalPartsListWidth;
 
 var allParts = [];
@@ -34,7 +38,7 @@ var MHW = 251;
 
 var nodeStructure = {
     rootNode:{
-        name:'rootNode', x: -12.75, y: -102.5, subNodes: [
+        name:'rootNode', x: 0, y: -102.5, subNodes: [
             {part:'middle_hull',x:0,y:0,engaged: false, connectedWith: 'M'}, 
             {part:'front_hull',x:0,y:0,engaged: false, connectedWith: 'M'}, 
             {part:'back_hull',x:0,y:0,engaged: false, connectedWith: 'M'},
@@ -125,6 +129,8 @@ nodeStructure = JSON.stringify(nodeStructure);
 
 function preload()
 {  
+    this.load.bitmapFont('MKOCR', 'assets/MKOCR.png', 'assets/MKOCR.xml');
+    this.load.bitmapFont('QuirkyRobot', 'assets/QuirkyRobot.png', 'assets/QuirkyRobot.xml');
     this.load.plugin('rexhorrifipipelineplugin', 'src/rexhorrifipipelineplugin.min.js', true);      
     this.load.plugin('rextoonifypipelineplugin', 'src/rextoonifypipelineplugin.min.js', true);   
     this.load.multiatlas('interface', 'assets/interface.json', 'assets');
@@ -234,7 +240,8 @@ function create ()
         pointerState = 'down'
     });
 
-    var allSubParts = ['front_hull','middle_hull','back_hull','flipper','propeller','top_hatch','top_plate','back_armor','frontHardpoint','window','flair1','flair2','miningLaser'];
+    allSubParts = ['front_hull','middle_hull','back_hull','flipper','propeller','top_hatch','top_plate','back_armor','frontHardpoint','window','flair1','flair2','miningLaser'];
+    partCosts =   [ 200,         200,          200,        20,       50,        50,         100,        150,         60,               10,      10,      10,      60          ];
     for(var parts of allSubParts){
         createPart(parts, true);
     }
@@ -250,8 +257,6 @@ function create ()
     totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 50);
 
     //Building Sub Screen
-
-    //Create Root Node
     createRootNode();
     buildTargetX = workshopInterfaceX+rootNode.x;
     buildTargetY = workshopInterfaceY+rootNode.y;
@@ -262,9 +267,10 @@ function create ()
     var upperScreen = this.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
     upperScreen.alpha = 0.01;
     buildInterface.add(upperScreen);
+
+    //Trash button
     var binIcon = this.add.image(200,-164,'interface','binIcon.png').setInteractive();
     buildInterface.add(binIcon);
-    
     binIcon.on('pointerover', () => {
         document.body.style.cursor = 'pointer';
     });
@@ -274,6 +280,12 @@ function create ()
     binIcon.on('pointerdown', () => {
         trashSub();
     });
+
+    //Build screen text
+    buildScreenText = this.add.bitmapText(-252,-175,'MKOCR', '',13);
+    updateBuildScreenText();
+    buildScreenText.setTint(0x98FFBA);
+    workshopInterface.add(buildScreenText);
     
     //global positioned because that's how masks do
     var lowerScreenMask = this.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
@@ -289,7 +301,7 @@ function create ()
     buildInterface.mask = new Phaser.Display.Masks.BitmapMask(this, upperScreenMask);
     workshopInterface.add(buildInterface);
  
-    //Parts text above the shop
+    //Parts text above the shop interface
     var partsPlate = this.add.image(-216,-4,'interface','partsPlate.png');
     workshopInterface.add(partsPlate);
 
@@ -306,7 +318,7 @@ function create ()
     });
 
     var postFxPipelineToonUpper = postFxPluginToon.add(buildInterface, {
-        edgeThreshold: 0.25,
+        edgeThreshold: 0.23,
         hueLevels: 2,
         satLevels: 10,
         valLevels: 10,
@@ -321,8 +333,9 @@ function create ()
         bloomThreshold: 0.05,
         bloomTexelWidth: 0.05,
         bloomTexelHeight: 0.05,
+        bloomEnable: false,
         // Chromatic abberation
-        chabIntensity: .1,
+        chabIntensity: 0,
         // Vignette
         vignetteStrength: 0.1,
         vignetteIntensity: 0.1,
@@ -331,12 +344,12 @@ function create ()
         noiseEnable: false,
         noiseStrength: 0.2,
         // VHS
-        vhsStrength: 0.2,
+        vhsStrength: 0,
         // Scanlines
-        scanStrength: 0.3,
+        scanStrength: 0.1,
         //CRT
-        crtWidth: 1.5,
-        crtHeight: 1.5,
+        crtWidth: 5,
+        crtHeight: 5,
     }
     var horrifiSettings2 = {
         enable: true,
@@ -346,8 +359,9 @@ function create ()
         bloomThreshold: 0.03,
         bloomTexelWidth: 0.05,
         bloomTexelHeight: 0.05,
+        bloomEnable: false,
         // Chromatic abberation
-        chabIntensity: .1,
+        chabIntensity: 0,
         // Vignette
         vignetteStrength: 0.1,
         vignetteIntensity: 0.1,
@@ -356,16 +370,16 @@ function create ()
         noiseEnable: false,
         noiseStrength: 0.2,
         // VHS
-        vhsStrength: 0.2,
+        vhsStrength: 0,
         // Scanlines
-        scanStrength: 0.3,
+        scanStrength: 0.1,
         //CRT
         crtWidth: 5,
         crtHeight: 5,
     }
 
-    var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
-    var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
+    //var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
+    //var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
 
 }
 
@@ -383,7 +397,7 @@ function saveSub(obj) {
       }
     }
     return subCopy;
-  }
+}
 
 function loadSub(obj,parentPart) {
     let newPartType = buildRules(obj.name);
@@ -469,6 +483,14 @@ function addPartToShopInterface(part){
         document.body.style.cursor = 'pointer';
     });
 }
+function updateBuildScreenText(){
+    buildScreenText.text = '] Credits: ' + credits.toLocaleString() + '\n] Class: A';
+    if(credits > 0){
+        buildScreenText.setTint(0x98FFBA);
+    } else {   
+        buildScreenText.setTint(0xFF6F6F);
+    }
+}
 
 function setTintPart(part,color){
     if(part.type != 'Container'){
@@ -490,8 +512,10 @@ function createRootNode(){
 
 function trashSub(){
     for(var parts of allParts){
+        credits += getPartPrice(parts.name);
         parts.destroy();
     }
+    updateBuildScreenText();
     allParts = [];
     removePings();
     createRootNode();
@@ -553,11 +577,26 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
     if(partType == 'flair1' || partType == 'flair2'){
         setTintPart(part,0x3BFF59);
     }
+    //Look up part price
+    credits -= getPartPrice(partType);
+    updateBuildScreenText();
     partContainer.add(part);
     parentPart.add(partContainer);
     allParts.push(partContainer);
 
     return partContainer;
+}
+
+function getPartPrice(partType){
+    for(var i =0;i<allSubParts.length;i++){
+        if(allSubParts[i] === partType){
+            return partCosts[i];
+        }
+    }
+    if(partType === 'gun_assembly'){
+        return 150;
+    }
+    return 0;
 }
 
 var hatchPlaced = false;
@@ -577,7 +616,7 @@ function buildRules(partType){
 }
 
 function addPartToBuild(partType){
-    //search buildNodes for a place to put it.
+    //Search all parts for a place to put new part. Sometimes I call parts nodes... Sorry.
     var foundNodes = [];
     for(var parts of allParts){
         for(var subNodes of parts.subNodes){
@@ -689,3 +728,9 @@ function update ()
 {
     interfaceMovement();
 }
+
+//Useful for debugging positions
+// this.input.on('pointermove', function (pointer) {
+//     itemToTrack.x = pointer.x;
+//     itemToTrack.y = pointer.y;
+// });
