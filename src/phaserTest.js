@@ -16,6 +16,7 @@ var scene;
 
 var credits = 1000;
 var partsList = [];
+var partSelected = null;;
 var allSubParts;
 var partCosts;
 
@@ -32,9 +33,9 @@ var allParts = [];
 var allPingGraphics = [];
 
 //Hull widths
-var BHW = 342;
-var FHW = 170;
-var MHW = 251;
+var BHW = 340;
+var FHW = 168;
+var MHW = 249;
 
 var nodeStructure = {
     rootNode:{
@@ -131,6 +132,8 @@ function preload()
 {  
     this.load.bitmapFont('MKOCR', 'assets/MKOCR.png', 'assets/MKOCR.xml');
     this.load.bitmapFont('QuirkyRobot', 'assets/QuirkyRobot.png', 'assets/QuirkyRobot.xml');
+    this.load.plugin('rexglowfilter2pipelineplugin', 'src/rexglowfilter2pipelineplugin.min.js', true);
+    this.load.plugin('rexkawaseblurpipelineplugin', 'src/rexkawaseblurpipelineplugin.min.js', true);      
     this.load.plugin('rexhorrifipipelineplugin', 'src/rexhorrifipipelineplugin.min.js', true);      
     this.load.plugin('rextoonifypipelineplugin', 'src/rextoonifypipelineplugin.min.js', true);   
     this.load.multiatlas('interface', 'assets/interface.json', 'assets');
@@ -140,7 +143,7 @@ function preload()
 function create ()
 {
     scene = this;
-    this.input.topOnly = false;
+    scene.input.topOnly = false;
     var workshopInterface = this.add.container(workshopInterfaceX,workshopInterfaceY);
 
     var workshopInterfaceBackground = this.add.image(0,0,'interface','workshopInterface.png');
@@ -242,6 +245,7 @@ function create ()
 
     allSubParts = ['front_hull','middle_hull','back_hull','flipper','propeller','top_hatch','top_plate','back_armor','frontHardpoint','window','flair1','flair2','miningLaser'];
     partCosts =   [ 200,         200,          200,        20,       50,        50,         100,        150,         60,               10,      10,      10,      60          ];
+
     for(var parts of allSubParts){
         createPart(parts, true);
     }
@@ -257,32 +261,93 @@ function create ()
     totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 50);
 
     //Building Sub Screen
+    buildInterface = this.add.container();
+    var upperScreen = this.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
+    upperScreen.alpha = 0.01;
+    buildInterface.add(upperScreen);
     createRootNode();
     buildTargetX = workshopInterfaceX+rootNode.x;
     buildTargetY = workshopInterfaceY+rootNode.y;
 
-    buildInterface = this.add.container();
-    buildInterface.add(rootNode);
-
-    var upperScreen = this.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
-    upperScreen.alpha = 0.01;
-    buildInterface.add(upperScreen);
+    upperScreen.on('pointerover', () => {
+        if(allPingGraphics.length > 0){return};
+        mouseOverBuildScreen = true;
+        scene.input.topOnly = true;
+    });
+    upperScreen.on('pointerout', () => {
+        mouseOverBuildScreen = false;
+        scene.input.topOnly = false;
+    });
+    upperScreen.on('pointerdown', () => {
+        if(mouseOverPart.length == 0){
+            partSelected = null;
+            destroySelectRect();
+            updateBuildScreenText();
+        }
+    });
 
     //Trash button
     var binIcon = this.add.image(200,-164,'interface','binIcon.png').setInteractive();
+    binIcon.alpha = 0.8;
     buildInterface.add(binIcon);
     binIcon.on('pointerover', () => {
+        binIcon.alpha = 1;
         document.body.style.cursor = 'pointer';
+        mouseOverBinIcon = true;
     });
     binIcon.on('pointerout', () => {
+        binIcon.alpha = 0.8;
         document.body.style.cursor = 'default';
+        mouseOverBinIcon = false;
     });
     binIcon.on('pointerdown', () => {
-        trashSub();
+        if(partSelected == null){
+            trashSub();
+        } else {
+            //reenable connections to parent parent
+            for(var subNodes of partSelected.parentContainer.parentContainer.subNodes){
+                if(subNodes.connectedWith === partSelected.parentContainer.connectedVia){
+                    subNodes.engaged = false;
+                }
+            }
+            //destroy and refund children
+            var allDestroyedPartChildren = getAbsolutelyAll(partSelected.parentContainer);            
+            for(var removedPart of allDestroyedPartChildren){
+                if(removedPart.name === "middle_hull"){
+                    middleHullsPlaced --;
+                }
+                if (allParts.includes(removedPart)) {
+                    allParts.splice(allParts.indexOf(removedPart), 1);
+                    credits += getPartPrice(removedPart.name);
+                }
+            }
+            //destroy and refund part
+            if(partSelected.parentContainer.name !== "rootNode"){
+                const index = allParts.indexOf(partSelected.parentContainer);
+                if(index > -1){
+                    allParts.splice(index,1);
+                }
+            }
+            credits += getPartPrice(partSelected.parentContainer.name);
+
+            //Rules stuff
+            if(partSelected.parentContainer.name === "top_hatch"){
+                hatchPlaced = false;
+            }
+            if(partSelected.parentContainer.name === "middle_hull"){
+                middleHullsPlaced --;
+            }
+            
+            //This kills the part
+            partSelected.parentContainer.destroy();
+        }
+        partSelected = null;
+        destroySelectRect();
+        updateBuildScreenText();
     });
 
     //Build screen text
-    buildScreenText = this.add.bitmapText(-252,-175,'MKOCR', '',13);
+    buildScreenText = this.add.bitmapText(-252,-175,'MKOCR', '',14);
     updateBuildScreenText();
     buildScreenText.setTint(0x98FFBA);
     workshopInterface.add(buildScreenText);
@@ -308,22 +373,29 @@ function create ()
     //Effects
     var postFxPlugin = this.plugins.get('rexhorrifipipelineplugin');
     var postFxPluginToon = this.plugins.get('rextoonifypipelineplugin');
+    var postFxPluginBlur = scene.plugins.get('rexkawaseblurpipelineplugin');
+    var postFxPluginGlow = this.plugins.get('rexglowfilter2pipelineplugin');
 
     var postFxPipelineToonLower = postFxPluginToon.add(shopInterface, {
-        edgeThreshold: 0.25,
-        hueLevels: 2,
+        edgeThreshold: 0.20,
+        hueLevels: 13,
         satLevels: 10,
         valLevels: 10,
         edgeColor: 0x98FFBA,
     });
 
     var postFxPipelineToonUpper = postFxPluginToon.add(buildInterface, {
-        edgeThreshold: 0.23,
-        hueLevels: 2,
+        edgeThreshold: 0.20,
+        hueLevels: 13,
         satLevels: 10,
         valLevels: 10,
         edgeColor: 0x98FFBA,
     });
+
+    //var postFxPipeline = postFxPluginBlur.add(shopInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
+    //var postFxPipeline = postFxPluginBlur.add(buildInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
+    var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 4, outerStrength: 1.25,  innerStrength: 0, glowColor: 0x98FFBA});
+    var postFxPipeline = postFxPluginGlow.add(buildInterface, { distance: 4, outerStrength: 1.25,  innerStrength: 0, glowColor: 0x98FFBA,});
 
     var horrifiSettings = {
         enable: true,
@@ -381,6 +453,19 @@ function create ()
     //var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
     //var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
 
+}
+
+function getAbsolutelyAll(container) {
+    let objects = [];
+    container.getAll().forEach(function(object) {
+        if(object.type === "Container"){
+            objects.push(object);
+            if (object.list.length > 0) {
+                objects = objects.concat(getAbsolutelyAll(object));
+            }
+        }
+    });
+    return objects;
 }
 
 function saveSub(obj) {
@@ -484,7 +569,11 @@ function addPartToShopInterface(part){
     });
 }
 function updateBuildScreenText(){
-    buildScreenText.text = '] Credits: ' + credits.toLocaleString() + '\n] Class: A';
+    if(partSelected == null){
+        buildScreenText.text = '> Credits: ' + credits.toLocaleString() + '\n> Class: A';
+    } else {
+        buildScreenText.text = '> Credits: ' + credits.toLocaleString() + '\n> Class: A\n> ' + partSelected.partType;
+    }
     if(credits > 0){
         buildScreenText.setTint(0x98FFBA);
     } else {   
@@ -508,6 +597,7 @@ function createRootNode(){
     rootNode = Object.assign(rootNode, newStructure.rootNode);
     rootNode.scale = 0.3;
     allParts.push(rootNode);
+    buildInterface.add(rootNode);
 }
 
 function trashSub(){
@@ -519,7 +609,6 @@ function trashSub(){
     allParts = [];
     removePings();
     createRootNode();
-    buildInterface.add(rootNode);
     hatchPlaced = false;
     middleHullsPlaced = 0;
 }
@@ -573,19 +662,45 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
     if(partType == 'top_hatch'){
         hatchPlaced = true;
     }
-    setTintPart(part,0x3BAA59);
+    setTintPart(part,0x3B9459);
     if(partType == 'flair1' || partType == 'flair2'){
         setTintPart(part,0x3BFF59);
     }
-    //Look up part price
+
+    part.setInteractive();
+    part.on('pointerover', () => {
+        if(allPingGraphics.length > 0){return};
+        mouseOverPart.push(part);
+    });
+    part.on('pointerout', () => {
+        const index = mouseOverPart.indexOf(part);
+        if(index > -1){
+            mouseOverPart.splice(index,1);
+        }
+        setTintPart(part,0x3B9459);
+        if(part.partType == 'flair1' || part.partType == 'flair2'){
+            setTintPart(part,0x3BFF59);
+        }
+    });
+    part.on('pointerdown', () => {
+        if(allPingGraphics.length > 0){return};
+        partSelected = part;
+        updateBuildScreenText();
+        destroySelectRect();
+        drawSelectRect(part);
+    });
+    
     credits -= getPartPrice(partType);
     updateBuildScreenText();
     partContainer.add(part);
     parentPart.add(partContainer);
     allParts.push(partContainer);
-
     return partContainer;
 }
+
+var mouseOverPart = [];
+var mouseOverBuildScreen = false;
+var mouseOverBinIcon = false;
 
 function getPartPrice(partType){
     for(var i =0;i<allSubParts.length;i++){
@@ -616,6 +731,7 @@ function buildRules(partType){
 }
 
 function addPartToBuild(partType){
+    destroySelectRect();
     //Search all parts for a place to put new part. Sometimes I call parts nodes... Sorry.
     var foundNodes = [];
     for(var parts of allParts){
@@ -674,6 +790,8 @@ function pingGraphic(x,y,buildNode){
                 nodes.engaged = true;
             }
         }
+        mouseOverBuildScreen = true;
+        scene.input.topOnly = true;
         addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.part,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
         removePings();
     });
@@ -691,6 +809,38 @@ var buildTargetX;
 var buildTargetY;
 var scaleTar = 0.2;
 
+var rectGraphics = [];
+
+function drawSelectRect(target){
+    const graphicWidth = target.getBounds().width/2+8;
+    const graphicHeight = target.getBounds().height/2+8;
+    const segmentLength = 10;
+    var selectRect = scene.add.container();
+    var graphics = scene.add.graphics();
+    graphics.lineStyle(2,0x98FFBA);
+    var line1 = graphics.lineBetween(-graphicWidth,-graphicHeight,-graphicWidth+segmentLength,-graphicHeight);
+    selectRect.add(line1);
+    selectRect.add(graphics.lineBetween(-graphicWidth,-graphicHeight,-graphicWidth,-graphicHeight+segmentLength));
+    selectRect.add(graphics.lineBetween(graphicWidth,-graphicHeight,graphicWidth-segmentLength,-graphicHeight));
+    selectRect.add(graphics.lineBetween(graphicWidth,-graphicHeight,graphicWidth,-graphicHeight+segmentLength));
+    selectRect.add(graphics.lineBetween(graphicWidth,graphicHeight,graphicWidth-segmentLength,graphicHeight));
+    selectRect.add(graphics.lineBetween(graphicWidth,graphicHeight,graphicWidth,graphicHeight-segmentLength));
+    selectRect.add(graphics.lineBetween(-graphicWidth,graphicHeight,-graphicWidth,graphicHeight-segmentLength));
+    selectRect.add(graphics.lineBetween(-graphicWidth,graphicHeight,-graphicWidth+segmentLength,graphicHeight));
+    selectRect.setSize(graphicWidth,graphicHeight);
+    selectRect.x = target.getBounds().x+target.getBounds().width/2;
+    selectRect.y = target.getBounds().y+target.getBounds().height/2;
+    selectRect.target = target;
+    rectGraphics.push(selectRect);
+}
+
+function destroySelectRect(){
+    if(rectGraphics.length>0){
+        rectGraphics[0].destroy();
+        rectGraphics = [];
+    }
+}
+
 function interfaceMovement(){
     rootNode.x -= (rootNode.getBounds().centerX - buildTargetX)/70
     rootNode.y -= (rootNode.getBounds().centerY - buildTargetY)/70
@@ -703,7 +853,10 @@ function interfaceMovement(){
         rootNode.scaleX -= (scale_X - scaleTar)/20
     }
     if(rootNode.scaleX > .35){
-        rootNode.scaleX = .35
+        rootNode.scaleX = .35;
+    }
+    if(rootNode.scaleX < .2){
+        rootNode.scaleX = .2;
     }
     rootNode.scaleY = rootNode.scaleX;
     for(var j=0;j<allParts.length;j++){
@@ -722,6 +875,22 @@ function interfaceMovement(){
         }
     }
     prevPointerX = pointerX;
+    if(mouseOverBuildScreen && !mouseOverBinIcon){
+        if(mouseOverPart.length > 0){
+            document.body.style.cursor = 'pointer'; 
+        } else {
+            document.body.style.cursor = 'default'; 
+        }
+    }
+    if(mouseOverPart.length > 0){
+        setTintPart(mouseOverPart[0], 0x57FF77);
+    }
+    if(rectGraphics.length > 0){
+        var selectRect = rectGraphics[0];
+        selectRect.x = selectRect.target.getBounds().x+selectRect.target.getBounds().width/2;
+        selectRect.y = selectRect.target.getBounds().y+selectRect.target.getBounds().height/2;
+    }
+
 }
 
 function update ()
