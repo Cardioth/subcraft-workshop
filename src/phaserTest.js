@@ -316,6 +316,9 @@ function create ()
                 if(removedPart.name === "middle_hull"){
                     middleHullsPlaced --;
                 }
+                if(removedPart.name === "top_hatch"){
+                    hatchPlaced = false;
+                }
                 if (allParts.includes(removedPart)) {
                     allParts.splice(allParts.indexOf(removedPart), 1);
                     credits += getPartPrice(removedPart.name);
@@ -337,7 +340,7 @@ function create ()
             if(partSelected.parentContainer.name === "middle_hull"){
                 middleHullsPlaced --;
             }
-            
+
             //This kills the part
             partSelected.parentContainer.destroy();
         }
