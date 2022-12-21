@@ -395,67 +395,10 @@ function create ()
         edgeColor: 0x98FFBA,
     });
 
-    //var postFxPipeline = postFxPluginBlur.add(shopInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
-    //var postFxPipeline = postFxPluginBlur.add(buildInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
+    var postFxPipeline = postFxPluginBlur.add(shopInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
+    var postFxPipeline = postFxPluginBlur.add(buildInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
     var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 4, outerStrength: 1.25,  innerStrength: 0, glowColor: 0x98FFBA});
     var postFxPipeline = postFxPluginGlow.add(buildInterface, { distance: 4, outerStrength: 1.25,  innerStrength: 0, glowColor: 0x98FFBA,});
-
-    var horrifiSettings = {
-        enable: true,
-        // Bloom
-        bloomRadius: 0.2,
-        bloomIntensity: 1.2,
-        bloomThreshold: 0.05,
-        bloomTexelWidth: 0.05,
-        bloomTexelHeight: 0.05,
-        bloomEnable: false,
-        // Chromatic abberation
-        chabIntensity: 0,
-        // Vignette
-        vignetteStrength: 0.1,
-        vignetteIntensity: 0.1,
-        vignetteEnable: false,
-        // Noise
-        noiseEnable: false,
-        noiseStrength: 0.2,
-        // VHS
-        vhsStrength: 0,
-        // Scanlines
-        scanStrength: 0.1,
-        //CRT
-        crtWidth: 5,
-        crtHeight: 5,
-    }
-    var horrifiSettings2 = {
-        enable: true,
-        // Bloom
-        bloomRadius: 0.08,
-        bloomIntensity: 1,
-        bloomThreshold: 0.03,
-        bloomTexelWidth: 0.05,
-        bloomTexelHeight: 0.05,
-        bloomEnable: false,
-        // Chromatic abberation
-        chabIntensity: 0,
-        // Vignette
-        vignetteStrength: 0.1,
-        vignetteIntensity: 0.1,
-        vignetteEnable: false,
-        // Noise
-        noiseEnable: false,
-        noiseStrength: 0.2,
-        // VHS
-        vhsStrength: 0,
-        // Scanlines
-        scanStrength: 0.1,
-        //CRT
-        crtWidth: 5,
-        crtHeight: 5,
-    }
-
-    //var postFxPipelineLower = postFxPlugin.add(shopInterface, horrifiSettings);
-    //var postFxPipelineUpper = postFxPlugin.add(buildInterface, horrifiSettings2); 
-
 }
 
 function getAbsolutelyAll(container) {
