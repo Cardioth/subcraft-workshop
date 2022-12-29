@@ -33,6 +33,7 @@ var totalPartsListWidth;
 var mouseOverPart = [];
 var mouseOverBuildScreen = false;
 var mouseOverBinIcon = false;
+var buildScreenFrozen = false;
 
 var allParts = [];
 var allPingGraphics = [];
@@ -88,13 +89,16 @@ function create ()
         loadButtonOver.setVisible(false);
         destroySelectRect();
         if(rootNode.list.length !== 0){
+            buildScreenFrozen = true;
             dialogueBoxYesCancel(()=>{
                 const savedSubJSON = localStorage.getItem('savedSub');
+                buildScreenFrozen = false;
                 trashSub();
                 const loadedSub = JSON.parse(savedSubJSON);
                 if(Object.keys(loadedSub).length !== 0){
                     loadSub(loadedSub, rootNode);
                 }
+                mouseOverPart = [];
             },workshopInterface,"Are you sure?");
         } else {
             const savedSubJSON = localStorage.getItem('savedSub');
@@ -103,6 +107,7 @@ function create ()
             if(Object.keys(loadedSub).length !== 0){
                 loadSub(loadedSub, rootNode);
             }
+            mouseOverPart = [];
         }
 
     });
@@ -218,9 +223,12 @@ function create ()
         mouseOverBinIcon = false;
     });
     binIcon.on('pointerdown', () => {
+        if(buildScreenFrozen){return};
         if(partSelected == null){
             if(rootNode.list.length === 0){return};
+            buildScreenFrozen = true;
             dialogueBoxYesCancel(()=>{
+                buildScreenFrozen = false;
                 trashSub();
                 destroySelectRect();
             },workshopInterface,"Are you sure you want to destroy the sub?");
@@ -314,6 +322,7 @@ function dialogueBoxYesCancel(yesFunc,addTo,text){
 
     let cancelButton = dialogueButton(()=>{
         dialogueBoxContainer.destroy();
+        buildScreenFrozen = false;
     },"Cancel");
 
     yesButton.x = -70;
@@ -490,6 +499,7 @@ function trashSub(){
     }
     updateBuildScreenText();
     allParts = [];
+    destroySelectRect();
     removePings();
     createRootNode();
     hatchPlaced = false;
@@ -594,7 +604,7 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
 
     part.setInteractive();
     part.on('pointerover', () => {
-        if(allPingGraphics.length > 0){return};
+        if(allPingGraphics.length > 0 || buildScreenFrozen){return};
         mouseOverPart.push(part);
     });
     part.on('pointerout', () => {
@@ -608,7 +618,7 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
         }
     });
     part.on('pointerdown', () => {
-        if(allPingGraphics.length > 0){return};
+        if(allPingGraphics.length > 0 || buildScreenFrozen){return};
         partSelected = part;
         updateBuildScreenText();
         destroySelectRect();
@@ -660,7 +670,7 @@ function addPartToBuild(partType){
         for(var subNodes of parts.subNodes){
             if(subNodes.part == partType && subNodes.engaged == false){
                 let newPartType = buildRules(partType); //apply rules
-                if(newPartType == 'skip'){return};
+                if(newPartType == 'skip' || buildScreenFrozen){return};
                 foundNodes.push({PartType:newPartType,part:parts,x:subNodes.x, y:subNodes.y, subNodes:subNodes, connectionType:subNodes.connectedWith, flipped:subNodes.flipped, rotated:subNodes.rotated});
             }
         }
