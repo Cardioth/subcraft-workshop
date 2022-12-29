@@ -47,7 +47,7 @@ function preload()
     this.load.plugin('rexhorrifipipelineplugin', 'src/shaders/rexhorrifipipelineplugin.min.js', true);      
     this.load.plugin('rextoonifypipelineplugin', 'src/shaders/rextoonifypipelineplugin.min.js', true);   
     this.load.multiatlas('interface', 'assets/interface.json', 'assets');
-    this.load.multiatlas('submarine', 'assets/submarineCentreAnchors.json', 'assets'); //New JSON for the submarine, uses the same sub
+    this.load.multiatlas('submarine', 'assets/submarine.json', 'assets'); //New JSON for the submarine, uses the same sub
 }
 
 function create ()
@@ -399,7 +399,7 @@ function createPart(partName, addingToShop){
         return;
     }
     if(typeof partName === 'string'){
-        var part = scene.add.image(0,0,'submarine',partName+'.png').setInteractive(); 
+        var part = scene.add.image(0,0,'submarine',partName+'.png').setInteractive().setOrigin(0.5,0.5);; 
         part.partType = partName;
         if(addingToShop == true){
             partsList.push(part);
@@ -408,7 +408,8 @@ function createPart(partName, addingToShop){
     } else {
         var assembly = scene.add.container(0,0);
         for(let parts of partName[0]){
-            let part = scene.add.image(0,0,'submarine',parts+'.png');
+            let part = scene.add.image(0,0,'submarine',parts+'.png').setOrigin(0.5,0.5);;
+            if(parts == "gun_turret"){part.setOrigin(0.5,1)};
             assembly.add(part);
         }
         assembly.setSize(assembly.getBounds().width,assembly.getBounds().height);

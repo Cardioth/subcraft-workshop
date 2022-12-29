@@ -31,7 +31,7 @@
 					},
 					"anchor": {
 						"x": 0,
-						"y": 0.7535545
+						"y": 0.753555
 					}
 				},
 				{
@@ -105,8 +105,8 @@
 						"h": 131
 					},
 					"anchor": {
-						"x": 0.5034965,
-						"y": 0.99236641
+						"x": 0.503497,
+						"y": 0.992366
 					}
 				},
 				{
@@ -155,33 +155,8 @@
 						"h": 200
 					},
 					"anchor": {
-						"x": 0.46551724,
+						"x": 0.465517,
 						"y": 0.925
-					}
-				},
-				{
-					"filename": "top_hatch_lid.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 49,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 49,
-						"h": 100
-					},
-					"frame": {
-						"x": 967,
-						"y": 1,
-						"w": 49,
-						"h": 100
-					},
-					"anchor": {
-						"x": 0.428571,
-						"y": 0.95
 					}
 				},
 				{
@@ -230,8 +205,8 @@
 						"h": 117
 					},
 					"anchor": {
-						"x": 0.52808989,
-						"y": 0.72649573
+						"x": 0.52809,
+						"y": 0.726496
 					}
 				},
 				{
@@ -255,7 +230,7 @@
 						"h": 106
 					},
 					"anchor": {
-						"x": 0.47482014,
+						"x": 0.47482,
 						"y": 1
 					}
 				},
@@ -330,8 +305,8 @@
 						"h": 102
 					},
 					"anchor": {
-						"x": 0.11235955,
-						"y": 0.67647059
+						"x": 0.11236,
+						"y": 0.676471
 					}
 				},
 				{
@@ -382,6 +357,31 @@
 					"anchor": {
 						"x": 0.5,
 						"y": 0.5
+					}
+				},
+				{
+					"filename": "top_hatch_lid.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 49,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 49,
+						"h": 100
+					},
+					"frame": {
+						"x": 967,
+						"y": 1,
+						"w": 49,
+						"h": 100
+					},
+					"anchor": {
+						"x": 0.428571,
+						"y": 0.95
 					}
 				},
 				{
@@ -558,6 +558,31 @@
 						"x": 0.5,
 						"y": 0.5
 					}
+				},
+				{
+					"filename": "side_thruster.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 76,
+						"h": 63
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 76,
+						"h": 63
+					},
+					"frame": {
+						"x": 862,
+						"y": 418,
+						"w": 76,
+						"h": 63
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
 				}
 			]
 		}
@@ -565,6 +590,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:ad408481adde8a16322939f56bcbb7be:2cc683face0a9e98aad873129e79c482:7c79e3da661c4dd233457c0b7ec6f4f8$"
+		"smartupdate": "$TexturePacker:SmartUpdate:d116718b242752b05f0ea8feac81dec0:78b356047650136db87d92b9353621eb:7c79e3da661c4dd233457c0b7ec6f4f8$"
 	}
 }
