@@ -86,12 +86,25 @@ function create ()
     loadButtonOver.on('pointerdown', () => {
         loadButtonUp.setVisible(true);
         loadButtonOver.setVisible(false);
-        const savedSubJSON = localStorage.getItem('savedSub');
-        trashSub();
-        const loadedSub = JSON.parse(savedSubJSON);
-        if(Object.keys(loadedSub).length !== 0){
-            loadSub(loadedSub, rootNode);
+        destroySelectRect();
+        if(rootNode.list.length !== 0){
+            dialogueBoxYesCancel(()=>{
+                const savedSubJSON = localStorage.getItem('savedSub');
+                trashSub();
+                const loadedSub = JSON.parse(savedSubJSON);
+                if(Object.keys(loadedSub).length !== 0){
+                    loadSub(loadedSub, rootNode);
+                }
+            },workshopInterface,"Are you sure?");
+        } else {
+            const savedSubJSON = localStorage.getItem('savedSub');
+            trashSub();
+            const loadedSub = JSON.parse(savedSubJSON);
+            if(Object.keys(loadedSub).length !== 0){
+                loadSub(loadedSub, rootNode);
+            }
         }
+
     });
 
     saveButtonUp.on('pointerover', () => {
@@ -206,7 +219,11 @@ function create ()
     });
     binIcon.on('pointerdown', () => {
         if(partSelected == null){
-            trashSub();
+            if(rootNode.list.length === 0){return};
+            dialogueBoxYesCancel(()=>{
+                trashSub();
+                destroySelectRect();
+            },workshopInterface,"Are you sure you want to destroy the sub?");
         } else {
             trashPart();
         }
@@ -278,6 +295,60 @@ function getAbsolutelyAll(container) {
         }
     });
     return objects;
+}
+
+function dialogueBoxYesCancel(yesFunc,addTo,text){
+    let dialogueBoxContainer = scene.add.container();
+    let dialogueBox = scene.add.rectangle(-20,-110,340,100, 0x010019);
+    dialogueBox.setStrokeStyle(1,0x98FFBA);
+    dialogueBoxContainer.add(dialogueBox);
+
+    let dialogueText = scene.add.bitmapText(-20,-130,'MKOCR', text,14).setOrigin(0.5);
+    dialogueText.setTint(0x98FFBA);
+    dialogueBoxContainer.add(dialogueText);
+
+    let yesButton = dialogueButton(()=>{
+        yesFunc();
+        dialogueBoxContainer.destroy();
+    },"Yes", );
+
+    let cancelButton = dialogueButton(()=>{
+        dialogueBoxContainer.destroy();
+    },"Cancel");
+
+    yesButton.x = -70;
+    cancelButton.x = 30;
+    yesButton.y = -95;
+    cancelButton.y = -95;
+
+    dialogueBoxContainer.add(yesButton);
+    dialogueBoxContainer.add(cancelButton);
+    addTo.add(dialogueBoxContainer);
+}
+
+function dialogueButton(func,text){
+    let buttonContainer = scene.add.container();
+    var button = scene.add.rectangle(-10,0,text.length*12,20, 0x010019);
+    button.setStrokeStyle(1,0x98FFBA);
+    buttonContainer.add(button);
+    let buttonText = scene.add.bitmapText(-10,0,'MKOCR', text,14).setOrigin(0.5);
+    buttonText.setTint(0x98FFBA);
+    buttonContainer.add(buttonText);
+    button.setInteractive();
+
+    button.on('pointerover', () => {
+        document.body.style.cursor = 'pointer'; 
+        button.setFillStyle(0x184D4D);
+    });
+    button.on('pointerout', () => {
+        document.body.style.cursor = 'default';
+        button.setFillStyle(0x010019);
+    });
+    button.on('pointerdown', () => {
+        func();
+    });
+
+    return buttonContainer;
 }
 
 function saveSub(obj) {
