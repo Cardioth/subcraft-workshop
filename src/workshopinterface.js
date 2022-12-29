@@ -87,6 +87,7 @@ function create ()
     loadButtonOver.on('pointerdown', () => {
         loadButtonUp.setVisible(true);
         loadButtonOver.setVisible(false);
+        if(buildScreenFrozen){return};
         destroySelectRect();
         if(rootNode.list.length !== 0){
             buildScreenFrozen = true;
