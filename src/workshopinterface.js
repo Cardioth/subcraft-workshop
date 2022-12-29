@@ -811,7 +811,7 @@ function interfaceMovement(){
         }
     }
     prevPointerX = pointerX;
-    if(mouseOverBuildScreen && !mouseOverBinIcon){
+    if(mouseOverBuildScreen && !mouseOverBinIcon && !buildScreenFrozen){
         if(mouseOverPart.length > 0){
             document.body.style.cursor = 'pointer'; 
         } else {
