@@ -1,0 +1,734 @@
+{
+	"textures": [
+		{
+			"image": "submarineBlueprint.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1016,
+				"h": 598
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "back_hull.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 343,
+						"h": 241
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 343,
+						"h": 241
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 343,
+						"h": 241
+					}
+				},
+				{
+					"filename": "back_hullH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 343,
+						"h": 241
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 343,
+						"h": 241
+					},
+					"frame": {
+						"x": 346,
+						"y": 1,
+						"w": 343,
+						"h": 241
+					}
+				},
+				{
+					"filename": "middle_hull.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 252,
+						"h": 242
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 252,
+						"h": 242
+					},
+					"frame": {
+						"x": 691,
+						"y": 1,
+						"w": 252,
+						"h": 242
+					}
+				},
+				{
+					"filename": "propeller.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 146
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 146
+					},
+					"frame": {
+						"x": 945,
+						"y": 1,
+						"w": 55,
+						"h": 146
+					}
+				},
+				{
+					"filename": "propellerH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 146
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 146
+					},
+					"frame": {
+						"x": 945,
+						"y": 149,
+						"w": 55,
+						"h": 146
+					}
+				},
+				{
+					"filename": "middle_hullH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 252,
+						"h": 242
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 252,
+						"h": 242
+					},
+					"frame": {
+						"x": 1,
+						"y": 244,
+						"w": 252,
+						"h": 242
+					}
+				},
+				{
+					"filename": "front_hull.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 171,
+						"h": 242
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 171,
+						"h": 242
+					},
+					"frame": {
+						"x": 255,
+						"y": 244,
+						"w": 171,
+						"h": 242
+					}
+				},
+				{
+					"filename": "front_hullH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 171,
+						"h": 242
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 171,
+						"h": 242
+					},
+					"frame": {
+						"x": 428,
+						"y": 244,
+						"w": 171,
+						"h": 242
+					}
+				},
+				{
+					"filename": "frontHardpoint.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 86,
+						"h": 90
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 86,
+						"h": 90
+					},
+					"frame": {
+						"x": 601,
+						"y": 244,
+						"w": 86,
+						"h": 90
+					}
+				},
+				{
+					"filename": "top_hatch.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 157,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 157,
+						"h": 76
+					},
+					"frame": {
+						"x": 689,
+						"y": 245,
+						"w": 157,
+						"h": 76
+					}
+				},
+				{
+					"filename": "frontHardpointH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 86,
+						"h": 90
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 86,
+						"h": 90
+					},
+					"frame": {
+						"x": 848,
+						"y": 245,
+						"w": 86,
+						"h": 90
+					}
+				},
+				{
+					"filename": "window.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 71,
+						"h": 79
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 71,
+						"h": 79
+					},
+					"frame": {
+						"x": 936,
+						"y": 297,
+						"w": 71,
+						"h": 79
+					}
+				},
+				{
+					"filename": "top_hatchH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 157,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 157,
+						"h": 76
+					},
+					"frame": {
+						"x": 689,
+						"y": 323,
+						"w": 157,
+						"h": 76
+					}
+				},
+				{
+					"filename": "windowH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 71,
+						"h": 79
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 71,
+						"h": 79
+					},
+					"frame": {
+						"x": 848,
+						"y": 337,
+						"w": 71,
+						"h": 79
+					}
+				},
+				{
+					"filename": "top_hatch_lid.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 49,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 49,
+						"h": 100
+					},
+					"frame": {
+						"x": 601,
+						"y": 336,
+						"w": 49,
+						"h": 100
+					}
+				},
+				{
+					"filename": "flair2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 89,
+						"h": 59
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 89,
+						"h": 59
+					},
+					"frame": {
+						"x": 921,
+						"y": 378,
+						"w": 89,
+						"h": 59
+					}
+				},
+				{
+					"filename": "back_armor.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 137,
+						"h": 71
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 137,
+						"h": 71
+					},
+					"frame": {
+						"x": 652,
+						"y": 401,
+						"w": 137,
+						"h": 71
+					}
+				},
+				{
+					"filename": "top_hatch_lidH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 49,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 49,
+						"h": 100
+					},
+					"frame": {
+						"x": 601,
+						"y": 438,
+						"w": 49,
+						"h": 100
+					}
+				},
+				{
+					"filename": "gun_turret.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 39,
+						"h": 87
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 39,
+						"h": 87
+					},
+					"frame": {
+						"x": 791,
+						"y": 401,
+						"w": 39,
+						"h": 87
+					}
+				},
+				{
+					"filename": "side_thruster.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 76,
+						"h": 63
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 76,
+						"h": 63
+					},
+					"frame": {
+						"x": 832,
+						"y": 418,
+						"w": 76,
+						"h": 63
+					}
+				},
+				{
+					"filename": "top_plate.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 105,
+						"h": 77
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 105,
+						"h": 77
+					},
+					"frame": {
+						"x": 910,
+						"y": 439,
+						"w": 105,
+						"h": 77
+					}
+				},
+				{
+					"filename": "side_thrusterH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 76,
+						"h": 63
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 76,
+						"h": 63
+					},
+					"frame": {
+						"x": 832,
+						"y": 483,
+						"w": 76,
+						"h": 63
+					}
+				},
+				{
+					"filename": "top_plateH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 105,
+						"h": 77
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 105,
+						"h": 77
+					},
+					"frame": {
+						"x": 910,
+						"y": 518,
+						"w": 105,
+						"h": 77
+					}
+				},
+				{
+					"filename": "back_armorH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 137,
+						"h": 71
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 137,
+						"h": 71
+					},
+					"frame": {
+						"x": 652,
+						"y": 474,
+						"w": 137,
+						"h": 71
+					}
+				},
+				{
+					"filename": "gun_turretH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 39,
+						"h": 87
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 39,
+						"h": 87
+					},
+					"frame": {
+						"x": 791,
+						"y": 490,
+						"w": 39,
+						"h": 87
+					}
+				},
+				{
+					"filename": "flair1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 60,
+						"h": 47
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 60,
+						"h": 47
+					},
+					"frame": {
+						"x": 832,
+						"y": 548,
+						"w": 60,
+						"h": 47
+					}
+				},
+				{
+					"filename": "miningLaser.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 153,
+						"h": 57
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 153,
+						"h": 57
+					},
+					"frame": {
+						"x": 1,
+						"y": 540,
+						"w": 153,
+						"h": 57
+					}
+				},
+				{
+					"filename": "flipper.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 140,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 140,
+						"h": 50
+					},
+					"frame": {
+						"x": 1,
+						"y": 488,
+						"w": 140,
+						"h": 50
+					}
+				},
+				{
+					"filename": "flipperH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 140,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 140,
+						"h": 50
+					},
+					"frame": {
+						"x": 143,
+						"y": 488,
+						"w": 140,
+						"h": 50
+					}
+				},
+				{
+					"filename": "miningLaserH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 153,
+						"h": 57
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 153,
+						"h": 57
+					},
+					"frame": {
+						"x": 285,
+						"y": 488,
+						"w": 153,
+						"h": 57
+					}
+				},
+				{
+					"filename": "gun_base.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 120,
+						"h": 45
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 120,
+						"h": 45
+					},
+					"frame": {
+						"x": 156,
+						"y": 540,
+						"w": 120,
+						"h": 45
+					}
+				},
+				{
+					"filename": "gun_baseH.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 120,
+						"h": 45
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 120,
+						"h": 45
+					},
+					"frame": {
+						"x": 440,
+						"y": 488,
+						"w": 120,
+						"h": 45
+					}
+				},
+				{
+					"filename": "flair2H.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 89,
+						"h": 59
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 89,
+						"h": 59
+					},
+					"frame": {
+						"x": 440,
+						"y": 535,
+						"w": 89,
+						"h": 59
+					}
+				},
+				{
+					"filename": "flair1H.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 60,
+						"h": 47
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 60,
+						"h": 47
+					},
+					"frame": {
+						"x": 531,
+						"y": 535,
+						"w": 60,
+						"h": 47
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:8005a3aa902534b7a6a435e85a32b33d:c5cd00aa8aee9e56c9047d4fdcf6378e:4b99a74cde972c8eeaf44ec23d679cd0$"
+	}
+}

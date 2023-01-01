@@ -49,7 +49,7 @@ function preload()
     this.load.plugin('rexhorrifipipelineplugin', 'src/shaders/rexhorrifipipelineplugin.min.js', true);      
     this.load.plugin('rextoonifypipelineplugin', 'src/shaders/rextoonifypipelineplugin.min.js', true);   
     this.load.multiatlas('interface', 'assets/interface.json', 'assets');
-    this.load.multiatlas('submarine', 'assets/submarine.json', 'assets');
+    this.load.multiatlas('submarine', 'assets/submarineBluePrint.json', 'assets');
     this.load.audio('click', ['assets/audio/click.ogg','assets/audio/click.mp3']);
     this.load.audio('opening', ['assets/audio/opening.ogg','assets/audio/opening.mp3']);
     this.load.audio('trash', ['assets/audio/trash.ogg','assets/audio/trash.mp3']);
@@ -398,6 +398,7 @@ function createPart(partName, addingToShop){
         var assembly = scene.add.container(0,0);
         for(let parts of partName[0]){
             let part = scene.add.image(0,0,'submarine',parts+'.png').setOrigin(0.5,0.5);;
+            part.partType = parts;
             if(parts == "gun_turret"){part.setOrigin(0.5,1)};
             assembly.add(part);
         }
@@ -427,6 +428,8 @@ function addPartToShopInterface(part){
     part.tarScaleBig = .43-part.originalHeight;
     part.tarScaleSmall = .37-part.originalHeight;
     part.tarScale = part.tarScaleSmall;
+
+    console.log(part);
    
     shopInterface.add(part);
     
@@ -437,14 +440,15 @@ function addPartToShopInterface(part){
 
     part.on('pointerover', () => {
         if(!pointerOnShop){return;}
-        setTintPart(part,colours.highlight);
         part.tarScale = part.tarScaleBig;
-        document.body.style.cursor = 'pointer'; 
+        document.body.style.cursor = 'pointer';
+        highlightPart(part);
     });
     part.on('pointerout', () => {
         if(!pointerOnShop){return;}
         part.tarScale = part.tarScaleSmall;
         document.body.style.cursor = 'grab';
+        unhighlightPart(part);
     });
     part.on('pointerdown', () => {
         if(!pointerOnShop){return;}
@@ -469,12 +473,22 @@ function updateBuildScreenText(){
     }
 }
 
-function setTintPart(part,color){
+function highlightPart(part){
     if(part.type != 'Container'){
-        part.setTint(color);
+        part.frame = part.texture.frames[part.partType+"H.png"];
     } else {
         for(var components of part.list){
-            components.setTint(color);
+            components.frame = components.texture.frames[components.partType+"H.png"];
+        }
+    }
+}
+
+function unhighlightPart(part){
+    if(part.type != 'Container'){
+        part.frame = part.texture.frames[part.partType+".png"];
+    } else {
+        for(var components of part.list){
+            components.frame = components.texture.frames[components.partType+".png"];
         }
     }
 }
@@ -604,6 +618,7 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
         if(index > -1){
             mouseOverPart.splice(index,1);
         }
+        unhighlightPart(part);
     });
     part.on('pointerdown', () => {
         if(allPingGraphics.length > 0 || buildScreenFrozen){return};
@@ -828,7 +843,7 @@ function interfaceMovement(){
         }
     }
     if(mouseOverPart.length > 0){
-        //setTintPart(mouseOverPart[0], colours.highlight);
+        highlightPart(mouseOverPart[0]);
     }
     if(rectGraphics.length > 0){
         var selectRect = rectGraphics[0];
