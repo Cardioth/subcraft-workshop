@@ -18,7 +18,7 @@ var config = {
 var game = new Phaser.Game(config);
 var scene;
 
-var credits = 1000;
+var credits = 1500;
 var partsList = [];
 var partSelected = null;;
 
@@ -428,8 +428,6 @@ function addPartToShopInterface(part){
     part.tarScaleBig = .43-part.originalHeight;
     part.tarScaleSmall = .37-part.originalHeight;
     part.tarScale = part.tarScaleSmall;
-
-    console.log(part);
    
     shopInterface.add(part);
     
