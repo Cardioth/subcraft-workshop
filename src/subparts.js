@@ -1,4 +1,17 @@
-export var allSubParts = ['front_hull','middle_hull','back_hull','flipper','propeller','side_thruster','top_hatch','top_plate','back_armor','frontHardpoint','window','flair1','flair2','miningLaser', [['gun_turret','gun_base'],true,'gun_assembly']];
-export var partCosts =   [ 200,         200,          200,        20,       50,        60,              50,         100,        150,         60,               10,      10,      10,      60          ];
-
-//would be cool to combine these into one array of objects
+export const allSubParts = [
+    {partType:'front_hull',displayName:'Front Hull',cost:200},
+    {partType:'middle_hull',displayName:'Middle Hull',cost:200},
+    {partType:'back_hull',displayName:'Back Hull',cost:20},
+    {partType:'top_hatch',displayName:'Hatch',cost:20},
+    {partType:'flipper',displayName:'Flipper',cost:50},
+    {partType:'propeller',displayName:'Propeller',cost:60},
+    {partType:'side_thruster',displayName:'Thruster',cost:50},
+    {partType:'top_plate',displayName:'Top Armor',cost:100},
+    {partType:'back_armor',displayName:'Bottom Armor',cost:150},
+    {partType:'frontHardpoint',displayName:'Hardpoint',cost:60},
+    {partType:'window',displayName:'Window',cost:10},
+    {partType:'flair1',displayName:'68 Flair',cost:10},
+    {partType:'flair2',displayName:'Wing Flair',cost:10},
+    {partType:'miningLaser',displayName:'Mining Laser',cost:60},
+    {partType:[['gun_turret','gun_base'],true,'gun_assembly'],displayName:'Cannon',cost:200},
+];

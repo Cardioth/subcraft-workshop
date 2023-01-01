@@ -1,7 +1,8 @@
 'use strict'
 
 import {nodeStructure} from '/src/nodestructure.js';
-import {allSubParts, partCosts} from '/src/subparts.js';
+import {allSubParts} from '/src/subparts.js';
+import {colours} from '/src/colours.js'
 
 var config = {
     width: 1000,
@@ -118,7 +119,6 @@ function create ()
             }
             mouseOverPart = [];
         }
-
     });
 
     saveButtonUp.on('pointerover', () => {
@@ -179,14 +179,13 @@ function create ()
     });
 
     for(var parts of allSubParts){
-        createPart(parts, true);
+        createPart(parts.partType, true);
     }
 
     //Add all the parts to the screen interface
     for(var i=0;i<partsList.length;i++){
         addPartToShopInterface(partsList[i]);
-        partsList[i].x = sumOfPreviousPartsWidth(i, partsList, 50)-220;
-        partsList[i].y = 53.1;
+        partsList[i].x = sumOfPreviousPartsWidth(i, partsList, 80)-220;
         partsList[i].originalX = partsList[i].x;
     }
     totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 50);
@@ -194,7 +193,7 @@ function create ()
     //Building Sub Screen
     buildInterface = scene.add.container();
     var upperScreen = scene.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
-    upperScreen.alpha = 0.01;
+    upperScreen.alpha = 0.1;
     buildInterface.add(upperScreen);
     createRootNode();
     buildTargetX = workshopInterfaceX+rootNode.x;
@@ -253,7 +252,7 @@ function create ()
     //Build screen text
     buildScreenText = scene.add.bitmapText(-252,-175,'MKOCR', '',14);
     updateBuildScreenText();
-    buildScreenText.setTint(0x98FFBA);
+    buildScreenText.setTint(colours.lime);
     workshopInterface.add(buildScreenText);
     
     //global positioned because that's how masks do
@@ -280,28 +279,28 @@ function create ()
     var postFxPluginBlur = scene.plugins.get('rexkawaseblurpipelineplugin');
     var postFxPluginGlow = scene.plugins.get('rexglowfilter2pipelineplugin');
 
-    var postFxPipelineToonLower = postFxPluginToon.add(shopInterface, {
-        edgeThreshold: 0.20,
-        hueLevels: 2,
-        satLevels: 10,
-        valLevels: 10,
-        edgeColor: 0x98FFBA,
-    });
+    // var postFxPipelineToonLower = postFxPluginToon.add(shopInterface, {
+    //     edgeThreshold: 0.20,
+    //     hueLevels: 2,
+    //     satLevels: 10,
+    //     valLevels: 10,
+    //     edgeColor: 0x98FFBA,
+    // });
 
-    var postFxPipelineToonUpper = postFxPluginToon.add(buildInterface, {
-        edgeThreshold: 0.20,
-        hueLevels: 2,
-        satLevels: 10,
-        valLevels: 10,
-        edgeColor: 0x98FFBA,
-    });
+    // var postFxPipelineToonUpper = postFxPluginToon.add(buildInterface, {
+    //     edgeThreshold: 0.20,
+    //     hueLevels: 2,
+    //     satLevels: 10,
+    //     valLevels: 10,
+    //     edgeColor: 0x98FFBA,
+    // });
 
-    var postFxPipeline = postFxPluginBlur.add(shopInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
-    var postFxPipeline = postFxPluginBlur.add(buildInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
-    var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 4, outerStrength: 1.25,  innerStrength: 0, glowColor: 0x98FFBA});
-    var postFxPipeline = postFxPluginGlow.add(buildInterface, { distance: 4, outerStrength: 1.25,  innerStrength: 0, glowColor: 0x98FFBA,});
+    //var postFxPipeline = postFxPluginBlur.add(shopInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
+    //var postFxPipeline = postFxPluginBlur.add(buildInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
+    var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 6, outerStrength: 1.25,  innerStrength: 0, glowColor: colours.lime, quality: 5});
+    var postFxPipeline = postFxPluginGlow.add(buildInterface, { distance: 6, outerStrength: 1.25,  innerStrength: 0, glowColor: colours.lime, quality: 5});
 
-    var openingTone = scene.sound.add('opening').play();
+    //var openingTone = scene.sound.add('opening').play();
 }
 
 function getAbsolutelyAll(container) {
@@ -319,12 +318,12 @@ function getAbsolutelyAll(container) {
 
 function dialogueBoxYesCancel(yesFunc,addTo,text){
     let dialogueBoxContainer = scene.add.container();
-    let dialogueBox = scene.add.rectangle(-20,-110,340,100, 0x010019);
-    dialogueBox.setStrokeStyle(1,0x98FFBA);
+    let dialogueBox = scene.add.rectangle(-20,-110,340,100,colours.navy);
+    dialogueBox.setStrokeStyle(1,colours.lime);
     dialogueBoxContainer.add(dialogueBox);
 
     let dialogueText = scene.add.bitmapText(-20,-130,'MKOCR', text,14).setOrigin(0.5);
-    dialogueText.setTint(0x98FFBA);
+    dialogueText.setTint(colours.lime);
     dialogueBoxContainer.add(dialogueText);
 
     let yesButton = dialogueButton(()=>{
@@ -349,21 +348,21 @@ function dialogueBoxYesCancel(yesFunc,addTo,text){
 
 function dialogueButton(func,text){
     let buttonContainer = scene.add.container();
-    var button = scene.add.rectangle(-10,0,text.length*12,20, 0x010019);
-    button.setStrokeStyle(1,0x98FFBA);
+    var button = scene.add.rectangle(-10,0,text.length*12,20, colours.navy);
+    button.setStrokeStyle(1,colours.lime);
     buttonContainer.add(button);
     let buttonText = scene.add.bitmapText(-10,0,'MKOCR', text,14).setOrigin(0.5);
-    buttonText.setTint(0x98FFBA);
+    buttonText.setTint(colours.lime);
     buttonContainer.add(buttonText);
     button.setInteractive();
 
     button.on('pointerover', () => {
         document.body.style.cursor = 'pointer'; 
-        button.setFillStyle(0x184D4D);
+        button.setFillStyle(colours.navyHighlight);
     });
     button.on('pointerout', () => {
         document.body.style.cursor = 'default';
-        button.setFillStyle(0x010019);
+        button.setFillStyle(colours.navy);
     });
     button.on('pointerdown', () => {
         func();
@@ -443,24 +442,30 @@ function sumOfPreviousPartsWidth(i,parts, margin){
 
 function addPartToShopInterface(part){
     part.scale = 0.3;
-    part.originalHeight = part.getBounds().height/500;
-    part.tarScale = .4-part.originalHeight;
+    part.y = 36;
+    part.originalHeight = part.getBounds().height/300;
+    console.log(part);
     
+    part.tarScaleBig = .43-part.originalHeight;
+    part.tarScaleSmall = .37-part.originalHeight;
+    part.tarScale = part.tarScaleSmall;
+   
     shopInterface.add(part);
-
-    //Can't set tint on a container so had to do scene
-    setTintPart(part,0x3B9459);
+    
+    const partText = scene.add.bitmapText(0,0,'MKOCR', getPartDisplayName(part.partType) + "\n" + getPartPrice(part.partType) + " CR",13);
+    partText.setTint(colours.lime);
+    part.partText = partText;
+    shopInterface.add(partText);
 
     part.on('pointerover', () => {
         if(!pointerOnShop){return;}
-        setTintPart(part,0x57FF77);
-        part.tarScale = .5-part.originalHeight;
+        setTintPart(part,colours.highlight);
+        part.tarScale = part.tarScaleBig;
         document.body.style.cursor = 'pointer'; 
     });
     part.on('pointerout', () => {
         if(!pointerOnShop){return;}
-        setTintPart(part,0x3B9459);
-        part.tarScale = .4-part.originalHeight;
+        part.tarScale = part.tarScaleSmall;
         document.body.style.cursor = 'grab';
     });
     part.on('pointerdown', () => {
@@ -477,12 +482,12 @@ function updateBuildScreenText(){
     if(partSelected == null){
         buildScreenText.text = '> Credits: ' + credits.toLocaleString() + '\n> Class: A';
     } else {
-        buildScreenText.text = '> Credits: ' + credits.toLocaleString() + '\n> Class: A\n> ' + partSelected.partType;
+        buildScreenText.text = '> Credits: ' + credits.toLocaleString() + '\n> Class: A\n> ' + getPartDisplayName(partSelected.partType);
     }
     if(credits > 0){
-        buildScreenText.setTint(0x98FFBA);
+        buildScreenText.setTint(colours.lime);
     } else {   
-        buildScreenText.setTint(0xFF6F6F);
+        buildScreenText.setTint(colours.red);
     }
 }
 
@@ -610,10 +615,6 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
     if(partType == 'top_hatch'){
         hatchPlaced = true;
     }
-    setTintPart(part,0x3B9459);
-    if(partType == 'flair1' || partType == 'flair2'){
-        setTintPart(part,0x3BFF59);
-    }
 
     part.setInteractive();
     part.on('pointerover', () => {
@@ -624,10 +625,6 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
         const index = mouseOverPart.indexOf(part);
         if(index > -1){
             mouseOverPart.splice(index,1);
-        }
-        setTintPart(part,0x3B9459);
-        if(part.partType == 'flair1' || part.partType == 'flair2'){
-            setTintPart(part,0x3BFF59);
         }
     });
     part.on('pointerdown', () => {
@@ -647,10 +644,21 @@ function addPartToBuildInterface(part,x,y,parentPart,partType,flipped,originNode
     return partContainer;
 }
 
+function getPartDisplayName(partType){
+    for(var parts of allSubParts){
+        if(parts.partType === partType){
+            return parts.displayName;
+        }
+    }
+    if(partType === 'gun_assembly'){
+        return "Cannon";
+    }
+}
+
 function getPartPrice(partType){
-    for(var i =0;i<allSubParts.length;i++){
-        if(allSubParts[i] === partType){
-            return partCosts[i];
+    for(var parts of allSubParts){
+        if(parts.partType === partType){
+            return parts.cost;
         }
     }
     if(partType === 'gun_assembly'){
@@ -745,9 +753,9 @@ function pingGraphic(x,y,buildNode){
     });
 
     const pingGraphicContainer = scene.add.container();
-    const pingGraphic = scene.add.circle(6,6,4,0xFF6F6F);
+    const pingGraphic = scene.add.circle(6,6,4,colours.red);
     const pingGraphicOutline = scene.add.circle(6,6,4);
-    pingGraphicOutline.setStrokeStyle(1,0xFF6F6F);
+    pingGraphicOutline.setStrokeStyle(1,colours.red);
     pingGraphicContainer.add(pingGraphic);
     pingGraphicContainer.add(pingGraphicOutline);
     pingButton.graphic = pingGraphicContainer;
@@ -774,7 +782,7 @@ function drawSelectRect(target){
     const sLength = 10;
     var selectRect = scene.add.container();
     var graphics = scene.add.graphics();
-    graphics.lineStyle(2,0x98FFBA);
+    graphics.lineStyle(2,colours.lime);
     var line1 = graphics.lineBetween(-gWidth,-gHeight,-gWidth+sLength,-gHeight);
     selectRect.add(line1);
     selectRect.add(graphics.lineBetween(-gWidth,-gHeight,-gWidth,-gHeight+sLength));
@@ -804,6 +812,8 @@ function interfaceMovement(){
     for(var i=0;i<partsList.length;i++){
         partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
         partsList[i].scale -= (partsList[i].scale - partsList[i].tarScale)/12;
+        partsList[i].partText.x = partsList[i].x-25;
+        partsList[i].partText.y = partsList[i].y+30;
     }
     if(rootNode.getBounds().width > 1){
         var scale_X = ((rootNode.getBounds().width+rootNode.getBounds().height)/2/1000);
@@ -823,8 +833,8 @@ function interfaceMovement(){
     if(pointerState == 'down'){
         if(Math.abs(pointerDelta < 10)){
             shopScrollTar += pointerDelta*6;
-            if(shopScrollTar<-totalPartsListWidth+300){
-                shopScrollTar = -totalPartsListWidth+300;
+            if(shopScrollTar<-totalPartsListWidth){
+                shopScrollTar = -totalPartsListWidth;
             }
             if(shopScrollTar>0){
                 shopScrollTar = 0;
@@ -840,7 +850,7 @@ function interfaceMovement(){
         }
     }
     if(mouseOverPart.length > 0){
-        setTintPart(mouseOverPart[0], 0x57FF77);
+        //setTintPart(mouseOverPart[0], colours.highlight);
     }
     if(rectGraphics.length > 0){
         var selectRect = rectGraphics[0];

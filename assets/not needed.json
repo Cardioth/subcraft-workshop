@@ -28,14 +28,10 @@
 						"y": 1,
 						"w": 586,
 						"h": 211
-					},
-					"anchor": {
-						"x": 0,
-						"y": 0.753555
 					}
 				},
 				{
-					"filename": "back_hull.png",
+					"filename": "back_hull2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -53,14 +49,10 @@
 						"y": 214,
 						"w": 343,
 						"h": 241
-					},
-					"anchor": {
-						"x": 0,
-						"y": 0
 					}
 				},
 				{
-					"filename": "middle_hull.png",
+					"filename": "middle_hull2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -78,10 +70,6 @@
 						"y": 214,
 						"w": 252,
 						"h": 242
-					},
-					"anchor": {
-						"x": 0,
-						"y": 0
 					}
 				},
 				{
@@ -103,14 +91,10 @@
 						"y": 1,
 						"w": 143,
 						"h": 131
-					},
-					"anchor": {
-						"x": 0.503497,
-						"y": 0.992366
 					}
 				},
 				{
-					"filename": "front_hull.png",
+					"filename": "front_hull2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -128,10 +112,6 @@
 						"y": 1,
 						"w": 171,
 						"h": 242
-					},
-					"anchor": {
-						"x": 0,
-						"y": 0
 					}
 				},
 				{
@@ -153,14 +133,10 @@
 						"y": 1,
 						"w": 58,
 						"h": 200
-					},
-					"anchor": {
-						"x": 0.465517,
-						"y": 0.925
 					}
 				},
 				{
-					"filename": "back_armor.png",
+					"filename": "back_armor2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -178,10 +154,6 @@
 						"y": 134,
 						"w": 137,
 						"h": 71
-					},
-					"anchor": {
-						"x": 0.481752,
-						"y": 0.239437
 					}
 				},
 				{
@@ -203,10 +175,6 @@
 						"y": 207,
 						"w": 89,
 						"h": 117
-					},
-					"anchor": {
-						"x": 0.52809,
-						"y": 0.726496
 					}
 				},
 				{
@@ -228,14 +196,10 @@
 						"y": 326,
 						"w": 139,
 						"h": 106
-					},
-					"anchor": {
-						"x": 0.47482,
-						"y": 1
 					}
 				},
 				{
-					"filename": "flipper.png",
+					"filename": "flipper2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -253,14 +217,10 @@
 						"y": 457,
 						"w": 140,
 						"h": 50
-					},
-					"anchor": {
-						"x": 0.142857,
-						"y": 0.44
 					}
 				},
 				{
-					"filename": "top_hatch.png",
+					"filename": "top_hatch_sch2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -278,10 +238,6 @@
 						"y": 245,
 						"w": 157,
 						"h": 76
-					},
-					"anchor": {
-						"x": 0.490446,
-						"y": 0.986842
 					}
 				},
 				{
@@ -303,14 +259,10 @@
 						"y": 323,
 						"w": 89,
 						"h": 102
-					},
-					"anchor": {
-						"x": 0.11236,
-						"y": 0.676471
 					}
 				},
 				{
-					"filename": "gun_base.png",
+					"filename": "gun_base2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -328,14 +280,10 @@
 						"y": 457,
 						"w": 120,
 						"h": 45
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.966667
 					}
 				},
 				{
-					"filename": "miningLaser.png",
+					"filename": "miningLaser2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -353,14 +301,10 @@
 						"y": 434,
 						"w": 153,
 						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
 					}
 				},
 				{
-					"filename": "top_hatch_lid.png",
+					"filename": "top_hatch_lid2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -378,14 +322,10 @@
 						"y": 1,
 						"w": 49,
 						"h": 100
-					},
-					"anchor": {
-						"x": 0.428571,
-						"y": 0.95
 					}
 				},
 				{
-					"filename": "top_plate.png",
+					"filename": "top_plate2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -403,14 +343,10 @@
 						"y": 427,
 						"w": 105,
 						"h": 77
-					},
-					"anchor": {
-						"x": 0,
-						"y": 0
 					}
 				},
 				{
-					"filename": "frontHardpoint.png",
+					"filename": "frontHardpoint2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -428,14 +364,10 @@
 						"y": 245,
 						"w": 86,
 						"h": 90
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
 					}
 				},
 				{
-					"filename": "window.png",
+					"filename": "window2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -453,14 +385,10 @@
 						"y": 337,
 						"w": 71,
 						"h": 79
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
 					}
 				},
 				{
-					"filename": "gun_turret.png",
+					"filename": "gun_turret2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -478,14 +406,10 @@
 						"y": 103,
 						"w": 39,
 						"h": 87
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 1.06322
 					}
 				},
 				{
-					"filename": "propeller.png",
+					"filename": "propeller2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -503,14 +427,10 @@
 						"y": 203,
 						"w": 55,
 						"h": 146
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
 					}
 				},
 				{
-					"filename": "flair2.png",
+					"filename": "flair22.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -528,14 +448,10 @@
 						"y": 351,
 						"w": 89,
 						"h": 59
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
 					}
 				},
 				{
-					"filename": "flair1.png",
+					"filename": "flair12.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -553,14 +469,10 @@
 						"y": 457,
 						"w": 60,
 						"h": 47
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
 					}
 				},
 				{
-					"filename": "side_thruster.png",
+					"filename": "side_thruster2.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -578,10 +490,6 @@
 						"y": 418,
 						"w": 76,
 						"h": 63
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
 					}
 				}
 			]
@@ -590,6 +498,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:d116718b242752b05f0ea8feac81dec0:78b356047650136db87d92b9353621eb:7c79e3da661c4dd233457c0b7ec6f4f8$"
+		"smartupdate": "$TexturePacker:SmartUpdate:dae363e5f13ed6a25c94661e7b2cf42a:3cfe1b4c2bc4702afd3248dd50cf0680:c1b4d9e5b706469c5fe4374a9c4d0f5c$"
 	}
 }
