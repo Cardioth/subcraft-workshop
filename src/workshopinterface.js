@@ -26,6 +26,7 @@ var shopInterface;
 var buildInterface;
 var buildScreenText;
 var pointerOnShop;
+var workshopInterface;
 var workshopInterfaceX = config.width/2;
 var workshopInterfaceY = config.height/2;
 var totalPartsListWidth;
@@ -47,21 +48,26 @@ function preload()
     this.load.plugin('rexhorrifipipelineplugin', 'src/shaders/rexhorrifipipelineplugin.min.js', true);      
     this.load.plugin('rextoonifypipelineplugin', 'src/shaders/rextoonifypipelineplugin.min.js', true);   
     this.load.multiatlas('interface', 'assets/interface.json', 'assets');
-    this.load.multiatlas('submarine', 'assets/submarine.json', 'assets'); //New JSON for the submarine, uses the same sub
+    this.load.multiatlas('submarine', 'assets/submarine.json', 'assets');
+    this.load.audio('click', ['assets/audio/click.ogg','assets/audio/click.mp3']);
+    this.load.audio('opening', ['assets/audio/opening.ogg','assets/audio/opening.mp3']);
+    this.load.audio('trash', ['assets/audio/trash.ogg','assets/audio/trash.mp3']);
+    this.load.audio('hover', ['assets/audio/hover.ogg','assets/audio/hover.mp3']);
 }
 
 function create ()
 {
     scene = this;
     scene.input.topOnly = false;
-    var workshopInterface = this.add.container(workshopInterfaceX,workshopInterfaceY);
-    var workshopInterfaceBackground = this.add.image(0,0,'interface','workshopInterface.png');
-    var loadButtonUp = this.add.image(-28,133,'interface','loadButtonUp.png').setInteractive();
-    var loadButtonOver = this.add.image(-28,133,'interface','loadButtonOver.png').setInteractive();
-    var saveButtonUp = this.add.image(37.4,133,'interface','saveButtonUp.png').setInteractive();
-    var saveButtonOver = this.add.image(37.4,133,'interface','saveButtonOver.png').setInteractive();
-    var launchButtonUp = this.add.image(125,133,'interface','launchButtonUp.png').setInteractive();
-    var launchButtonOver = this.add.image(125,133,'interface','launchButtonOver.png').setInteractive();
+
+    workshopInterface = scene.add.container(workshopInterfaceX,workshopInterfaceY);
+    var workshopInterfaceBackground = scene.add.image(0,0,'interface','workshopInterface.png');
+    var loadButtonUp = scene.add.image(-28,133,'interface','loadButtonUp.png').setInteractive();
+    var loadButtonOver = scene.add.image(-28,133,'interface','loadButtonOver.png').setInteractive();
+    var saveButtonUp = scene.add.image(37.4,133,'interface','saveButtonUp.png').setInteractive();
+    var saveButtonOver = scene.add.image(37.4,133,'interface','saveButtonOver.png').setInteractive();
+    var launchButtonUp = scene.add.image(125,133,'interface','launchButtonUp.png').setInteractive();
+    var launchButtonOver = scene.add.image(125,133,'interface','launchButtonOver.png').setInteractive();
 
     workshopInterface.add(workshopInterfaceBackground);
     workshopInterface.add(loadButtonUp);
@@ -95,6 +101,7 @@ function create ()
                 const savedSubJSON = localStorage.getItem('savedSub');
                 buildScreenFrozen = false;
                 trashSub();
+                scene.sound.add('click').play();
                 const loadedSub = JSON.parse(savedSubJSON);
                 if(Object.keys(loadedSub).length !== 0){
                     loadSub(loadedSub, rootNode);
@@ -104,6 +111,7 @@ function create ()
         } else {
             const savedSubJSON = localStorage.getItem('savedSub');
             trashSub();
+            scene.sound.add('click').play();
             const loadedSub = JSON.parse(savedSubJSON);
             if(Object.keys(loadedSub).length !== 0){
                 loadSub(loadedSub, rootNode);
@@ -146,15 +154,15 @@ function create ()
     });
 
     //Shop Interface Stuff
-    shopInterface = this.add.container(0,0);
-    var lowerScreen = this.add.image(-23,53.1,'interface','lowerScreen.png').setInteractive();
+    shopInterface = scene.add.container(0,0);
+    var lowerScreen = scene.add.image(-23,53.1,'interface','lowerScreen.png').setInteractive();
     lowerScreen.alpha = 0.1;
     shopInterface.add(lowerScreen);
 
-    this.input.on('pointerup', function (pointer){
+    scene.input.on('pointerup', function (pointer){
         pointerState = 'up';
     });
-    this.input.on('pointermove', function (pointer) {
+    scene.input.on('pointermove', function (pointer) {
         pointerX = pointer.x;
         pointerY = pointer.y;
     });
@@ -184,8 +192,8 @@ function create ()
     totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 50);
 
     //Building Sub Screen
-    buildInterface = this.add.container();
-    var upperScreen = this.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
+    buildInterface = scene.add.container();
+    var upperScreen = scene.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
     upperScreen.alpha = 0.01;
     buildInterface.add(upperScreen);
     createRootNode();
@@ -210,7 +218,7 @@ function create ()
     });
 
     //Trash button
-    var binIcon = this.add.image(200,-164,'interface','binIcon.png').setInteractive();
+    var binIcon = scene.add.image(200,-164,'interface','binIcon.png').setInteractive();
     binIcon.alpha = 0.8;
     buildInterface.add(binIcon);
     binIcon.on('pointerover', () => {
@@ -232,6 +240,7 @@ function create ()
                 buildScreenFrozen = false;
                 trashSub();
                 destroySelectRect();
+                scene.sound.add('trash').play();
             },workshopInterface,"Are you sure you want to destroy the sub?");
         } else {
             trashPart();
@@ -242,34 +251,34 @@ function create ()
     });
 
     //Build screen text
-    buildScreenText = this.add.bitmapText(-252,-175,'MKOCR', '',14);
+    buildScreenText = scene.add.bitmapText(-252,-175,'MKOCR', '',14);
     updateBuildScreenText();
     buildScreenText.setTint(0x98FFBA);
     workshopInterface.add(buildScreenText);
     
     //global positioned because that's how masks do
-    var lowerScreenMask = this.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
+    var lowerScreenMask = scene.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
     workshopInterface.add(lowerScreenMask)
     lowerScreenMask.setVisible(false);
-    shopInterface.mask = new Phaser.Display.Masks.BitmapMask(this, lowerScreenMask);
+    shopInterface.mask = new Phaser.Display.Masks.BitmapMask(scene, lowerScreenMask);
     workshopInterface.add(shopInterface);
 
-    var upperScreenMask = this.add.image(workshopInterfaceX-22.75, workshopInterfaceY-102.5,'interface','upperScreen.png').setInteractive();
+    var upperScreenMask = scene.add.image(workshopInterfaceX-22.75, workshopInterfaceY-102.5,'interface','upperScreen.png').setInteractive();
     workshopInterface.add(upperScreenMask)
     upperScreenMask.setVisible(false);
 
-    buildInterface.mask = new Phaser.Display.Masks.BitmapMask(this, upperScreenMask);
+    buildInterface.mask = new Phaser.Display.Masks.BitmapMask(scene, upperScreenMask);
     workshopInterface.add(buildInterface);
  
     //Parts text above the shop interface
-    var partsPlate = this.add.image(-216,-4,'interface','partsPlate.png');
+    var partsPlate = scene.add.image(-216,-4,'interface','partsPlate.png');
     workshopInterface.add(partsPlate);
 
     //Shader Effects
-    var postFxPlugin = this.plugins.get('rexhorrifipipelineplugin');
-    var postFxPluginToon = this.plugins.get('rextoonifypipelineplugin');
+    var postFxPlugin = scene.plugins.get('rexhorrifipipelineplugin');
+    var postFxPluginToon = scene.plugins.get('rextoonifypipelineplugin');
     var postFxPluginBlur = scene.plugins.get('rexkawaseblurpipelineplugin');
-    var postFxPluginGlow = this.plugins.get('rexglowfilter2pipelineplugin');
+    var postFxPluginGlow = scene.plugins.get('rexglowfilter2pipelineplugin');
 
     var postFxPipelineToonLower = postFxPluginToon.add(shopInterface, {
         edgeThreshold: 0.20,
@@ -291,6 +300,8 @@ function create ()
     var postFxPipeline = postFxPluginBlur.add(buildInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
     var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 4, outerStrength: 1.25,  innerStrength: 0, glowColor: 0x98FFBA});
     var postFxPipeline = postFxPluginGlow.add(buildInterface, { distance: 4, outerStrength: 1.25,  innerStrength: 0, glowColor: 0x98FFBA,});
+
+    var openingTone = scene.sound.add('opening').play();
 }
 
 function getAbsolutelyAll(container) {
@@ -437,7 +448,7 @@ function addPartToShopInterface(part){
     
     shopInterface.add(part);
 
-    //Can't set tint on a container so had to do this
+    //Can't set tint on a container so had to do scene
     setTintPart(part,0x3B9459);
 
     part.on('pointerover', () => {
@@ -666,7 +677,7 @@ function buildRules(partType){
 
 function addPartToBuild(partType){
     destroySelectRect();
-    //Search all parts for a place to put new part. Sometimes I call parts nodes... Sorry.
+    //Search all parts for a place to put new part.
     var foundNodes = [];
     for(var parts of allParts){
         for(var subNodes of parts.subNodes){
@@ -686,6 +697,7 @@ function addPartToBuild(partType){
                 nodes.engaged = true;
             }
         }
+        scene.sound.add('hover').play();
         addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.part,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
     }
     //Create pings if multiple options
@@ -700,25 +712,24 @@ function addPartToBuild(partType){
 }
 function removePings(){
     for(var pings of allPingGraphics){
+        pings.graphic.destroy();
         pings.destroy();
     }
     allPingGraphics = [];
 }
 
 function pingGraphic(x,y,buildNode){
-    var pingGraphic = scene.add.circle(x,y,10, 0xFF0000);
-    pingGraphic.setStrokeStyle(2,0xFF0000);
-    pingGraphic.setInteractive();
-    pingGraphic.on('pointerover', () => {
-        pingGraphic.scale = 2;
+    const pingButton = scene.add.circle(x,y,20, 0x000000);
+    pingButton.setInteractive();
+    pingButton.alpha = 0.01;
+    pingButton.on('pointerover', () => {
         document.body.style.cursor = 'pointer'; 
     });
-    pingGraphic.on('pointerout', () => {
-        pingGraphic.scale = 1;
+    pingButton.on('pointerout', () => {
         document.body.style.cursor = 'default';
     });
 
-    pingGraphic.on('pointerdown', () => {
+    pingButton.on('pointerdown', () => {
         document.body.style.cursor = 'default';
         buildNode.subNodes.engaged = true;
         for(var nodes of buildNode.part.subNodes){
@@ -728,11 +739,21 @@ function pingGraphic(x,y,buildNode){
         }
         mouseOverBuildScreen = true;
         scene.input.topOnly = true;
+        scene.sound.add('hover').play();
         addPartToBuildInterface(createPart(buildNode.PartType), buildNode.x, buildNode.y,buildNode.part,buildNode.PartType,buildNode.flipped, buildNode.subNodes, buildNode.rotated);
         removePings();
     });
 
-    return pingGraphic;
+    const pingGraphicContainer = scene.add.container();
+    const pingGraphic = scene.add.circle(6,6,4,0xFF6F6F);
+    const pingGraphicOutline = scene.add.circle(6,6,4);
+    pingGraphicOutline.setStrokeStyle(1,0xFF6F6F);
+    pingGraphicContainer.add(pingGraphic);
+    pingGraphicContainer.add(pingGraphicOutline);
+    pingButton.graphic = pingGraphicContainer;
+    workshopInterface.add(pingGraphicContainer);
+
+    return pingButton;
 }
 
 var shopScrollTar = 0;
@@ -827,6 +848,15 @@ function interfaceMovement(){
         selectRect.y = selectRect.target.getBounds().y+selectRect.target.getBounds().height/2;
     }
 
+    for(let pings of allPingGraphics){
+        pings.graphic.x = pings.getBounds().x-workshopInterfaceX;
+        pings.graphic.y = pings.getBounds().y-workshopInterfaceY;
+        pings.graphic.list[1].scale += 0.01;
+        if(pings.graphic.list[1].scale > 3){
+            pings.graphic.list[1].scale = 1;
+        }
+        pings.graphic.list[1].alpha = 3-pings.graphic.list[1].scale;
+    }
 }
 
 function update (){
@@ -834,7 +864,7 @@ function update (){
 }
 
 //Useful for debugging positions
-// this.input.on('pointermove', function (pointer) {
+// scene.input.on('pointermove', function (pointer) {
 //     itemToTrack.x = pointer.x;
 //     itemToTrack.y = pointer.y;
 // });
