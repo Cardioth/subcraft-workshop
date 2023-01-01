@@ -444,7 +444,6 @@ function addPartToShopInterface(part){
     part.scale = 0.3;
     part.y = 36;
     part.originalHeight = part.getBounds().height/300;
-    console.log(part);
     
     part.tarScaleBig = .43-part.originalHeight;
     part.tarScaleSmall = .37-part.originalHeight;
