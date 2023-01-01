@@ -63,37 +63,24 @@ function create ()
 
     workshopInterface = scene.add.container(workshopInterfaceX,workshopInterfaceY);
     var workshopInterfaceBackground = scene.add.image(0,0,'interface','workshopInterface.png');
-    var loadButtonUp = scene.add.image(-28,133,'interface','loadButtonUp.png').setInteractive();
-    var loadButtonOver = scene.add.image(-28,133,'interface','loadButtonOver.png').setInteractive();
-    var saveButtonUp = scene.add.image(37.4,133,'interface','saveButtonUp.png').setInteractive();
-    var saveButtonOver = scene.add.image(37.4,133,'interface','saveButtonOver.png').setInteractive();
-    var launchButtonUp = scene.add.image(125,133,'interface','launchButtonUp.png').setInteractive();
-    var launchButtonOver = scene.add.image(125,133,'interface','launchButtonOver.png').setInteractive();
+    var loadButton = scene.add.image(-28,133,'interface','loadButtonUp.png').setInteractive();
+    var saveButton = scene.add.image(37.4,133,'interface','saveButtonUp.png').setInteractive();
+    var launchButton = scene.add.image(125,133,'interface','launchButtonUp.png').setInteractive();
 
     workshopInterface.add(workshopInterfaceBackground);
-    workshopInterface.add(loadButtonUp);
-    workshopInterface.add(loadButtonOver);
-    loadButtonOver.setVisible(false);
-    workshopInterface.add(saveButtonUp);
-    workshopInterface.add(saveButtonOver);
-    saveButtonOver.setVisible(false);
-    workshopInterface.add(launchButtonUp);
-    workshopInterface.add(launchButtonOver);
-    launchButtonOver.setVisible(false);
+    workshopInterface.add(loadButton);
+    workshopInterface.add(saveButton);
+    workshopInterface.add(launchButton);
 
-    loadButtonUp.on('pointerover', () => {
-        loadButtonUp.setVisible(false);
-        loadButtonOver.setVisible(true);
+    loadButton.on('pointerover', () => {
         document.body.style.cursor = 'pointer';
+        loadButton.frame = loadButton.texture.frames["loadButtonOver.png"];
     });
-    loadButtonOver.on('pointerout', () => {
-        loadButtonUp.setVisible(true);
-        loadButtonOver.setVisible(false);
+    loadButton.on('pointerout', () => {
         document.body.style.cursor = 'default';
+        loadButton.frame = loadButton.texture.frames["loadButtonUp.png"];
     });
-    loadButtonOver.on('pointerdown', () => {
-        loadButtonUp.setVisible(true);
-        loadButtonOver.setVisible(false);
+    loadButton.on('pointerdown', () => {
         if(buildScreenFrozen){return};
         destroySelectRect();
         if(rootNode.list.length !== 0){
@@ -121,36 +108,28 @@ function create ()
         }
     });
 
-    saveButtonUp.on('pointerover', () => {
-        saveButtonUp.setVisible(false);
-        saveButtonOver.setVisible(true);
+    saveButton.on('pointerover', () => {
         document.body.style.cursor = 'pointer';
+        saveButton.frame = saveButton.texture.frames["saveButtonOver.png"];
     });
-    saveButtonOver.on('pointerout', () => {
-        saveButtonUp.setVisible(true);
-        saveButtonOver.setVisible(false);
+    saveButton.on('pointerout', () => {
         document.body.style.cursor = 'default';
+        saveButton.frame = saveButton.texture.frames["saveButtonUp.png"];
     });
-    saveButtonOver.on('pointerdown', () => {
-        saveButtonUp.setVisible(true);
-        saveButtonOver.setVisible(false);
+    saveButton.on('pointerdown', () => {
         const savedSubJSON = JSON.stringify(saveSub(rootNode.list[0]));
         localStorage.setItem('savedSub',savedSubJSON);
     });
 
-    launchButtonUp.on('pointerover', () => {
-        launchButtonUp.setVisible(false);
-        launchButtonOver.setVisible(true);
+    launchButton.on('pointerover', () => {
         document.body.style.cursor = 'pointer';
+        launchButton.frame = launchButton.texture.frames["launchButtonOver.png"];
     });
-    launchButtonOver.on('pointerout', () => {
-        launchButtonUp.setVisible(true);
-        launchButtonOver.setVisible(false);
+    launchButton.on('pointerout', () => {
         document.body.style.cursor = 'default';
+        launchButton.frame = launchButton.texture.frames["launchButtonUp.png"];
     });
-    launchButtonOver.on('pointerdown', () => {
-        launchButtonUp.setVisible(true);
-        launchButtonOver.setVisible(false);
+    launchButton.on('pointerdown', () => {
     });
 
     //Shop Interface Stuff
