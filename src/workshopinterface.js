@@ -34,7 +34,7 @@ let totalPartsListWidth;
 
 let mouseOverPart = [];
 let mouseOverBuildScreen = false;
-let mouseOverBinIcon = false;
+let mouseOverBuildScreenIcons = false;
 let buildScreenFrozen = false;
 
 let allParts = [];
@@ -196,18 +196,18 @@ function create ()
     });
 
     //Trash button
-    var binIcon = scene.add.image(200,-164,'interface','binIcon.png').setInteractive();
+    var binIcon = scene.add.image(195,-164,'interface','binIcon.png').setInteractive();
     binIcon.alpha = 0.8;
     buildInterface.add(binIcon);
     binIcon.on('pointerover', () => {
         binIcon.alpha = 1;
         document.body.style.cursor = 'pointer';
-        mouseOverBinIcon = true;
+        mouseOverBuildScreenIcons = true;
     });
     binIcon.on('pointerout', () => {
-        binIcon.alpha = 0.8;
+        binIcon.alpha = 0.9;
         document.body.style.cursor = 'default';
-        mouseOverBinIcon = false;
+        mouseOverBuildScreenIcons = false;
     });
     binIcon.on('pointerdown', () => {
         if(buildScreenFrozen){return};
@@ -226,6 +226,26 @@ function create ()
         partSelected = null;
         destroySelectRect();
         updateBuildScreenText();
+    });
+
+    //Stats Button
+    var statsIcon = scene.add.image(165,-164,'interface','statsIcon.png').setInteractive();
+    statsIcon.alpha = 0.8;
+    buildInterface.add(statsIcon);
+    statsIcon.on('pointerover', () => {
+        statsIcon.alpha = 1;
+        document.body.style.cursor = 'pointer';
+        mouseOverBuildScreenIcons = true;
+    });
+    statsIcon.on('pointerout', () => {
+        statsIcon.alpha = 0.9;
+        document.body.style.cursor = 'default';
+        mouseOverBuildScreenIcons = false;
+    });
+    statsIcon.on('pointerdown', () => {
+        if(buildScreenFrozen){return};
+        buildScreenFrozen = true;
+        statsDialogue(buildInterface, getSubStats());
     });
 
     //Build screen text
@@ -302,6 +322,72 @@ function dialogueBoxYesCancel(yesFunc,addTo,text){
 
     dialogueBoxContainer.add(yesButton);
     dialogueBoxContainer.add(cancelButton);
+    addTo.add(dialogueBoxContainer);
+}
+function getSubStats(){
+    let subStats = {
+        firepower:0,
+        cost:0,
+        accessible:"Inaccesible",
+        weight:0,
+        thrust:0,
+        armor:0,
+        visibility:0,
+        miningPower:0,
+    };
+    for(let parts of allParts){
+        for(let partLookup of allSubParts){
+            if(partLookup.partType == parts.name){
+                for(let stat in partLookup){
+                    if(subStats.hasOwnProperty(stat)){
+                        if(typeof partLookup[stat] == 'number'){
+                            subStats[stat] += partLookup[stat];
+                        }
+                        if(typeof partLookup[stat] == 'string'){
+                            subStats[stat] = partLookup[stat];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return subStats;
+}
+
+function statsDialogue(addTo,stats){
+    let dialogueBoxContainer = scene.add.container();
+    let dialogueBox = scene.add.rectangle(-20,-110,800,230,colours.navy);
+    dialogueBox.setStrokeStyle(1,colours.lime);
+    dialogueBoxContainer.add(dialogueBox);
+    let statsText1 = "Firepower: " + stats.firepower + "\n" + 
+    "Mining Power: " + stats.miningPower + "\n" +
+    "Thrust: " + stats.thrust + "\n" + 
+    "Visibility: " + stats.visibility + "\n";
+
+    let statsText2 = "Cost: " + stats.cost + "\n" + 
+    "Accesibility: " + stats.accessible + "\n" + 
+    "Weight: " + stats.weight + "\n" + 
+    "Armor: " + stats.armor + "\n";
+
+    let dialogueTitleText = scene.add.bitmapText(-250,-160,'MKOCR', "Submarine Statistics", 20).setOrigin(0,0.5);
+    dialogueTitleText.setTint(colours.lime);
+    dialogueBoxContainer.add(dialogueTitleText);
+
+    let dialogueStat1Text = scene.add.bitmapText(-250,-130,'MKOCR', statsText1, 15).setOrigin(0,0);
+    dialogueStat1Text.setTint(colours.lime);
+    dialogueBoxContainer.add(dialogueStat1Text);
+
+    let dialogueStat2Text = scene.add.bitmapText(-50,-130,'MKOCR', statsText2, 15).setOrigin(0,0);
+    dialogueStat2Text.setTint(colours.lime);
+    dialogueBoxContainer.add(dialogueStat2Text);
+
+    let closeButton = dialogueButton(()=>{
+        dialogueBoxContainer.destroy();
+        buildScreenFrozen = false;
+    },"Close");
+    closeButton.x = 190;
+    closeButton.y = -40;
+    dialogueBoxContainer.add(closeButton);
     addTo.add(dialogueBoxContainer);
 }
 
@@ -755,7 +841,7 @@ function pingGraphic(x,y,buildNode){
     pingGraphicContainer.add(pingGraphic);
     pingGraphicContainer.add(pingGraphicOutline);
     pingButton.graphic = pingGraphicContainer;
-    workshopInterface.add(pingGraphicContainer);
+    buildInterface.add(pingGraphicContainer);
 
     return pingButton;
 }
@@ -815,7 +901,7 @@ function interfaceMovement(){
         var scale_X = ((rootNode.getBounds().width+rootNode.getBounds().height)/2/1000);
         rootNode.scaleX -= (scale_X - scaleTar)/20
     }
-    if(rootNode.scaleX > .35){
+    if(rootNode.scaleX > .35){mouseOverBuildScreenIcons
         rootNode.scaleX = .35;
     }
     if(rootNode.scaleX < .2){
@@ -838,7 +924,7 @@ function interfaceMovement(){
         }
     }
     prevPointerX = pointerX;
-    if(mouseOverBuildScreen && !mouseOverBinIcon && !buildScreenFrozen){
+    if(mouseOverBuildScreen && !mouseOverBuildScreenIcons && !buildScreenFrozen){
         if(mouseOverPart.length > 0){
             document.body.style.cursor = 'pointer'; 
         } else {

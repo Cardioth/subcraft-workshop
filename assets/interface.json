@@ -283,6 +283,31 @@
 						"x": 0.5,
 						"y": 0.5
 					}
+				},
+				{
+					"filename": "statsIcon.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 19,
+						"h": 20
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 19,
+						"h": 20
+					},
+					"frame": {
+						"x": 693,
+						"y": 364,
+						"w": 19,
+						"h": 20
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
 				}
 			]
 		}
@@ -290,6 +315,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:48ef051667d616c077293d2ac2865d3b:8bab832cdf871a71250277422a93c63d:8141c0d8370228a8661c55b8bcf20981$"
+		"smartupdate": "$TexturePacker:SmartUpdate:616f7621862c420f04a68ef5d0c6e2bb:fe3f4f72a32270c38d4e4ea2ae79f4b9:8141c0d8370228a8661c55b8bcf20981$"
 	}
 }
