@@ -250,6 +250,7 @@ function create ()
         if(buildScreenFrozen){return};
         buildScreenFrozen = true;
         statsDialogue(buildInterface, getSubStats());
+        destroySelectRect();
     });
 
     //Build screen text
@@ -365,15 +366,15 @@ function statsDialogue(addTo,stats){
     upperScreen.scale = 1.02;
     dialogueBoxContainer.add(upperScreen);
 
-    let statsText1 = "Firepower: " + stats.firepower + "\n" + 
-    "Mining Power: " + stats.miningPower + "\n" +
-    "Thrust: " + stats.thrust + "\n" + 
-    "Visibility: " + stats.visibility + "\n";
+    let statsText1 = "Firepower:   " + stats.firepower + "\n" + 
+    "Mining Power:   " + stats.miningPower + "\n" +
+    "Thrust:   " + stats.thrust + "\n" + 
+    "Visibility:   " + stats.visibility + "\n";
 
-    let statsText2 = "Cost: " + stats.cost + " Credits\n" + 
-    "Accesibility: " + stats.accessible + "\n" + 
-    "Weight: " + stats.weight + "\n" + 
-    "Armor: " + stats.armor + "\n";
+    let statsText2 = "Cost:   " + stats.cost + " Credits\n" + 
+    "Accesibility:   " + stats.accessible + "\n" + 
+    "Weight:   " + stats.weight + "\n" + 
+    "Armor:   " + stats.armor + "\n";
 
     let dialogueIcon = scene.add.image(-235,-160,'interface','statsIcon.png').setOrigin(0.5,0.5);
     dialogueBoxContainer.add(dialogueIcon);
@@ -405,7 +406,7 @@ function dialogueButton(func,text){
     var button = scene.add.rectangle(-10,0,text.length*12,20, colours.navy);
     button.setStrokeStyle(1,colours.lime);
     buttonContainer.add(button);
-    let buttonText = scene.add.bitmapText(-10,0,'MKOCR', text,14).setOrigin(0.5);
+    let buttonText = scene.add.bitmapText(-10,3,'MKOCR', text,14).setOrigin(0.5);
     buttonText.setTint(colours.lime);
     buttonContainer.add(buttonText);
     button.setInteractive();
