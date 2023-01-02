@@ -200,11 +200,13 @@ function create ()
     binIcon.alpha = 0.8;
     buildInterface.add(binIcon);
     binIcon.on('pointerover', () => {
+        if(buildScreenFrozen){return};
         binIcon.alpha = 1;
         document.body.style.cursor = 'pointer';
         mouseOverBuildScreenIcons = true;
     });
     binIcon.on('pointerout', () => {
+        if(buildScreenFrozen){return};
         binIcon.alpha = 0.9;
         document.body.style.cursor = 'default';
         mouseOverBuildScreenIcons = false;
@@ -233,11 +235,13 @@ function create ()
     statsIcon.alpha = 0.8;
     buildInterface.add(statsIcon);
     statsIcon.on('pointerover', () => {
+        if(buildScreenFrozen){return};
         statsIcon.alpha = 1;
         document.body.style.cursor = 'pointer';
         mouseOverBuildScreenIcons = true;
     });
     statsIcon.on('pointerout', () => {
+        if(buildScreenFrozen){return};
         statsIcon.alpha = 0.9;
         document.body.style.cursor = 'default';
         mouseOverBuildScreenIcons = false;
@@ -364,12 +368,15 @@ function statsDialogue(addTo,stats){
     "Thrust: " + stats.thrust + "\n" + 
     "Visibility: " + stats.visibility + "\n";
 
-    let statsText2 = "Cost: " + stats.cost + "\n" + 
+    let statsText2 = "Cost: " + stats.cost + " Credits\n" + 
     "Accesibility: " + stats.accessible + "\n" + 
     "Weight: " + stats.weight + "\n" + 
     "Armor: " + stats.armor + "\n";
 
-    let dialogueTitleText = scene.add.bitmapText(-250,-160,'MKOCR', "Submarine Statistics", 20).setOrigin(0,0.5);
+    let dialogueIcon = scene.add.image(-235,-160,'interface','statsIcon.png').setOrigin(0.5,0.5);
+    dialogueBoxContainer.add(dialogueIcon);
+
+    let dialogueTitleText = scene.add.bitmapText(-215,-160,'MKOCR', "Submarine Statistics", 20).setOrigin(0,0.5);
     dialogueTitleText.setTint(colours.lime);
     dialogueBoxContainer.add(dialogueTitleText);
 
