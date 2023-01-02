@@ -391,6 +391,7 @@ function createPart(partName, addingToShop){
         //Handles animated parts "animProp_"
         if(partName.startsWith("anim")){
             scene.anims.create({ key: partName, frames: scene.anims.generateFrameNames('submarine', {prefix: partName, start: 1, end: 34, suffix: '.png'}), repeat: -1 });
+            scene.anims.create({ key: partName+"H", frames: scene.anims.generateFrameNames('submarine', {prefix: partName.slice(0,-1)+"H_", start: 1, end: 34, suffix: '.png'}), repeat: -1 });
             var part = scene.add.sprite(0,0).play(partName).setInteractive().setOrigin(0.5,0.5);
             part.partType = partName;
             if(addingToShop == true){
@@ -485,8 +486,12 @@ function updateBuildScreenText(){
 }
 
 function highlightPart(part){
-    if(part.partType.startsWith('anim')){return};
     if(part.type != 'Container'){
+        if(part.partType.startsWith('anim')){
+            var currentFrame = part.anims.currentFrame.index;
+            part.play({key: part.partType+"H", startFrame:currentFrame-1},true);
+            return;
+        }
         part.frame = part.texture.frames[part.partType+"H.png"];
     } else {
         for(var components of part.list){
@@ -496,8 +501,12 @@ function highlightPart(part){
 }
 
 function unhighlightPart(part){
-    if(part.partType.startsWith('anim')){return};
     if(part.type != 'Container'){
+        if(part.partType.startsWith('anim')){
+            var currentFrame = part.anims.currentFrame.index;
+            part.play({key: part.partType, startFrame:currentFrame-1},true);
+            return;
+        }
         part.frame = part.texture.frames[part.partType+".png"];
     } else {
         for(var components of part.list){
