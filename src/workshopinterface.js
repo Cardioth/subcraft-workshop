@@ -394,7 +394,7 @@ function statsDialogue(addTo,stats){
     let dialogueIcon = scene.add.image(-235,-160,'interface','statsIcon.png').setOrigin(0.5,0.5);
     dialogueBoxContainer.add(dialogueIcon);
 
-    let dialogueTitleText = scene.add.bitmapText(-215,-160,'MKOCR', "Submarine Statistics", 20).setOrigin(0,0.5);
+    let dialogueTitleText = scene.add.bitmapText(-215,-157,'MKOCR', "Submarine Statistics", 20).setOrigin(0,0.5);
     dialogueTitleText.setTint(colours.lime);
     dialogueBoxContainer.add(dialogueTitleText);
 
