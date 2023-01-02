@@ -54,7 +54,7 @@ export const nodeStructure = JSON.stringify({
             {part:'window',x:-50,y:0,engaged: false, connectedWith: 'F'},
             {part:'flair1',x:-50,y:-40,engaged: false, connectedWith: 'F'},
             {part:'flair2',x:-50,y:-40,engaged: false, connectedWith: 'F'},
-            {part:'propeller',x:170,y:-25,engaged: false, connectedWith: 'D'},
+            {part:'animProp_',x:155,y:-25,engaged: false, connectedWith: 'D'},
             {part:'gun_assembly',x:-20,y:100,engaged: false, connectedWith: 'H', rotated:158},
         ], 
     },
@@ -64,8 +64,8 @@ export const nodeStructure = JSON.stringify({
     window:{
         name:'window',subNodes: [], 
     },
-    propeller:{
-        name:'propeller',subNodes: [], 
+    animProp_:{
+        name:'animProp_',subNodes: [], 
     },
     flipper:{
         name:'flipper',subNodes: [], 

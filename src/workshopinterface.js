@@ -388,13 +388,25 @@ function createPart(partName, addingToShop){
         return;
     }
     if(typeof partName === 'string'){
-        var part = scene.add.image(0,0,'submarine',partName+'.png').setInteractive().setOrigin(0.5,0.5);; 
+        //Handles animated parts "animProp_"
+        if(partName.startsWith("anim")){
+            scene.anims.create({ key: partName, frames: scene.anims.generateFrameNames('submarine', {prefix: partName, start: 1, end: 34, suffix: '.png'}), repeat: -1 });
+            var part = scene.add.sprite(0,0).play(partName).setInteractive().setOrigin(0.5,0.5);
+            part.partType = partName;
+            if(addingToShop == true){
+                partsList.push(part);
+            }
+            return part;
+        }
+        //Handles regular static parts
+        var part = scene.add.image(0,0,'submarine',partName+'.png').setInteractive().setOrigin(0.5,0.5);
         part.partType = partName;
         if(addingToShop == true){
             partsList.push(part);
         }
         return part;
     } else {
+        //Handles groups of parts
         var assembly = scene.add.container(0,0);
         for(let parts of partName[0]){
             let part = scene.add.image(0,0,'submarine',parts+'.png').setOrigin(0.5,0.5);;
@@ -458,6 +470,7 @@ function addPartToShopInterface(part){
         document.body.style.cursor = 'pointer';
     });
 }
+
 function updateBuildScreenText(){
     if(partSelected == null){
         buildScreenText.text = '> Credits: ' + credits.toLocaleString() + '\n> Class: A';
@@ -472,6 +485,7 @@ function updateBuildScreenText(){
 }
 
 function highlightPart(part){
+    if(part.partType.startsWith('anim')){return};
     if(part.type != 'Container'){
         part.frame = part.texture.frames[part.partType+"H.png"];
     } else {
@@ -482,6 +496,7 @@ function highlightPart(part){
 }
 
 function unhighlightPart(part){
+    if(part.partType.startsWith('anim')){return};
     if(part.type != 'Container'){
         part.frame = part.texture.frames[part.partType+".png"];
     } else {
@@ -709,6 +724,7 @@ function addPartToBuild(partType){
         }
     }
 }
+
 function removePings(){
     for(var pings of allPingGraphics){
         pings.graphic.destroy();
