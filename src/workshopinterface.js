@@ -360,9 +360,11 @@ function getSubStats(){
 
 function statsDialogue(addTo,stats){
     let dialogueBoxContainer = scene.add.container();
-    let dialogueBox = scene.add.rectangle(-20,-110,800,230,colours.navy);
-    dialogueBox.setStrokeStyle(1,colours.lime);
-    dialogueBoxContainer.add(dialogueBox);
+
+    let upperScreen = scene.add.image(-22.75,-102.5,'interface','upperScreen.png');
+    upperScreen.scale = 1.02;
+    dialogueBoxContainer.add(upperScreen);
+
     let statsText1 = "Firepower: " + stats.firepower + "\n" + 
     "Mining Power: " + stats.miningPower + "\n" +
     "Thrust: " + stats.thrust + "\n" + 
@@ -392,8 +394,8 @@ function statsDialogue(addTo,stats){
         dialogueBoxContainer.destroy();
         buildScreenFrozen = false;
     },"Close");
-    closeButton.x = 190;
-    closeButton.y = -40;
+    closeButton.x = 180;
+    closeButton.y = -160;
     dialogueBoxContainer.add(closeButton);
     addTo.add(dialogueBoxContainer);
 }
