@@ -333,7 +333,7 @@ function getSubStats(){
     let subStats = {
         firepower:0,
         cost:0,
-        accessible:"Inaccesible",
+        accessible:"Inaccessible",
         weight:0,
         thrust:0,
         armor:0,
