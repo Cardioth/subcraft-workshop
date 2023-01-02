@@ -4,7 +4,7 @@ import {nodeStructure} from '/src/nodestructure.js';
 import {allSubParts} from '/src/subparts.js';
 import {colours} from '/src/colours.js'
 
-var config = {
+const config = {
     width: 1000,
     height: 700,
     type: Phaser.AUTO,
@@ -15,30 +15,30 @@ var config = {
     }
 };
 
-var game = new Phaser.Game(config);
-var scene;
+const game = new Phaser.Game(config);
+let scene;
 
-var credits = 1500;
-var partsList = [];
-var partSelected = null;;
+let credits = 1500;
+let partsList = [];
+let partSelected = null;;
 
-var rootNode;
-var shopInterface;
-var buildInterface;
-var buildScreenText;
-var pointerOnShop;
-var workshopInterface;
-var workshopInterfaceX = config.width/2;
-var workshopInterfaceY = config.height/2;
-var totalPartsListWidth;
+let rootNode;
+let shopInterface;
+let buildInterface;
+let buildScreenText;
+let pointerOnShop;
+let workshopInterface;
+let workshopInterfaceX = config.width/2;
+let workshopInterfaceY = config.height/2;
+let totalPartsListWidth;
 
-var mouseOverPart = [];
-var mouseOverBuildScreen = false;
-var mouseOverBinIcon = false;
-var buildScreenFrozen = false;
+let mouseOverPart = [];
+let mouseOverBuildScreen = false;
+let mouseOverBinIcon = false;
+let buildScreenFrozen = false;
 
-var allParts = [];
-var allPingGraphics = [];
+let allParts = [];
+let allPingGraphics = [];
 
 function preload()
 {  
@@ -60,14 +60,14 @@ function create ()
 {
     scene = this;
     scene.input.topOnly = false;
-
     workshopInterface = scene.add.container(workshopInterfaceX,workshopInterfaceY);
-    var workshopInterfaceBackground = scene.add.image(0,0,'interface','workshopInterface.png');
-    var loadButton = scene.add.image(-28,133,'interface','loadButtonUp.png').setInteractive();
-    var saveButton = scene.add.image(37.4,133,'interface','saveButtonUp.png').setInteractive();
-    var launchButton = scene.add.image(125,133,'interface','launchButtonUp.png').setInteractive();
-
+    const workshopInterfaceBackground = scene.add.image(0,0,'interface','workshopInterface.png');
     workshopInterface.add(workshopInterfaceBackground);
+
+    const loadButton = scene.add.image(-28,133,'interface','loadButtonUp.png').setInteractive();
+    const saveButton = scene.add.image(37.4,133,'interface','saveButtonUp.png').setInteractive();
+    const launchButton = scene.add.image(125,133,'interface','launchButtonUp.png').setInteractive();
+
     workshopInterface.add(loadButton);
     workshopInterface.add(saveButton);
     workshopInterface.add(launchButton);
@@ -95,7 +95,7 @@ function create ()
                     loadSub(loadedSub, rootNode);
                 }
                 mouseOverPart = [];
-            },workshopInterface,"Are you sure?");
+            },buildInterface,"Are you sure?");
         } else {
             const savedSubJSON = localStorage.getItem('savedSub');
             trashSub();
@@ -219,7 +219,7 @@ function create ()
                 trashSub();
                 destroySelectRect();
                 scene.sound.add('trash').play();
-            },workshopInterface,"Are you sure you want to destroy the sub?");
+            },buildInterface,"Are you sure you want to destroy the sub?");
         } else {
             trashPart();
         }
@@ -232,7 +232,7 @@ function create ()
     buildScreenText = scene.add.bitmapText(-252,-175,'MKOCR', '',14);
     updateBuildScreenText();
     buildScreenText.setTint(colours.lime);
-    workshopInterface.add(buildScreenText);
+    buildInterface.add(buildScreenText);
     
     //global positioned because that's how masks do
     var lowerScreenMask = scene.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
@@ -254,32 +254,12 @@ function create ()
 
     //Shader Effects
     var postFxPlugin = scene.plugins.get('rexhorrifipipelineplugin');
-    var postFxPluginToon = scene.plugins.get('rextoonifypipelineplugin');
-    var postFxPluginBlur = scene.plugins.get('rexkawaseblurpipelineplugin');
     var postFxPluginGlow = scene.plugins.get('rexglowfilter2pipelineplugin');
 
-    // var postFxPipelineToonLower = postFxPluginToon.add(shopInterface, {
-    //     edgeThreshold: 0.20,
-    //     hueLevels: 2,
-    //     satLevels: 10,
-    //     valLevels: 10,
-    //     edgeColor: 0x98FFBA,
-    // });
-
-    // var postFxPipelineToonUpper = postFxPluginToon.add(buildInterface, {
-    //     edgeThreshold: 0.20,
-    //     hueLevels: 2,
-    //     satLevels: 10,
-    //     valLevels: 10,
-    //     edgeColor: 0x98FFBA,
-    // });
-
-    //var postFxPipeline = postFxPluginBlur.add(shopInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
-    //var postFxPipeline = postFxPluginBlur.add(buildInterface, {blur: 0, quality: 1, pixelWidth:0.7, pixelHeight:0.7,});
     var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 6, outerStrength: 1.25,  innerStrength: 0, glowColor: colours.lime, quality: 5});
     var postFxPipeline = postFxPluginGlow.add(buildInterface, { distance: 6, outerStrength: 1.25,  innerStrength: 0, glowColor: colours.lime, quality: 5});
 
-    //var openingTone = scene.sound.add('opening').play();
+    var openingTone = scene.sound.add('opening').play();
 }
 
 function getAbsolutelyAll(container) {
@@ -390,8 +370,8 @@ function createPart(partName, addingToShop){
     if(typeof partName === 'string'){
         //Handles animated parts "animProp_"
         if(partName.startsWith("anim")){
-            scene.anims.create({ key: partName, frames: scene.anims.generateFrameNames('submarine', {prefix: partName, start: 1, end: 34, suffix: '.png'}), repeat: -1 });
-            scene.anims.create({ key: partName+"H", frames: scene.anims.generateFrameNames('submarine', {prefix: partName.slice(0,-1)+"H_", start: 1, end: 34, suffix: '.png'}), repeat: -1 });
+            scene.anims.create({ key: partName, frames: scene.anims.generateFrameNames('submarine', {prefix: partName, start: 1, end: 34, suffix: '.png'}), repeat: -1 , frameRate:17});
+            scene.anims.create({ key: partName+"H", frames: scene.anims.generateFrameNames('submarine', {prefix: partName.slice(0,-1)+"H_", start: 1, end: 34, suffix: '.png'}), repeat: -1 , frameRate:17});
             var part = scene.add.sprite(0,0).play(partName).setInteractive().setOrigin(0.5,0.5);
             part.partType = partName;
             if(addingToShop == true){
