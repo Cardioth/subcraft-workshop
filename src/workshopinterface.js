@@ -342,14 +342,29 @@ function getSubStats(){
     };
     for(let parts of allParts){
         for(let partLookup of allSubParts){
-            if(partLookup.partType == parts.name){
-                for(let stat in partLookup){
-                    if(subStats.hasOwnProperty(stat)){
-                        if(typeof partLookup[stat] == 'number'){
-                            subStats[stat] += partLookup[stat];
+            if(typeof partLookup.partType == 'string'){
+                if(partLookup.partType == parts.name){
+                    for(let stat in partLookup){
+                        if(subStats.hasOwnProperty(stat)){
+                            if(typeof partLookup[stat] == 'number'){
+                                subStats[stat] += partLookup[stat];
+                            }
+                            if(typeof partLookup[stat] == 'string'){
+                                subStats[stat] = partLookup[stat];
+                            }
                         }
-                        if(typeof partLookup[stat] == 'string'){
-                            subStats[stat] = partLookup[stat];
+                    }
+                }
+            } else {
+                if(partLookup.partType[2] == parts.name){
+                    for(let stat in partLookup){
+                        if(subStats.hasOwnProperty(stat)){
+                            if(typeof partLookup[stat] == 'number'){
+                                subStats[stat] += partLookup[stat];
+                            }
+                            if(typeof partLookup[stat] == 'string'){
+                                subStats[stat] = partLookup[stat];
+                            }
                         }
                     }
                 }
@@ -466,8 +481,8 @@ function createPart(partName, addingToShop){
     if(typeof partName === 'string'){
         //Handles animated parts "animProp_"
         if(partName.startsWith("anim")){
-            scene.anims.create({ key: partName, frames: scene.anims.generateFrameNames('submarine', {prefix: partName, start: 1, end: 34, suffix: '.png'}), repeat: -1 , frameRate:17});
-            scene.anims.create({ key: partName+"H", frames: scene.anims.generateFrameNames('submarine', {prefix: partName.slice(0,-1)+"H_", start: 1, end: 34, suffix: '.png'}), repeat: -1 , frameRate:17});
+            scene.anims.create({ key: partName, frames: scene.anims.generateFrameNames('submarine', {prefix: partName, start: 1, end: 34, suffix: '.png'}), repeat: -1 , frameRate:30});
+            scene.anims.create({ key: partName+"H", frames: scene.anims.generateFrameNames('submarine', {prefix: partName.slice(0,-1)+"H_", start: 1, end: 34, suffix: '.png'}), repeat: -1 , frameRate:30});
             var part = scene.add.sprite(0,0).play(partName).setInteractive().setOrigin(0.5,0.5);
             part.partType = partName;
             if(addingToShop == true){
