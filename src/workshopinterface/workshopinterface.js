@@ -1,21 +1,9 @@
 'use strict'
 
-import {nodeStructure} from '/src/nodestructure.js';
-import {allSubParts} from '/src/subparts.js';
-import {colours} from '/src/colours.js'
+import {nodeStructure} from './nodestructure.js';
+import {allSubParts} from './subparts.js';
+import {colours} from './colours.js'
 
-const config = {
-    width: 1000,
-    height: 700,
-    type: Phaser.AUTO,
-    scene: {
-        preload:preload,
-        create: create,
-        update: update
-    }
-};
-
-const game = new Phaser.Game(config);
 let scene;
 
 let credits = 1500;
@@ -28,8 +16,8 @@ let buildInterface;
 let buildScreenText;
 let pointerOnShop;
 let workshopInterface;
-let workshopInterfaceX = config.width/2;
-let workshopInterfaceY = config.height/2;
+let workshopInterfaceX = 500;
+let workshopInterfaceY = 350;
 let totalPartsListWidth;
 
 let mouseOverPart = [];
@@ -55,34 +43,9 @@ let scaleTar = 0.2;
 
 let rectGraphics = [];
 
-function preload()
-{  
-    this.load.bitmapFont('MKOCR', 'assets/MKOCR.png', 'assets/MKOCR.xml');
-    this.load.bitmapFont('QuirkyRobot', 'assets/QuirkyRobot.png', 'assets/QuirkyRobot.xml');
-    this.load.plugin('rexglowfilter2pipelineplugin', 'src/shaders/rexglowfilter2pipelineplugin.min.js', true);
-    this.load.plugin('rexkawaseblurpipelineplugin', 'src/shaders/rexkawaseblurpipelineplugin.min.js', true);      
-    this.load.plugin('rexhorrifipipelineplugin', 'src/shaders/rexhorrifipipelineplugin.min.js', true);      
-    this.load.plugin('rextoonifypipelineplugin', 'src/shaders/rextoonifypipelineplugin.min.js', true);   
-    this.load.multiatlas('interface', 'assets/interface.json', 'assets');
-    this.load.multiatlas('submarine', 'assets/submarineBluePrint.json', 'assets');
-    this.load.audio('click', ['assets/audio/click.ogg','assets/audio/click.mp3']);
-    this.load.audio('opening', ['assets/audio/opening.ogg','assets/audio/opening.mp3']);
-    this.load.audio('trash', ['assets/audio/trash.ogg','assets/audio/trash.mp3']);
-    this.load.audio('hover', ['assets/audio/hover.ogg','assets/audio/hover.mp3']);
-}
-
-function create ()
-{
-    scene = this;
+export function createWorkshopInterface(context) {
+    scene = context;
     scene.input.topOnly = false;
-
-    createWorkshopInterface();
-
-    //Opening Tone Sound
-    scene.sound.add('opening').play();
-}
-
-function createWorkshopInterface() {
     workshopInterface = scene.add.container(workshopInterfaceX, workshopInterfaceY);
     const workshopInterfaceBackground = scene.add.image(0, 0, 'interface', 'workshopInterface.png');
     workshopInterface.add(workshopInterfaceBackground);
@@ -109,6 +72,88 @@ function createWorkshopInterface() {
 
     //Shader Effects
     addShaders();
+
+    scene.sound.add('opening').play();
+}
+
+export function interfaceMovement(){
+    rootNode.x -= (rootNode.getBounds().centerX - buildTargetX)/70
+    rootNode.y -= (rootNode.getBounds().centerY - buildTargetY)/70
+    for(var i=0;i<partsList.length;i++){
+        if(pointerState == 'down'){
+            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/5;
+        } else {
+            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
+        }
+        partsList[i].scale -= (partsList[i].scale - partsList[i].tarScale)/12;
+        partsList[i].partText.x = partsList[i].x-25;
+        partsList[i].partText.y = partsList[i].y+30;
+    }
+    if(rootNode.getBounds().width > 1){
+        var scale_X = ((rootNode.getBounds().width+rootNode.getBounds().height)/2/1000);
+        rootNode.scaleX -= (scale_X - scaleTar)/20
+    }
+    if(rootNode.scaleX > .35){mouseOverBuildScreenIcons
+        rootNode.scaleX = .35;
+    }
+    if(rootNode.scaleX < .2){
+        rootNode.scaleX = .2;
+    }
+    rootNode.scaleY = rootNode.scaleX;
+    for(var j=0;j<allParts.length;j++){
+        allParts[j].alpha -= (allParts[j].alpha - 1)/30;
+    }
+    pointerDelta = pointerX - prevPointerX;
+    if(pointerState == 'down'){
+            shopScrollTar += pointerDelta*2;
+            if(shopScrollTar<-totalPartsListWidth){
+                shopScrollTar = -totalPartsListWidth;
+            }
+            if(shopScrollTar>0){
+                shopScrollTar = 0;
+            }
+    }
+    prevPointerX = pointerX;
+    if(mouseOverBuildScreen && !mouseOverBuildScreenIcons && !buildScreenFrozen){
+        if(mouseOverPart.length > 0){
+            document.body.style.cursor = 'pointer'; 
+        } else {
+            document.body.style.cursor = 'default'; 
+        }
+    }
+    if(mouseOverPart.length > 0){
+        highlightPart(mouseOverPart[0]);
+    }
+    if(rectGraphics.length > 0){
+        var selectRect = rectGraphics[0];
+        selectRect.x = selectRect.target.getBounds().x+selectRect.target.getBounds().width/2;
+        selectRect.y = selectRect.target.getBounds().y+selectRect.target.getBounds().height/2;
+    }
+
+    for(let pings of allPingGraphics){
+        pings.graphic.x = pings.getBounds().x-workshopInterfaceX;
+        pings.graphic.y = pings.getBounds().y-workshopInterfaceY;
+        pings.graphic.list[1].scale += 0.01;
+        if(pings.graphic.list[1].scale > 3){
+            pings.graphic.list[1].scale = 1;
+        }
+        pings.graphic.list[1].alpha = 3-pings.graphic.list[1].scale;
+    }
+}
+
+export function loadWorkshopInterfaceAssets(context) {
+    context.load.bitmapFont('MKOCR', 'assets/MKOCR.png', 'assets/MKOCR.xml');
+    context.load.bitmapFont('QuirkyRobot', 'assets/QuirkyRobot.png', 'assets/QuirkyRobot.xml');
+    context.load.plugin('rexglowfilter2pipelineplugin', 'src/shaders/rexglowfilter2pipelineplugin.min.js', true);
+    context.load.plugin('rexkawaseblurpipelineplugin', 'src/shaders/rexkawaseblurpipelineplugin.min.js', true);
+    context.load.plugin('rexhorrifipipelineplugin', 'src/shaders/rexhorrifipipelineplugin.min.js', true);
+    context.load.plugin('rextoonifypipelineplugin', 'src/shaders/rextoonifypipelineplugin.min.js', true);
+    context.load.multiatlas('interface', 'assets/interface.json', 'assets');
+    context.load.multiatlas('submarine', 'assets/submarineBluePrint.json', 'assets');
+    context.load.audio('click', ['assets/audio/click.ogg', 'assets/audio/click.mp3']);
+    context.load.audio('opening', ['assets/audio/opening.ogg', 'assets/audio/opening.mp3']);
+    context.load.audio('trash', ['assets/audio/trash.ogg', 'assets/audio/trash.mp3']);
+    context.load.audio('hover', ['assets/audio/hover.ogg', 'assets/audio/hover.mp3']);
 }
 
 function addShaders() {
@@ -958,73 +1003,4 @@ function destroySelectRect(){
         rectGraphics[0].destroy();
         rectGraphics = [];
     }
-}
-
-function interfaceMovement(){
-    rootNode.x -= (rootNode.getBounds().centerX - buildTargetX)/70
-    rootNode.y -= (rootNode.getBounds().centerY - buildTargetY)/70
-    for(var i=0;i<partsList.length;i++){
-        if(pointerState == 'down'){
-            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/5;
-        } else {
-            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
-        }
-        partsList[i].scale -= (partsList[i].scale - partsList[i].tarScale)/12;
-        partsList[i].partText.x = partsList[i].x-25;
-        partsList[i].partText.y = partsList[i].y+30;
-    }
-    if(rootNode.getBounds().width > 1){
-        var scale_X = ((rootNode.getBounds().width+rootNode.getBounds().height)/2/1000);
-        rootNode.scaleX -= (scale_X - scaleTar)/20
-    }
-    if(rootNode.scaleX > .35){mouseOverBuildScreenIcons
-        rootNode.scaleX = .35;
-    }
-    if(rootNode.scaleX < .2){
-        rootNode.scaleX = .2;
-    }
-    rootNode.scaleY = rootNode.scaleX;
-    for(var j=0;j<allParts.length;j++){
-        allParts[j].alpha -= (allParts[j].alpha - 1)/30;
-    }
-    pointerDelta = pointerX - prevPointerX;
-    if(pointerState == 'down'){
-            shopScrollTar += pointerDelta*2;
-            if(shopScrollTar<-totalPartsListWidth){
-                shopScrollTar = -totalPartsListWidth;
-            }
-            if(shopScrollTar>0){
-                shopScrollTar = 0;
-            }
-    }
-    prevPointerX = pointerX;
-    if(mouseOverBuildScreen && !mouseOverBuildScreenIcons && !buildScreenFrozen){
-        if(mouseOverPart.length > 0){
-            document.body.style.cursor = 'pointer'; 
-        } else {
-            document.body.style.cursor = 'default'; 
-        }
-    }
-    if(mouseOverPart.length > 0){
-        highlightPart(mouseOverPart[0]);
-    }
-    if(rectGraphics.length > 0){
-        var selectRect = rectGraphics[0];
-        selectRect.x = selectRect.target.getBounds().x+selectRect.target.getBounds().width/2;
-        selectRect.y = selectRect.target.getBounds().y+selectRect.target.getBounds().height/2;
-    }
-
-    for(let pings of allPingGraphics){
-        pings.graphic.x = pings.getBounds().x-workshopInterfaceX;
-        pings.graphic.y = pings.getBounds().y-workshopInterfaceY;
-        pings.graphic.list[1].scale += 0.01;
-        if(pings.graphic.list[1].scale > 3){
-            pings.graphic.list[1].scale = 1;
-        }
-        pings.graphic.list[1].alpha = 3-pings.graphic.list[1].scale;
-    }
-}
-
-function update (){
-    interfaceMovement();
 }
