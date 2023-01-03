@@ -46,6 +46,8 @@ let rectGraphics = [];
 export function createWorkshopInterface(context) {
     scene = context;
     scene.input.topOnly = false;
+
+    //Base graphic
     workshopInterface = scene.add.container(workshopInterfaceX, workshopInterfaceY);
     const workshopInterfaceBackground = scene.add.image(0, 0, 'interface', 'workshopInterface.png');
     workshopInterface.add(workshopInterfaceBackground);
@@ -56,8 +58,6 @@ export function createWorkshopInterface(context) {
     createLaunchButton();
     //Shop Screen
     createShopScreen();
-    //Add Parts to Shop Screen
-    addPartsToShop();
     //Building Screen
     createBuildingScreen();
     //Trash button
@@ -224,6 +224,8 @@ function createShopScreen() {
     lowerScreenMask.setVisible(false);
     shopInterface.mask = new Phaser.Display.Masks.BitmapMask(scene, lowerScreenMask);
     workshopInterface.add(shopInterface);
+    
+    addPartsToShop();
 }
 
 function createLaunchButton() {
@@ -636,6 +638,7 @@ function addPartToShopInterface(part){
     
     part.tarScaleBig = .43-part.originalHeight;
     part.tarScaleSmall = .37-part.originalHeight;
+    part.scale = part.tarScaleSmall;
     part.tarScale = part.tarScaleSmall;
    
     shopInterface.add(part);

@@ -15,13 +15,11 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-function preload()
-{  
+function preload(){  
     workshopInterface.loadWorkshopInterfaceAssets(this);
 }
 
-function create ()
-{
+function create (){
     workshopInterface.createWorkshopInterface(this);
 }
 
