@@ -60,67 +60,112 @@ function create ()
 {
     scene = this;
     scene.input.topOnly = false;
+
     workshopInterface = scene.add.container(workshopInterfaceX,workshopInterfaceY);
     const workshopInterfaceBackground = scene.add.image(0,0,'interface','workshopInterface.png');
     workshopInterface.add(workshopInterfaceBackground);
 
-    const loadButton = scene.add.image(-28,133,'interface','loadButtonUp.png').setInteractive();
-    const saveButton = scene.add.image(37.4,133,'interface','saveButtonUp.png').setInteractive();
-    const launchButton = scene.add.image(125,133,'interface','launchButtonUp.png').setInteractive();
+    //Buttons
+    createLoadButton();
+    createSaveButton();
+    createLaunchButton();
+    //Shop Screen
+    createShopScreen();
+    //Add Parts to Shop Screen
+    addPartsToShop();
+    //Building Screen
+    createBuildingScreen();
+    //Trash button
+    createTrashButton();
+    //Stats Button
+    createStatsButton();
+    //Build screen text
+    createBuildScreenText();
+    
+    //Parts text above the shop interface
+    var partsPlate = scene.add.image(-216,-4,'interface','partsPlate.png');
+    workshopInterface.add(partsPlate);
 
-    workshopInterface.add(loadButton);
-    workshopInterface.add(saveButton);
-    workshopInterface.add(launchButton);
+    //Shader Effects
+    addShaders();
 
-    loadButton.on('pointerover', () => {
-        document.body.style.cursor = 'pointer';
-        loadButton.frame = loadButton.texture.frames["loadButtonOver.png"];
+    //Opening Tone Sound
+    var openingTone = scene.sound.add('opening').play();
+}
+
+function addShaders() {
+    var postFxPluginGlow = scene.plugins.get('rexglowfilter2pipelineplugin');
+
+    var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 6, outerStrength: 1.25, innerStrength: 0, glowColor: colours.lime, quality: 5 });
+    var postFxPipeline = postFxPluginGlow.add(buildInterface, { distance: 6, outerStrength: 1.25, innerStrength: 0, glowColor: colours.lime, quality: 5 });
+}
+
+function addPartsToShop() {
+    for (let parts of allSubParts) {
+        createPart(parts.partType, true);
+    }
+    for (let i = 0; i < partsList.length; i++) {
+        addPartToShopInterface(partsList[i]);
+        partsList[i].x = sumOfPreviousPartsWidth(i, partsList, 80) - 220;
+        partsList[i].originalX = partsList[i].x;
+    }
+    totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 50);
+}
+
+function createBuildScreenText() {
+    buildScreenText = scene.add.bitmapText(-252, -175, 'MKOCR', '', 14);
+    updateBuildScreenText();
+    buildScreenText.setTint(colours.lime);
+    buildInterface.add(buildScreenText);
+}
+
+function createShopScreen() {
+    shopInterface = scene.add.container(0, 0);
+    let lowerScreen = scene.add.image(-23, 53.1, 'interface', 'lowerScreen.png').setInteractive();
+    lowerScreen.alpha = 0.1;
+    shopInterface.add(lowerScreen);
+
+    scene.input.on('pointerup', function (pointer) {
+        pointerState = 'up';
     });
-    loadButton.on('pointerout', () => {
-        document.body.style.cursor = 'default';
-        loadButton.frame = loadButton.texture.frames["loadButtonUp.png"];
-    });
-    loadButton.on('pointerdown', () => {
-        if(buildScreenFrozen){return};
-        destroySelectRect();
-        if(rootNode.list.length !== 0){
-            buildScreenFrozen = true;
-            dialogueBoxYesCancel(()=>{
-                const savedSubJSON = localStorage.getItem('savedSub');
-                buildScreenFrozen = false;
-                trashSub();
-                scene.sound.add('click').play();
-                const loadedSub = JSON.parse(savedSubJSON);
-                if(Object.keys(loadedSub).length !== 0){
-                    loadSub(loadedSub, rootNode);
-                }
-                mouseOverPart = [];
-            },buildInterface,"Are you sure?");
-        } else {
-            const savedSubJSON = localStorage.getItem('savedSub');
-            trashSub();
-            scene.sound.add('click').play();
-            const loadedSub = JSON.parse(savedSubJSON);
-            if(Object.keys(loadedSub).length !== 0){
-                loadSub(loadedSub, rootNode);
+    scene.input.on('pointermove', function (pointer) {
+        pointerX = pointer.x;
+        pointerY = pointer.y;
+        pointerDelta = pointerX - prevPointerX;
+        if (pointerState == 'down') {
+            shopScrollTar += pointerDelta * 2;
+            if (shopScrollTar < -totalPartsListWidth) {
+                shopScrollTar = -totalPartsListWidth;
             }
-            mouseOverPart = [];
+            if (shopScrollTar > 0) {
+                shopScrollTar = 0;
+            }
         }
+        prevPointerX = pointerX;
     });
 
-    saveButton.on('pointerover', () => {
-        document.body.style.cursor = 'pointer';
-        saveButton.frame = saveButton.texture.frames["saveButtonOver.png"];
-    });
-    saveButton.on('pointerout', () => {
+    lowerScreen.on('pointerout', () => {
         document.body.style.cursor = 'default';
-        saveButton.frame = saveButton.texture.frames["saveButtonUp.png"];
+        pointerOnShop = false;
     });
-    saveButton.on('pointerdown', () => {
-        const savedSubJSON = JSON.stringify(saveSub(rootNode.list[0]));
-        localStorage.setItem('savedSub',savedSubJSON);
+    lowerScreen.on('pointerover', () => {
+        document.body.style.cursor = 'grab';
+        pointerOnShop = true;
+    });
+    lowerScreen.on('pointerdown', () => {
+        pointerState = 'down';
     });
 
+    var lowerScreenMask = scene.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
+    workshopInterface.add(lowerScreenMask)
+    lowerScreenMask.setVisible(false);
+    shopInterface.mask = new Phaser.Display.Masks.BitmapMask(scene, lowerScreenMask);
+    workshopInterface.add(shopInterface);
+}
+
+function createLaunchButton() {
+    const launchButton = scene.add.image(125, 133, 'interface', 'launchButtonUp.png').setInteractive();
+    workshopInterface.add(launchButton);
     launchButton.on('pointerover', () => {
         document.body.style.cursor = 'pointer';
         launchButton.frame = launchButton.texture.frames["launchButtonOver.png"];
@@ -131,67 +176,76 @@ function create ()
     });
     launchButton.on('pointerdown', () => {
     });
+}
 
-    //Shop Interface Stuff
-    shopInterface = scene.add.container(0,0);
-    let lowerScreen = scene.add.image(-23,53.1,'interface','lowerScreen.png').setInteractive();
-    lowerScreen.alpha = 0.1;
-    shopInterface.add(lowerScreen);
-
-    scene.input.on('pointerup', function (pointer){
-        pointerState = 'up';
+function createSaveButton() {
+    const saveButton = scene.add.image(37.4, 133, 'interface', 'saveButtonUp.png').setInteractive();
+    workshopInterface.add(saveButton);
+    saveButton.on('pointerover', () => {
+        document.body.style.cursor = 'pointer';
+        saveButton.frame = saveButton.texture.frames["saveButtonOver.png"];
     });
-    scene.input.on('pointermove', function (pointer) {
-        pointerX = pointer.x;
-        pointerY = pointer.y;
-        pointerDelta = pointerX - prevPointerX;
-        if(pointerState == 'down'){
-                shopScrollTar += pointerDelta*2;
-                if(shopScrollTar<-totalPartsListWidth){
-                    shopScrollTar = -totalPartsListWidth;
-                }
-                if(shopScrollTar>0){
-                    shopScrollTar = 0;
-                }
-        }
-        prevPointerX = pointerX;
-    });
-
-    lowerScreen.on('pointerout', () =>{
+    saveButton.on('pointerout', () => {
         document.body.style.cursor = 'default';
-        pointerOnShop = false;
+        saveButton.frame = saveButton.texture.frames["saveButtonUp.png"];
     });
-    lowerScreen.on('pointerover', () => {
-        document.body.style.cursor = 'grab';
-        pointerOnShop = true;
+    saveButton.on('pointerdown', () => {
+        const savedSubJSON = JSON.stringify(saveSub(rootNode.list[0]));
+        localStorage.setItem('savedSub', savedSubJSON);
     });
-    lowerScreen.on('pointerdown', () => {
-        pointerState = 'down'
+}
+
+function createLoadButton() {
+    const loadButton = scene.add.image(-28, 133, 'interface', 'loadButtonUp.png').setInteractive();
+    workshopInterface.add(loadButton);
+    loadButton.on('pointerover', () => {
+        document.body.style.cursor = 'pointer';
+        loadButton.frame = loadButton.texture.frames["loadButtonOver.png"];
     });
+    loadButton.on('pointerout', () => {
+        document.body.style.cursor = 'default';
+        loadButton.frame = loadButton.texture.frames["loadButtonUp.png"];
+    });
+    loadButton.on('pointerdown', () => {
+        if (buildScreenFrozen) { return; };
+        destroySelectRect();
+        if (rootNode.list.length !== 0) {
+            buildScreenFrozen = true;
+            dialogueBoxYesCancel(() => {
+                const savedSubJSON = localStorage.getItem('savedSub');
+                buildScreenFrozen = false;
+                trashSub();
+                scene.sound.add('click').play();
+                const loadedSub = JSON.parse(savedSubJSON);
+                if (Object.keys(loadedSub).length !== 0) {
+                    loadSub(loadedSub, rootNode);
+                }
+                mouseOverPart = [];
+            }, buildInterface, "Are you sure?");
+        } else {
+            const savedSubJSON = localStorage.getItem('savedSub');
+            trashSub();
+            scene.sound.add('click').play();
+            const loadedSub = JSON.parse(savedSubJSON);
+            if (Object.keys(loadedSub).length !== 0) {
+                loadSub(loadedSub, rootNode);
+            }
+            mouseOverPart = [];
+        }
+    });
+}
 
-    for(let parts of allSubParts){
-        createPart(parts.partType, true);
-    }
-
-    //Add all the parts to the screen interface
-    for(let i=0;i<partsList.length;i++){
-        addPartToShopInterface(partsList[i]);
-        partsList[i].x = sumOfPreviousPartsWidth(i, partsList, 80)-220;
-        partsList[i].originalX = partsList[i].x;
-    }
-    totalPartsListWidth = sumOfPreviousPartsWidth(partsList.length, partsList, 50);
-
-    //Building Sub Screen
+function createBuildingScreen() {
     buildInterface = scene.add.container();
-    let upperScreen = scene.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
+    let upperScreen = scene.add.image(-22.75, -102.5, 'interface', 'upperScreen.png').setInteractive();
     upperScreen.alpha = 0.1;
     buildInterface.add(upperScreen);
     createRootNode();
-    buildTargetX = workshopInterfaceX+rootNode.x;
-    buildTargetY = workshopInterfaceY+rootNode.y;
+    buildTargetX = workshopInterfaceX + rootNode.x;
+    buildTargetY = workshopInterfaceY + rootNode.y;
 
     upperScreen.on('pointerover', () => {
-        if(allPingGraphics.length > 0){return};
+        if (allPingGraphics.length > 0) { return; };
         mouseOverBuildScreen = true;
         scene.input.topOnly = true;
     });
@@ -200,40 +254,71 @@ function create ()
         scene.input.topOnly = false;
     });
     upperScreen.on('pointerdown', () => {
-        if(mouseOverPart.length == 0){
+        if (mouseOverPart.length == 0) {
             partSelected = null;
             destroySelectRect();
             updateBuildScreenText();
         }
     });
+    var upperScreenMask = scene.add.image(workshopInterfaceX-22.75, workshopInterfaceY-102.5,'interface','upperScreen.png').setInteractive();
+    workshopInterface.add(upperScreenMask)
+    upperScreenMask.setVisible(false);
 
-    //Trash button
-    let binIcon = scene.add.image(195,-164,'interface','binIcon.png').setInteractive();
+    buildInterface.mask = new Phaser.Display.Masks.BitmapMask(scene, upperScreenMask);
+    workshopInterface.add(buildInterface);
+}
+
+function createStatsButton() {
+    var statsIcon = scene.add.image(165, -164, 'interface', 'statsIcon.png').setInteractive();
+    statsIcon.alpha = 0.8;
+    buildInterface.add(statsIcon);
+    statsIcon.on('pointerover', () => {
+        if (buildScreenFrozen) { return; };
+        statsIcon.alpha = 1;
+        document.body.style.cursor = 'pointer';
+        mouseOverBuildScreenIcons = true;
+    });
+    statsIcon.on('pointerout', () => {
+        if (buildScreenFrozen) { return; };
+        statsIcon.alpha = 0.9;
+        document.body.style.cursor = 'default';
+        mouseOverBuildScreenIcons = false;
+    });
+    statsIcon.on('pointerdown', () => {
+        if (buildScreenFrozen) { return; };
+        buildScreenFrozen = true;
+        statsDialogue(buildInterface, getSubStats());
+        destroySelectRect();
+    });
+}
+
+function createTrashButton() {
+    let binIcon = scene.add.image(195, -164, 'interface', 'binIcon.png').setInteractive();
     binIcon.alpha = 0.8;
     buildInterface.add(binIcon);
     binIcon.on('pointerover', () => {
-        if(buildScreenFrozen){return};
+        if (buildScreenFrozen) { return; };
         binIcon.alpha = 1;
         document.body.style.cursor = 'pointer';
         mouseOverBuildScreenIcons = true;
     });
     binIcon.on('pointerout', () => {
-        if(buildScreenFrozen){return};
+        if (buildScreenFrozen) { return; };
         binIcon.alpha = 0.9;
         document.body.style.cursor = 'default';
         mouseOverBuildScreenIcons = false;
     });
     binIcon.on('pointerdown', () => {
-        if(buildScreenFrozen){return};
-        if(partSelected == null){
-            if(rootNode.list.length === 0){return};
+        if (buildScreenFrozen) { return; };
+        if (partSelected == null) {
+            if (rootNode.list.length === 0) { return; };
             buildScreenFrozen = true;
-            dialogueBoxYesCancel(()=>{
+            dialogueBoxYesCancel(() => {
                 buildScreenFrozen = false;
                 trashSub();
                 destroySelectRect();
                 scene.sound.add('trash').play();
-            },buildInterface,"Are you sure you want to destroy the sub?");
+            }, buildInterface, "Are you sure you want to destroy the sub?");
         } else {
             trashPart();
         }
@@ -241,61 +326,6 @@ function create ()
         destroySelectRect();
         updateBuildScreenText();
     });
-
-    //Stats Button
-    var statsIcon = scene.add.image(165,-164,'interface','statsIcon.png').setInteractive();
-    statsIcon.alpha = 0.8;
-    buildInterface.add(statsIcon);
-    statsIcon.on('pointerover', () => {
-        if(buildScreenFrozen){return};
-        statsIcon.alpha = 1;
-        document.body.style.cursor = 'pointer';
-        mouseOverBuildScreenIcons = true;
-    });
-    statsIcon.on('pointerout', () => {
-        if(buildScreenFrozen){return};
-        statsIcon.alpha = 0.9;
-        document.body.style.cursor = 'default';
-        mouseOverBuildScreenIcons = false;
-    });
-    statsIcon.on('pointerdown', () => {
-        if(buildScreenFrozen){return};
-        buildScreenFrozen = true;
-        statsDialogue(buildInterface, getSubStats());
-        destroySelectRect();
-    });
-
-    //Build screen text
-    buildScreenText = scene.add.bitmapText(-252,-175,'MKOCR', '',14);
-    updateBuildScreenText();
-    buildScreenText.setTint(colours.lime);
-    buildInterface.add(buildScreenText);
-    
-    //global positioned because that's how masks do
-    var lowerScreenMask = scene.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
-    workshopInterface.add(lowerScreenMask)
-    lowerScreenMask.setVisible(false);
-    shopInterface.mask = new Phaser.Display.Masks.BitmapMask(scene, lowerScreenMask);
-    workshopInterface.add(shopInterface);
-
-    var upperScreenMask = scene.add.image(workshopInterfaceX-22.75, workshopInterfaceY-102.5,'interface','upperScreen.png').setInteractive();
-    workshopInterface.add(upperScreenMask)
-    upperScreenMask.setVisible(false);
-
-    buildInterface.mask = new Phaser.Display.Masks.BitmapMask(scene, upperScreenMask);
-    workshopInterface.add(buildInterface);
- 
-    //Parts text above the shop interface
-    var partsPlate = scene.add.image(-216,-4,'interface','partsPlate.png');
-    workshopInterface.add(partsPlate);
-
-    //Shader Effects
-    var postFxPluginGlow = scene.plugins.get('rexglowfilter2pipelineplugin');
-
-    var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 6, outerStrength: 1.25,  innerStrength: 0, glowColor: colours.lime, quality: 5});
-    var postFxPipeline = postFxPluginGlow.add(buildInterface, { distance: 6, outerStrength: 1.25,  innerStrength: 0, glowColor: colours.lime, quality: 5});
-
-    var openingTone = scene.sound.add('opening').play();
 }
 
 function getAbsolutelyAll(container) {
