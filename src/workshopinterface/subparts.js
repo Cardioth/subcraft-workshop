@@ -16,11 +16,11 @@ export const allSubParts = [
     {partType:[['gun_turret','gun_base'],true,'gun_assembly'],displayName:'Cannon',cost:200,weight:15, firepower:15},
 ];
 
-// Part stats:
-// weight
-// firepower
-// accessible
-// thrust
-// armor
-// visibility
-// miningPower
+// Part Stats:
+// - Weight
+// - Accessible
+// - Thrust
+// - Armor
+// - Visibility
+// - Mining Power
+// - Fire Power

@@ -3,6 +3,7 @@
 import {nodeStructure} from './nodestructure.js';
 import {allSubParts} from './subparts.js';
 import {colours} from './colours.js'
+import {defaultSub} from './defaultSub.js'
 
 let scene;
 
@@ -16,8 +17,8 @@ let buildInterface;
 let buildScreenText;
 let pointerOnShop;
 let workshopInterface;
-let workshopInterfaceX = 500;
-let workshopInterfaceY = 350;
+let workshopInterfaceX;
+let workshopInterfaceY;
 let totalPartsListWidth;
 
 let mouseOverPart = [];
@@ -45,6 +46,8 @@ let rectGraphics = [];
 
 export function createWorkshopInterface(context) {
     scene = context;
+    workshopInterfaceX = scene.game.config.width/2;
+    workshopInterfaceY = scene.game.config.height/2;
     scene.input.topOnly = false;
 
     //Base graphic
@@ -73,7 +76,9 @@ export function createWorkshopInterface(context) {
     //Shader Effects
     addShaders();
 
-    scene.sound.add('opening').play();
+    createDefaultSubs();
+
+    //scene.sound.add('opening').play();
 }
 
 export function interfaceMovement(){
@@ -243,6 +248,12 @@ function createLaunchButton() {
     });
 }
 
+function createDefaultSubs(){
+    if(localStorage.getItem('savedSubs') === null){
+        localStorage.setItem('savedSubs', JSON.stringify(defaultSub));
+    }
+}
+
 function createSaveButton() {
     const saveButton = scene.add.image(37.4, 133, 'interface', 'saveButtonUp.png').setInteractive();
     workshopInterface.add(saveButton);
@@ -255,8 +266,8 @@ function createSaveButton() {
         saveButton.frame = saveButton.texture.frames["saveButtonUp.png"];
     });
     saveButton.on('pointerdown', () => {
-        const savedSubJSON = JSON.stringify(saveSub(rootNode.list[0]));
-        localStorage.setItem('savedSub', savedSubJSON);
+        if(rootNode.list.length == 0){console.log("User tried to save nothing"); return};
+        saveSubDialogue(buildInterface);
     });
 }
 
@@ -273,30 +284,7 @@ function createLoadButton() {
     });
     loadButton.on('pointerdown', () => {
         if (buildScreenFrozen) { return; };
-        destroySelectRect();
-        if (rootNode.list.length !== 0) {
-            buildScreenFrozen = true;
-            dialogueBoxYesCancel(() => {
-                const savedSubJSON = localStorage.getItem('savedSub');
-                buildScreenFrozen = false;
-                trashSub();
-                scene.sound.add('click').play();
-                const loadedSub = JSON.parse(savedSubJSON);
-                if (Object.keys(loadedSub).length !== 0) {
-                    loadSub(loadedSub, rootNode);
-                }
-                mouseOverPart = [];
-            }, buildInterface, "Are you sure?");
-        } else {
-            const savedSubJSON = localStorage.getItem('savedSub');
-            trashSub();
-            scene.sound.add('click').play();
-            const loadedSub = JSON.parse(savedSubJSON);
-            if (Object.keys(loadedSub).length !== 0) {
-                loadSub(loadedSub, rootNode);
-            }
-            mouseOverPart = [];
-        }
+        loadSubDialogue();
     });
 }
 
@@ -548,13 +536,13 @@ function dialogueButton(func,text){
     return buttonContainer;
 }
 
-function saveSub(obj) {
+function createSubJSON(obj) {
     var subCopy = {};
     for (var key in obj) {
       if ((key === "x" || key === "y" || key === "list" || key === "name" || key === "flipped" || key === "rotated" || key === "connectedVia")) {
         if (typeof obj[key] === "object") {
           if (Array.isArray(obj[key])) {
-            subCopy[key] = obj[key].filter(object => object.type === "Container" && object.name !== "").map(item => saveSub(item));
+            subCopy[key] = obj[key].filter(object => object.type === "Container" && object.name !== "").map(item => createSubJSON(item));
           }
         } else {
           subCopy[key] = obj[key];
@@ -564,7 +552,135 @@ function saveSub(obj) {
     return subCopy;
 }
 
-function loadSub(obj,parentPart) {
+function saveSubDialogue(addTo){
+    destroySelectRect();
+    buildScreenFrozen = true;
+    let dialogueBoxContainer = scene.add.container();
+    let dialogueBox = scene.add.rectangle(-20,-110,340,100,colours.navy);
+    dialogueBox.setStrokeStyle(1,colours.lime);
+    dialogueBoxContainer.add(dialogueBox);
+
+    let dialogueText = scene.add.bitmapText(-20,-135,'MKOCR', "Type Submarine Name:",14).setOrigin(0.5);
+    dialogueText.setTint(colours.lime);
+    dialogueBoxContainer.add(dialogueText);
+
+    let nameText = scene.add.bitmapText(-20,-110,'MKOCR', "",14).setOrigin(0,0.5);
+    nameText.setTint(colours.lime);
+    dialogueBoxContainer.add(nameText);
+
+    let nameTextInput = "";
+    let finalNameTextInput = "";
+    let inputIndicatorStatus = false;
+    let characterCount = 0;
+    const characterLimit = 15;
+
+    let inputIndicatorInterval = setInterval(()=>{
+        characterCount = nameTextInput.length;
+        if(characterCount < characterLimit){
+            if(inputIndicatorStatus == false){
+                finalNameTextInput = nameTextInput + "_";
+                inputIndicatorStatus = true;
+            } else {
+                finalNameTextInput = nameTextInput;
+                inputIndicatorStatus = false;
+            }
+        } else {
+            if(finalNameTextInput.charAt(finalNameTextInput.length - 1) === "_"){
+                finalNameTextInput = nameTextInput;
+            }
+        }
+        nameText.text = finalNameTextInput;
+    },500);
+
+    scene.input.keyboard.on('keydown', function (event) {
+        if(nameText.scene === undefined){return}
+        characterCount = nameTextInput.length;
+        if(event.keyCode == 8){
+            nameTextInput = nameTextInput.slice(0,-1);
+            finalNameTextInput = nameTextInput;
+        }
+        if(characterCount < characterLimit && String.fromCharCode(event.keyCode).match(/^[a-zA-Z0-9 ]+$/)){
+            if(!(String.fromCharCode(event.keyCode) === " " && characterCount == 0)){
+                nameTextInput += String.fromCharCode(event.keyCode);
+            }
+        }
+        if(inputIndicatorStatus == true && characterCount < characterLimit){
+            finalNameTextInput = nameTextInput + "_";
+        }
+        if(inputIndicatorStatus == false){
+            finalNameTextInput = nameTextInput;
+        }
+        if(characterCount == characterLimit-1 && inputIndicatorStatus == true){
+            finalNameTextInput = nameTextInput;
+        }
+        nameText.text = finalNameTextInput;
+        if(finalNameTextInput.charAt(finalNameTextInput.length - 1) === "_"){
+            finalNameTextInput = nameTextInput;
+            nameText.x = -20-(nameText.getTextBounds().global.width/2);
+            finalNameTextInput = nameTextInput + "_";
+        } else {
+            nameText.x = -20-(nameText.getTextBounds().global.width/2);
+        }
+        
+    });
+
+    let saveButton = dialogueButton(()=>{
+        if(characterCount > 0){
+            clearInterval(inputIndicatorInterval);
+            buildScreenFrozen = false;
+            const currentSubJSON = {metaData: {name:nameTextInput}, subData:createSubJSON(rootNode.list[0])};
+            let allSavedSubsJSON = JSON.parse(localStorage.getItem('savedSubs'));
+            allSavedSubsJSON.unshift(currentSubJSON);'savedSubs'
+            localStorage.setItem('savedSubs', JSON.stringify(allSavedSubsJSON));
+            dialogueBoxContainer.destroy();
+        }
+    },"Save", );
+    saveButton.x = -60;
+    saveButton.y = -80;
+    dialogueBoxContainer.add(saveButton);
+
+    let cancelButton = dialogueButton(()=>{
+        clearInterval(inputIndicatorInterval);
+        buildScreenFrozen = false;
+        dialogueBoxContainer.destroy();
+    },"Cancel", );
+    cancelButton.x = 40;
+    cancelButton.y = -80;
+    dialogueBoxContainer.add(cancelButton);
+
+    addTo.add(dialogueBoxContainer);
+}
+
+function loadSubDialogue(){
+    loadSub();
+}
+
+function loadSub() {
+    destroySelectRect();
+    if (rootNode.list.length !== 0) {
+        buildScreenFrozen = true;
+        dialogueBoxYesCancel(() => {
+            buildScreenFrozen = false;
+            loadSubProcedure();
+        }, buildInterface, "Discard current submarine?");
+    } else {
+        loadSubProcedure();
+    }
+
+    function loadSubProcedure() {
+        trashSub();
+        scene.sound.add('click').play();
+        const savedSubsJSON = JSON.parse(localStorage.getItem('savedSubs'));
+        const loadedSub = savedSubsJSON[0].subData;
+        console.log(loadedSub);
+        if (Object.keys(loadedSub).length !== 0) {
+            createLoadedSub(loadedSub, rootNode);
+        }
+        mouseOverPart = [];
+    }
+}
+
+function createLoadedSub(obj,parentPart) {
     let newPartType = buildRules(obj.name);
     const currentPart = addPartToBuildInterface(createPart(newPartType), obj.x, obj.y,parentPart,newPartType,obj.flipped, {connectedWith: obj.connectedVia}, obj.rotated);
     for(var nodes of parentPart.subNodes){
@@ -575,7 +691,7 @@ function loadSub(obj,parentPart) {
     for (var key in obj) {
         if (typeof obj[key] === "object") {
           if (Array.isArray(obj[key])) {
-            obj[key].map(item => loadSub(item,currentPart));
+            obj[key].map(item => createLoadedSub(item,currentPart));
           }
         }
     }
