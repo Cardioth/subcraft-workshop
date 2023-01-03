@@ -340,23 +340,23 @@ function getSubStats(){
         visibility:0,
         miningPower:0,
     };
-    for(let parts of allParts){
-        for(let partLookup of allSubParts){
-            if(typeof partLookup.partType == 'string'){
-                if(partLookup.partType == parts.name){
-                    for(let stat in partLookup){
-                        if(subStats.hasOwnProperty(stat)){
-                            if(typeof partLookup[stat] == 'number'){
-                                subStats[stat] += partLookup[stat];
+    for(let parts of allParts){ //loop through all current parts in the sub
+        for(let partLookup of allSubParts){ //loop through the information on all the parts
+            if(typeof partLookup.partType == 'string'){ //check if it's a regular part of an assembly of parts
+                if(partLookup.partType == parts.name){ //check if the part found in the first for loop matches the part in the information on all the parts
+                    for(let stat in partLookup){ //loop through all the stats in the information
+                        if(subStats.hasOwnProperty(stat)){ //check if the stat in the part information is one we want to display
+                            if(typeof partLookup[stat] == 'number'){ //check if it's a number
+                                subStats[stat] += partLookup[stat]; //add the number to the substats here
                             }
-                            if(typeof partLookup[stat] == 'string'){
-                                subStats[stat] = partLookup[stat];
+                            if(typeof partLookup[stat] == 'string'){ //check if it's a string
+                                subStats[stat] = partLookup[stat]; //replace the string to the substats here
                             }
                         }
                     }
                 }
             } else {
-                if(partLookup.partType[2] == parts.name){
+                if(partLookup.partType[2] == parts.name){ //same as above except for assembly of parts
                     for(let stat in partLookup){
                         if(subStats.hasOwnProperty(stat)){
                             if(typeof partLookup[stat] == 'number'){
@@ -941,7 +941,7 @@ function interfaceMovement(){
     pointerDelta = pointerX - prevPointerX;
     if(pointerState == 'down'){
         if(Math.abs(pointerDelta < 10)){
-            shopScrollTar += pointerDelta*6;
+            shopScrollTar += pointerDelta*2;
             if(shopScrollTar<-totalPartsListWidth){
                 shopScrollTar = -totalPartsListWidth;
             }
