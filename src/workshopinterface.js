@@ -134,7 +134,7 @@ function create ()
 
     //Shop Interface Stuff
     shopInterface = scene.add.container(0,0);
-    var lowerScreen = scene.add.image(-23,53.1,'interface','lowerScreen.png').setInteractive();
+    let lowerScreen = scene.add.image(-23,53.1,'interface','lowerScreen.png').setInteractive();
     lowerScreen.alpha = 0.1;
     shopInterface.add(lowerScreen);
 
@@ -157,12 +157,12 @@ function create ()
         pointerState = 'down'
     });
 
-    for(var parts of allSubParts){
+    for(let parts of allSubParts){
         createPart(parts.partType, true);
     }
 
     //Add all the parts to the screen interface
-    for(var i=0;i<partsList.length;i++){
+    for(let i=0;i<partsList.length;i++){
         addPartToShopInterface(partsList[i]);
         partsList[i].x = sumOfPreviousPartsWidth(i, partsList, 80)-220;
         partsList[i].originalX = partsList[i].x;
@@ -171,7 +171,7 @@ function create ()
 
     //Building Sub Screen
     buildInterface = scene.add.container();
-    var upperScreen = scene.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
+    let upperScreen = scene.add.image(-22.75,-102.5,'interface','upperScreen.png').setInteractive();
     upperScreen.alpha = 0.1;
     buildInterface.add(upperScreen);
     createRootNode();
@@ -196,7 +196,7 @@ function create ()
     });
 
     //Trash button
-    var binIcon = scene.add.image(195,-164,'interface','binIcon.png').setInteractive();
+    let binIcon = scene.add.image(195,-164,'interface','binIcon.png').setInteractive();
     binIcon.alpha = 0.8;
     buildInterface.add(binIcon);
     binIcon.on('pointerover', () => {
@@ -278,7 +278,6 @@ function create ()
     workshopInterface.add(partsPlate);
 
     //Shader Effects
-    var postFxPlugin = scene.plugins.get('rexhorrifipipelineplugin');
     var postFxPluginGlow = scene.plugins.get('rexglowfilter2pipelineplugin');
 
     var postFxPipeline = postFxPluginGlow.add(shopInterface, { distance: 6, outerStrength: 1.25,  innerStrength: 0, glowColor: colours.lime, quality: 5});
@@ -329,6 +328,7 @@ function dialogueBoxYesCancel(yesFunc,addTo,text){
     dialogueBoxContainer.add(cancelButton);
     addTo.add(dialogueBoxContainer);
 }
+
 function getSubStats(){
     let subStats = {
         firepower:0,
@@ -766,9 +766,11 @@ function getPartPrice(partType){
         if(parts.partType === partType){
             return parts.cost;
         }
-    }
-    if(partType === 'gun_assembly'){
-        return 150;
+        if(typeof parts.partType === 'object'){
+            if(parts.partType[2] === partType){
+                return parts.cost;
+            }
+        }
     }
     return 0;
 }
