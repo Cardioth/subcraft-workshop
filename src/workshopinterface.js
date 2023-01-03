@@ -40,6 +40,21 @@ let buildScreenFrozen = false;
 let allParts = [];
 let allPingGraphics = [];
 
+let hatchPlaced = false;
+let middleHullsPlaced = 0;
+
+let shopScrollTar = 0;
+let prevPointerX = 0;
+let pointerDelta = 0;
+let pointerState;
+let pointerX;
+let pointerY;
+let buildTargetX;
+let buildTargetY;
+let scaleTar = 0.2;
+
+let rectGraphics = [];
+
 function preload()
 {  
     this.load.bitmapFont('MKOCR', 'assets/MKOCR.png', 'assets/MKOCR.xml');
@@ -61,8 +76,15 @@ function create ()
     scene = this;
     scene.input.topOnly = false;
 
-    workshopInterface = scene.add.container(workshopInterfaceX,workshopInterfaceY);
-    const workshopInterfaceBackground = scene.add.image(0,0,'interface','workshopInterface.png');
+    createWorkshopInterface();
+
+    //Opening Tone Sound
+    scene.sound.add('opening').play();
+}
+
+function createWorkshopInterface() {
+    workshopInterface = scene.add.container(workshopInterfaceX, workshopInterfaceY);
+    const workshopInterfaceBackground = scene.add.image(0, 0, 'interface', 'workshopInterface.png');
     workshopInterface.add(workshopInterfaceBackground);
 
     //Buttons
@@ -81,16 +103,12 @@ function create ()
     createStatsButton();
     //Build screen text
     createBuildScreenText();
-    
     //Parts text above the shop interface
-    var partsPlate = scene.add.image(-216,-4,'interface','partsPlate.png');
+    var partsPlate = scene.add.image(-216, -4, 'interface', 'partsPlate.png');
     workshopInterface.add(partsPlate);
 
     //Shader Effects
     addShaders();
-
-    //Opening Tone Sound
-    var openingTone = scene.sound.add('opening').play();
 }
 
 function addShaders() {
@@ -817,9 +835,6 @@ function getPartPrice(partType){
     return 0;
 }
 
-var hatchPlaced = false;
-var middleHullsPlaced = 0;
-
 function buildRules(partType){
     if(partType == 'gun_assembly'){
         return [['gun_turret','gun_base'],false,'gun_assembly'];
@@ -836,9 +851,9 @@ function buildRules(partType){
 function addPartToBuild(partType){
     destroySelectRect();
     //Search all parts for a place to put new part.
-    var foundNodes = [];
-    for(var parts of allParts){
-        for(var subNodes of parts.subNodes){
+    let foundNodes = [];
+    for(let parts of allParts){
+        for(let subNodes of parts.subNodes){
             if(subNodes.part == partType && subNodes.engaged == false){
                 let newPartType = buildRules(partType); //apply rules
                 if(newPartType == 'skip' || buildScreenFrozen){return};
@@ -848,9 +863,9 @@ function addPartToBuild(partType){
     }
     //Place the part if only one option
     if(foundNodes.length == 1){
-        var buildNode = foundNodes[0];
+        let buildNode = foundNodes[0];
         buildNode.subNodes.engaged = true;
-        for(var nodes of buildNode.part.subNodes){
+        for(let nodes of buildNode.part.subNodes){
             if(nodes.connectedWith == buildNode.connectionType){
                 nodes.engaged = true;
             }
@@ -861,8 +876,8 @@ function addPartToBuild(partType){
     //Create pings if multiple options
     removePings();
     if(foundNodes.length > 1){
-        for(var nodes of foundNodes){
-            var pingGraphic2 = pingGraphic(nodes.x,nodes.y,nodes);
+        for(let nodes of foundNodes){
+            let pingGraphic2 = pingGraphic(nodes.x,nodes.y,nodes);
             nodes.part.add(pingGraphic2);
             allPingGraphics.push(pingGraphic2);
         }
@@ -870,7 +885,7 @@ function addPartToBuild(partType){
 }
 
 function removePings(){
-    for(var pings of allPingGraphics){
+    for(let pings of allPingGraphics){
         pings.graphic.destroy();
         pings.destroy();
     }
@@ -891,7 +906,7 @@ function pingGraphic(x,y,buildNode){
     pingButton.on('pointerdown', () => {
         document.body.style.cursor = 'default';
         buildNode.subNodes.engaged = true;
-        for(var nodes of buildNode.part.subNodes){
+        for(let nodes of buildNode.part.subNodes){
             if(nodes.connectedWith == buildNode.connectionType){
                 nodes.engaged = true;
             }
@@ -915,26 +930,14 @@ function pingGraphic(x,y,buildNode){
     return pingButton;
 }
 
-var shopScrollTar = 0;
-var prevPointerX = 0;
-var pointerDelta = 0;
-var pointerState;
-var pointerX;
-var pointerY;
-var buildTargetX;
-var buildTargetY;
-var scaleTar = 0.2;
-
-var rectGraphics = [];
-
 function drawSelectRect(target){
     const gWidth = target.getBounds().width/2+8;
     const gHeight = target.getBounds().height/2+8;
     const sLength = 10;
-    var selectRect = scene.add.container();
-    var graphics = scene.add.graphics();
+    let selectRect = scene.add.container();
+    let graphics = scene.add.graphics();
     graphics.lineStyle(2,colours.lime);
-    var line1 = graphics.lineBetween(-gWidth,-gHeight,-gWidth+sLength,-gHeight);
+    let line1 = graphics.lineBetween(-gWidth,-gHeight,-gWidth+sLength,-gHeight);
     selectRect.add(line1);
     selectRect.add(graphics.lineBetween(-gWidth,-gHeight,-gWidth,-gHeight+sLength));
     selectRect.add(graphics.lineBetween(gWidth,-gHeight,gWidth-sLength,-gHeight));
@@ -1025,9 +1028,3 @@ function interfaceMovement(){
 function update (){
     interfaceMovement();
 }
-
-//Useful for debugging positions
-// scene.input.on('pointermove', function (pointer) {
-//     itemToTrack.x = pointer.x;
-//     itemToTrack.y = pointer.y;
-// });
