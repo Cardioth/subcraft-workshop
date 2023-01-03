@@ -144,7 +144,19 @@ function create ()
     scene.input.on('pointermove', function (pointer) {
         pointerX = pointer.x;
         pointerY = pointer.y;
+        pointerDelta = pointerX - prevPointerX;
+        if(pointerState == 'down'){
+                shopScrollTar += pointerDelta*2;
+                if(shopScrollTar<-totalPartsListWidth){
+                    shopScrollTar = -totalPartsListWidth;
+                }
+                if(shopScrollTar>0){
+                    shopScrollTar = 0;
+                }
+        }
+        prevPointerX = pointerX;
     });
+
     lowerScreen.on('pointerout', () =>{
         document.body.style.cursor = 'default';
         pointerOnShop = false;
@@ -919,7 +931,11 @@ function interfaceMovement(){
     rootNode.x -= (rootNode.getBounds().centerX - buildTargetX)/70
     rootNode.y -= (rootNode.getBounds().centerY - buildTargetY)/70
     for(var i=0;i<partsList.length;i++){
-        partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
+        if(pointerState == 'down'){
+            partsList[i].x = shopScrollTar+partsList[i].originalX;
+        } else {
+            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
+        }
         partsList[i].scale -= (partsList[i].scale - partsList[i].tarScale)/12;
         partsList[i].partText.x = partsList[i].x-25;
         partsList[i].partText.y = partsList[i].y+30;
@@ -940,7 +956,6 @@ function interfaceMovement(){
     }
     pointerDelta = pointerX - prevPointerX;
     if(pointerState == 'down'){
-        if(Math.abs(pointerDelta < 10)){
             shopScrollTar += pointerDelta*2;
             if(shopScrollTar<-totalPartsListWidth){
                 shopScrollTar = -totalPartsListWidth;
@@ -948,7 +963,6 @@ function interfaceMovement(){
             if(shopScrollTar>0){
                 shopScrollTar = 0;
             }
-        }
     }
     prevPointerX = pointerX;
     if(mouseOverBuildScreen && !mouseOverBuildScreenIcons && !buildScreenFrozen){
