@@ -932,7 +932,7 @@ function interfaceMovement(){
     rootNode.y -= (rootNode.getBounds().centerY - buildTargetY)/70
     for(var i=0;i<partsList.length;i++){
         if(pointerState == 'down'){
-            partsList[i].x = shopScrollTar+partsList[i].originalX;
+            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/5;
         } else {
             partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
         }
