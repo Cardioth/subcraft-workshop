@@ -748,8 +748,7 @@ function dialogueSelector(x,y,width,height){
         textContainer.add(selectorOptionText);
     }
 
-    let masky = scene.add.image(0,0,'interface','maskBox.png');
-    selectorContainer.maskBox = masky;
+    selectorContainer.maskBox = scene.add.image(0,0,'interface','maskBox.png');
     selectorContainer.maskBox.setVisible(false);
     selectorContainer.boxGuide = box;
     textContainer.mask = new Phaser.Display.Masks.BitmapMask(scene, selectorContainer.maskBox);
@@ -760,7 +759,7 @@ function dialogueSelector(x,y,width,height){
         textContainer.yScroll = Math.max(0,textContainer.getBounds().height-54);
         textContainer.xScroll = 0;
     });
-        
+
     return selectorContainer;
 
 }
@@ -805,23 +804,14 @@ function loadSubDialogue(addTo){
         let savedSubsJSON = JSON.parse(localStorage.getItem('savedSubs'));
         savedSubsJSON.splice(dialogueSelectorContainer.selected,1);
         localStorage.setItem('savedSubs', JSON.stringify(savedSubsJSON));
-        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
-            dialogueSelectorContainer.list[1].list[i].destroy();
-        }
-        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
-            dialogueSelectorContainer.list[1].list[i].destroy();
-        }
-        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
-            dialogueSelectorContainer.list[1].list[i].destroy();
-        }
-        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
-            dialogueSelectorContainer.list[1].list[i].destroy();
-        }
-        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
-            dialogueSelectorContainer.list[1].list[i].destroy();
+        for(let j=0;j<10;j++){ //this should only need to happen once but things weren't always getting deleted so I just do it over and over 10 times now...
+            for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
+                dialogueSelectorContainer.list[1].list[i].destroy();
+            }
         }
         dialogueSelectorContainer = dialogueSelector(-20,-115,200,65);
         dialogueBoxContainer.add(dialogueSelectorContainer);
+        //I can't believe I have to do this for one stupid mask...
         dialogueBoxContainer.maskBox = dialogueSelectorContainer.maskBox;
         dialogueBoxContainer.boxGuide = dialogueSelectorContainer.boxGuide;
         dialogueBoxContainer.maskBox.x = dialogueBoxContainer.boxGuide.getBounds().x+dialogueBoxContainer.boxGuide.getBounds().width/2;
@@ -845,7 +835,7 @@ function loadSub(subIndex) {
         dialogueBoxYesCancel(() => {
             buildScreenFrozen = false;
             loadSubProcedure();
-        }, buildInterface, "Discard current submarine?");
+        }, buildInterface, "Abandon current submarine?");
     } else {
         loadSubProcedure();
     }
