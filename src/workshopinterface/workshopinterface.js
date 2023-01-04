@@ -34,7 +34,9 @@ let middleHullsPlaced = 0;
 
 let shopScrollTar = 0;
 let prevPointerX = 0;
-let pointerDelta = 0;
+let prevPointerY = 0;
+let pointerDeltaX = 0;
+let pointerDeltaY = 0;
 let pointerState;
 let pointerX;
 let pointerY;
@@ -43,12 +45,22 @@ let buildTargetY;
 let scaleTar = 0.2;
 
 let rectGraphics = [];
+let scrollInterfaceItems = [];
 
 export function createWorkshopInterface(context) {
     scene = context;
     workshopInterfaceX = scene.game.config.width/2;
     workshopInterfaceY = scene.game.config.height/2;
     scene.input.topOnly = false;
+
+    scene.input.on('pointerup', function (pointer) {
+        pointerState = 'up';
+        scrollInterfaceItems = [];
+    });
+    scene.input.on('pointermove', function (pointer) {
+        pointerX = pointer.x;
+        pointerY = pointer.y;
+    });
 
     //Base graphic
     workshopInterface = scene.add.container(workshopInterfaceX, workshopInterfaceY);
@@ -82,43 +94,80 @@ export function createWorkshopInterface(context) {
 }
 
 export function interfaceMovement(){
+    //Build screen movement
     rootNode.x -= (rootNode.getBounds().centerX - buildTargetX)/70
     rootNode.y -= (rootNode.getBounds().centerY - buildTargetY)/70
-    for(var i=0;i<partsList.length;i++){
-        if(pointerState == 'down'){
-            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/5;
-        } else {
-            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
-        }
-        partsList[i].scale -= (partsList[i].scale - partsList[i].tarScale)/12;
-        partsList[i].partText.x = partsList[i].x-25;
-        partsList[i].partText.y = partsList[i].y+30;
-    }
+
     if(rootNode.getBounds().width > 1){
         var scale_X = ((rootNode.getBounds().width+rootNode.getBounds().height)/2/1000);
         rootNode.scaleX -= (scale_X - scaleTar)/20
     }
-    if(rootNode.scaleX > .35){mouseOverBuildScreenIcons
+    if(rootNode.scaleX > .35){
         rootNode.scaleX = .35;
     }
     if(rootNode.scaleX < .2){
         rootNode.scaleX = .2;
     }
     rootNode.scaleY = rootNode.scaleX;
+
+    //Shop screen movement
+    for(var i=0;i<partsList.length;i++){
+        if(pointerState == 'downShop'){
+            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/5;
+        }
+        if(pointerState == 'up'){
+            partsList[i].x -= (partsList[i].x - (shopScrollTar+partsList[i].originalX))/28;
+        }
+        partsList[i].scale -= (partsList[i].scale - partsList[i].tarScale)/12;
+        partsList[i].partText.x = partsList[i].x-25;
+        partsList[i].partText.y = partsList[i].y+30;
+    }
+
     for(var j=0;j<allParts.length;j++){
         allParts[j].alpha -= (allParts[j].alpha - 1)/30;
     }
-    pointerDelta = pointerX - prevPointerX;
-    if(pointerState == 'down'){
-            shopScrollTar += pointerDelta*2;
-            if(shopScrollTar<-totalPartsListWidth){
-                shopScrollTar = -totalPartsListWidth;
+    //Curser delta
+    pointerDeltaX = pointerX - prevPointerX;
+    pointerDeltaY = pointerY - prevPointerY;
+    if(pointerState == 'downShop'){
+        shopScrollTar += pointerDeltaX*2;
+        if(shopScrollTar<-totalPartsListWidth){
+            shopScrollTar = -totalPartsListWidth;
+        }
+        if(shopScrollTar>0){
+            shopScrollTar = 0;
+        }
+    }
+
+    //General scrolling //What's needed to scroll something? 1. Set pointerState to "downGeneral", 2. Add the item being scrolled to scrollInterfaceItems array, 3. Set the key 'yScroll, and xScroll' on the item to determin maximum scroll amount.
+    if(pointerState == 'downGeneral'){
+        for(let items of scrollInterfaceItems){
+            items.yTar += pointerDeltaY*2;
+            items.xTar += pointerDeltaX*2;
+            if(items.yTar>0){
+                items.yTar = 0;
             }
-            if(shopScrollTar>0){
-                shopScrollTar = 0;
+            if(items.yTar<-items.yScroll){
+                items.yTar = -items.yScroll;
             }
+            if(items.xTar>items.xScroll){
+                items.xTar = items.xScroll;
+            }
+            if(items.xTar<0){
+                items.xTar = 0;
+            }
+        }
+    }
+    for(let items of scrollInterfaceItems){
+        items.y -= (items.y - items.yTar)/10;
+        items.x -= (items.x - items.xTar)/10;
     }
     prevPointerX = pointerX;
+    prevPointerY = pointerY;
+
+
+
+    //Random mouse pointer logic
     if(mouseOverBuildScreen && !mouseOverBuildScreenIcons && !buildScreenFrozen){
         if(mouseOverPart.length > 0){
             document.body.style.cursor = 'pointer'; 
@@ -126,15 +175,19 @@ export function interfaceMovement(){
             document.body.style.cursor = 'default'; 
         }
     }
+    //Highlighting parts on buildscreen
     if(mouseOverPart.length > 0){
         highlightPart(mouseOverPart[0]);
     }
+
+    //Positioning and shaping select rect
     if(rectGraphics.length > 0){
         var selectRect = rectGraphics[0];
         selectRect.x = selectRect.target.getBounds().x+selectRect.target.getBounds().width/2;
         selectRect.y = selectRect.target.getBounds().y+selectRect.target.getBounds().height/2;
     }
 
+    //Positioning scaling and animating ping graphics
     for(let pings of allPingGraphics){
         pings.graphic.x = pings.getBounds().x-workshopInterfaceX;
         pings.graphic.y = pings.getBounds().y-workshopInterfaceY;
@@ -193,25 +246,6 @@ function createShopScreen() {
     lowerScreen.alpha = 0.1;
     shopInterface.add(lowerScreen);
 
-    scene.input.on('pointerup', function (pointer) {
-        pointerState = 'up';
-    });
-    scene.input.on('pointermove', function (pointer) {
-        pointerX = pointer.x;
-        pointerY = pointer.y;
-        pointerDelta = pointerX - prevPointerX;
-        if (pointerState == 'down') {
-            shopScrollTar += pointerDelta * 2;
-            if (shopScrollTar < -totalPartsListWidth) {
-                shopScrollTar = -totalPartsListWidth;
-            }
-            if (shopScrollTar > 0) {
-                shopScrollTar = 0;
-            }
-        }
-        prevPointerX = pointerX;
-    });
-
     lowerScreen.on('pointerout', () => {
         document.body.style.cursor = 'default';
         pointerOnShop = false;
@@ -221,7 +255,7 @@ function createShopScreen() {
         pointerOnShop = true;
     });
     lowerScreen.on('pointerdown', () => {
-        pointerState = 'down';
+        pointerState = 'downShop';
     });
 
     var lowerScreenMask = scene.add.image(workshopInterfaceX-23.75, workshopInterfaceY+53,'interface','lowerScreen.png');
@@ -249,7 +283,8 @@ function createLaunchButton() {
 }
 
 function createDefaultSubs(){
-    if(localStorage.getItem('savedSubs') === null){
+    const savedSubs = localStorage.getItem('savedSubs');
+    if(localStorage.getItem('savedSubs') === null || JSON.parse(savedSubs).length === 0){
         localStorage.setItem('savedSubs', JSON.stringify(defaultSub));
     }
 }
@@ -266,7 +301,7 @@ function createSaveButton() {
         saveButton.frame = saveButton.texture.frames["saveButtonUp.png"];
     });
     saveButton.on('pointerdown', () => {
-        if(rootNode.list.length == 0){console.log("User tried to save nothing"); return};
+        if(rootNode.list.length == 0){return};
         saveSubDialogue(buildInterface);
     });
 }
@@ -284,7 +319,9 @@ function createLoadButton() {
     });
     loadButton.on('pointerdown', () => {
         if (buildScreenFrozen) { return; };
-        loadSubDialogue();
+        let loadSubDialogueBox = loadSubDialogue(buildInterface);
+        loadSubDialogueBox.maskBox.x = loadSubDialogueBox.boxGuide.getBounds().x+loadSubDialogueBox.boxGuide.getBounds().width/2;
+        loadSubDialogueBox.maskBox.y = loadSubDialogueBox.boxGuide.getBounds().y+loadSubDialogueBox.boxGuide.getBounds().height/2;
     });
 }
 
@@ -651,11 +688,157 @@ function saveSubDialogue(addTo){
     addTo.add(dialogueBoxContainer);
 }
 
-function loadSubDialogue(){
-    loadSub();
+function dialogueSelectorOption(text,x,y,id,func){
+    let dialogueSelectorOptionContainer = scene.add.container();
+    var highlightBox = scene.add.rectangle(-2,-3,150,14, colours.navyHighlight).setOrigin(0.5,0.5).setInteractive();
+    highlightBox.alpha = 1;
+
+    dialogueSelectorOptionContainer.add(highlightBox);
+
+    highlightBox.on('pointerover', () => {
+        document.body.style.cursor = 'pointer';
+        highlightBox.setStrokeStyle(1,colours.lime);
+    });
+    highlightBox.on('pointerout', () => {
+        document.body.style.cursor = 'default';
+        highlightBox.setStrokeStyle(0,colours.lime);
+    });
+    highlightBox.on('pointerdown', () => {
+        func();
+    });
+
+    let dialogueText = scene.add.bitmapText(0,0,'MKOCR', text,14).setOrigin(0.5,0.5);
+    dialogueText.setTint(colours.lime);
+    dialogueText.id = id;
+    dialogueSelectorOptionContainer.add(dialogueText);
+
+    dialogueSelectorOptionContainer.x = x;
+    dialogueSelectorOptionContainer.y = y;
+
+    return dialogueSelectorOptionContainer;
 }
 
-function loadSub() {
+function dialogueSelector(x,y,width,height){
+    let selectorContainer = scene.add.container();
+    selectorContainer.selected = null;
+    let box = scene.add.rectangle(x,y,width,height).setInteractive();
+    selectorContainer.add(box);
+
+    let textContainer = scene.add.container();
+    textContainer.xTar = 0;
+    textContainer.yTar = 0;
+    selectorContainer.add(textContainer);
+
+    let boxOutline = scene.add.rectangle(x,y,width,height);
+    boxOutline.setStrokeStyle(1,colours.lime);
+    selectorContainer.add(boxOutline);
+
+    const savedSubsJSON = JSON.parse(localStorage.getItem('savedSubs'));
+
+    for (let i = 0; i < savedSubsJSON.length; i++) {
+        let selectorOptionText = dialogueSelectorOption(savedSubsJSON[i].metaData.name, -18, -134 + (i * 18), i, () => {
+            selectorContainer.selected = i;
+            for (let selectorOptionTexts of selectorContainer.list[1].list) {
+                selectorOptionTexts.list[0].setFillStyle(colours.navyHighlight);
+                selectorOptionTexts.list[1].setTintFill(colours.lime);
+            }
+            selectorOptionText.list[0].setFillStyle(colours.lime);
+            selectorOptionText.list[1].setTintFill(colours.navy);
+        });
+        textContainer.add(selectorOptionText);
+    }
+
+    let masky = scene.add.image(0,0,'interface','maskBox.png');
+    selectorContainer.maskBox = masky;
+    selectorContainer.maskBox.setVisible(false);
+    selectorContainer.boxGuide = box;
+    textContainer.mask = new Phaser.Display.Masks.BitmapMask(scene, selectorContainer.maskBox);
+
+    box.on('pointerdown', () => {
+        pointerState = "downGeneral";
+        scrollInterfaceItems.push(textContainer);
+        textContainer.yScroll = Math.max(0,textContainer.getBounds().height-54);
+        textContainer.xScroll = 0;
+    });
+        
+    return selectorContainer;
+
+}
+
+function loadSubDialogue(addTo){
+    destroySelectRect();
+    buildScreenFrozen = true;
+    let dialogueBoxContainer = scene.add.container();
+    let dialogueBox = scene.add.rectangle(-20,-110,340,130,colours.navy);
+    dialogueBox.setStrokeStyle(1,colours.lime);
+    dialogueBoxContainer.add(dialogueBox);
+
+    let dialogueText = scene.add.bitmapText(-20,-158,'MKOCR', "Select Submarine:",14).setOrigin(0.5);
+    dialogueText.setTint(colours.lime);
+    dialogueBoxContainer.add(dialogueText);
+
+    let dialogueSelectorContainer = dialogueSelector(-20,-115,200,65);
+    dialogueBoxContainer.add(dialogueSelectorContainer);
+    dialogueBoxContainer.maskBox = dialogueSelectorContainer.maskBox;
+    dialogueBoxContainer.boxGuide = dialogueSelectorContainer.boxGuide;
+
+    let loadButton = dialogueButton(()=>{
+        if(dialogueSelectorContainer.selected != null){
+            buildScreenFrozen = false;
+            dialogueBoxContainer.destroy();
+            loadSub(dialogueSelectorContainer.selected);
+        }
+    },"Load", );
+    loadButton.x = 30-40;
+    loadButton.y = -65;
+    dialogueBoxContainer.add(loadButton);
+
+    let cancelButton = dialogueButton(()=>{
+        buildScreenFrozen = false;
+        dialogueBoxContainer.destroy();
+    },"Cancel", );
+    cancelButton.x = 120-40;
+    cancelButton.y = -65;
+    dialogueBoxContainer.add(cancelButton);
+
+    let deleteButton = dialogueButton(()=>{
+        let savedSubsJSON = JSON.parse(localStorage.getItem('savedSubs'));
+        savedSubsJSON.splice(dialogueSelectorContainer.selected,1);
+        localStorage.setItem('savedSubs', JSON.stringify(savedSubsJSON));
+        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
+            dialogueSelectorContainer.list[1].list[i].destroy();
+        }
+        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
+            dialogueSelectorContainer.list[1].list[i].destroy();
+        }
+        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
+            dialogueSelectorContainer.list[1].list[i].destroy();
+        }
+        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
+            dialogueSelectorContainer.list[1].list[i].destroy();
+        }
+        for (let i=0; i<dialogueSelectorContainer.list[1].list.length;i++){
+            dialogueSelectorContainer.list[1].list[i].destroy();
+        }
+        dialogueSelectorContainer = dialogueSelector(-20,-115,200,65);
+        dialogueBoxContainer.add(dialogueSelectorContainer);
+        dialogueBoxContainer.maskBox = dialogueSelectorContainer.maskBox;
+        dialogueBoxContainer.boxGuide = dialogueSelectorContainer.boxGuide;
+        dialogueBoxContainer.maskBox.x = dialogueBoxContainer.boxGuide.getBounds().x+dialogueBoxContainer.boxGuide.getBounds().width/2;
+        dialogueBoxContainer.maskBox.y = dialogueBoxContainer.boxGuide.getBounds().y+dialogueBoxContainer.boxGuide.getBounds().height/2;
+        dialogueBoxContainer.selected = null;
+    },"Delete", );
+    deleteButton.x = -60-40;
+    deleteButton.y = -65;
+    dialogueBoxContainer.add(deleteButton);
+    dialogueBoxContainer.y = 5;
+
+    addTo.add(dialogueBoxContainer);
+
+    return dialogueBoxContainer;
+}
+
+function loadSub(subIndex) {
     destroySelectRect();
     if (rootNode.list.length !== 0) {
         buildScreenFrozen = true;
@@ -671,8 +854,7 @@ function loadSub() {
         trashSub();
         scene.sound.add('click').play();
         const savedSubsJSON = JSON.parse(localStorage.getItem('savedSubs'));
-        const loadedSub = savedSubsJSON[0].subData;
-        console.log(loadedSub);
+        const loadedSub = savedSubsJSON[subIndex].subData;
         if (Object.keys(loadedSub).length !== 0) {
             createLoadedSub(loadedSub, rootNode);
         }
