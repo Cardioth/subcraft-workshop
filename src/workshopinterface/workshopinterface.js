@@ -632,6 +632,9 @@ function saveSubDialogue(addTo){
     scene.input.keyboard.on('keydown', function (event) {
         if(nameText.scene === undefined){return}
         characterCount = nameTextInput.length;
+        if(event.keyCode == 13){
+            saveSubFinal();
+        }
         if(event.keyCode == 8){
             nameTextInput = nameTextInput.slice(0,-1);
             finalNameTextInput = nameTextInput;
@@ -662,15 +665,7 @@ function saveSubDialogue(addTo){
     });
 
     let saveButton = dialogueButton(()=>{
-        if(characterCount > 0){
-            clearInterval(inputIndicatorInterval);
-            buildScreenFrozen = false;
-            const currentSubJSON = {metaData: {name:nameTextInput}, subData:createSubJSON(rootNode.list[0])};
-            let allSavedSubsJSON = JSON.parse(localStorage.getItem('savedSubs'));
-            allSavedSubsJSON.unshift(currentSubJSON);'savedSubs'
-            localStorage.setItem('savedSubs', JSON.stringify(allSavedSubsJSON));
-            dialogueBoxContainer.destroy();
-        }
+        saveSubFinal();
     },"Save", );
     saveButton.x = -60;
     saveButton.y = -80;
@@ -686,6 +681,18 @@ function saveSubDialogue(addTo){
     dialogueBoxContainer.add(cancelButton);
 
     addTo.add(dialogueBoxContainer);
+
+    function saveSubFinal() {
+        if (characterCount > 0) {
+            clearInterval(inputIndicatorInterval);
+            buildScreenFrozen = false;
+            const currentSubJSON = { metaData: { name: nameTextInput }, subData: createSubJSON(rootNode.list[0]) };
+            let allSavedSubsJSON = JSON.parse(localStorage.getItem('savedSubs'));
+            allSavedSubsJSON.unshift(currentSubJSON); 'savedSubs';
+            localStorage.setItem('savedSubs', JSON.stringify(allSavedSubsJSON));
+            dialogueBoxContainer.destroy();
+        }
+    }
 }
 
 function dialogueSelectorOption(text,x,y,id,func){
