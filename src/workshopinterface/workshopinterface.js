@@ -9,7 +9,8 @@ let scene;
 
 let credits = 1500;
 let partsList = [];
-let partSelected = null;;
+let partSelected = null;
+const partScaleFactor = 2;
 
 let rootNode;
 let shopInterface;
@@ -887,6 +888,7 @@ function createPart(partName, addingToShop){
             scene.anims.create({ key: partName+"H", frames: scene.anims.generateFrameNames('submarine', {prefix: partName.slice(0,-1)+"H_", start: 1, end: 34, suffix: '.png'}), repeat: -1 , frameRate:30});
             var part = scene.add.sprite(0,0).play(partName).setInteractive().setOrigin(0.5,0.5);
             part.partType = partName;
+            part.setDisplaySize(part.width*2,part.height*2);
             if(addingToShop == true){
                 partsList.push(part);
             }
@@ -895,6 +897,8 @@ function createPart(partName, addingToShop){
         //Handles regular static parts
         var part = scene.add.image(0,0,'submarine',partName+'.png').setInteractive().setOrigin(0.5,0.5);
         part.partType = partName;
+        part.setScale(2);
+        console.log(part);
         if(addingToShop == true){
             partsList.push(part);
         }
@@ -905,6 +909,7 @@ function createPart(partName, addingToShop){
         for(let parts of partName[0]){
             let part = scene.add.image(0,0,'submarine',parts+'.png').setOrigin(0.5,0.5);;
             part.partType = parts;
+            part.setDisplaySize(part.width*2,part.height*2);
             if(parts == "gun_turret"){part.setOrigin(0.5,1)};
             assembly.add(part);
         }
@@ -927,12 +932,12 @@ function sumOfPreviousPartsWidth(i,parts, margin){
 }
 
 function addPartToShopInterface(part){
-    part.scale = 0.3;
+    part.scale = 0.3*partScaleFactor;
     part.y = 36;
     part.originalHeight = part.getBounds().height/300;
     
-    part.tarScaleBig = .43-part.originalHeight;
-    part.tarScaleSmall = .37-part.originalHeight;
+    part.tarScaleBig = (.43-part.originalHeight)*partScaleFactor;
+    part.tarScaleSmall = (.37-part.originalHeight)*partScaleFactor;
     part.scale = part.tarScaleSmall;
     part.tarScale = part.tarScaleSmall;
    

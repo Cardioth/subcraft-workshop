@@ -1,64 +1,14 @@
 {
 	"textures": [
 		{
-			"image": "submarine2.png",
+			"image": "submarine.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 1017,
-				"h": 508
+				"w": 1682,
+				"h": 498
 			},
 			"scale": 1,
 			"frames": [
-				{
-					"filename": "internalBackground.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 586,
-						"h": 211
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 586,
-						"h": 211
-					},
-					"frame": {
-						"x": 1,
-						"y": 1,
-						"w": 586,
-						"h": 211
-					},
-					"anchor": {
-						"x": 0,
-						"y": 0.753555
-					}
-				},
-				{
-					"filename": "back_hull.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 343,
-						"h": 241
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 343,
-						"h": 241
-					},
-					"frame": {
-						"x": 1,
-						"y": 214,
-						"w": 343,
-						"h": 241
-					},
-					"anchor": {
-						"x": 0,
-						"y": 0
-					}
-				},
 				{
 					"filename": "middle_hull.png",
 					"rotated": false,
@@ -74,39 +24,14 @@
 						"h": 242
 					},
 					"frame": {
-						"x": 346,
-						"y": 214,
+						"x": 1,
+						"y": 1,
 						"w": 252,
 						"h": 242
 					},
 					"anchor": {
 						"x": 0,
 						"y": 0
-					}
-				},
-				{
-					"filename": "weaponControl.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 143,
-						"h": 131
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 143,
-						"h": 131
-					},
-					"frame": {
-						"x": 589,
-						"y": 1,
-						"w": 143,
-						"h": 131
-					},
-					"anchor": {
-						"x": 0.503497,
-						"y": 0.992366
 					}
 				},
 				{
@@ -124,14 +49,64 @@
 						"h": 242
 					},
 					"frame": {
-						"x": 734,
-						"y": 1,
+						"x": 1,
+						"y": 245,
 						"w": 171,
 						"h": 242
 					},
 					"anchor": {
 						"x": 0,
 						"y": 0
+					}
+				},
+				{
+					"filename": "back_hull.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 343,
+						"h": 241
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 343,
+						"h": 241
+					},
+					"frame": {
+						"x": 174,
+						"y": 245,
+						"w": 343,
+						"h": 241
+					},
+					"anchor": {
+						"x": 0,
+						"y": 0
+					}
+				},
+				{
+					"filename": "internalBackground.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 586,
+						"h": 211
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 586,
+						"h": 211
+					},
+					"frame": {
+						"x": 255,
+						"y": 1,
+						"w": 586,
+						"h": 211
+					},
+					"anchor": {
+						"x": 0,
+						"y": 0.753555
 					}
 				},
 				{
@@ -149,289 +124,14 @@
 						"h": 200
 					},
 					"frame": {
-						"x": 907,
-						"y": 1,
+						"x": 519,
+						"y": 214,
 						"w": 58,
 						"h": 200
 					},
 					"anchor": {
 						"x": 0.465517,
 						"y": 0.925
-					}
-				},
-				{
-					"filename": "back_armor.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 137,
-						"h": 71
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 137,
-						"h": 71
-					},
-					"frame": {
-						"x": 589,
-						"y": 134,
-						"w": 137,
-						"h": 71
-					},
-					"anchor": {
-						"x": 0.481752,
-						"y": 0.239437
-					}
-				},
-				{
-					"filename": "moveControl.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 89,
-						"h": 117
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 89,
-						"h": 117
-					},
-					"frame": {
-						"x": 600,
-						"y": 207,
-						"w": 89,
-						"h": 117
-					},
-					"anchor": {
-						"x": 0.52809,
-						"y": 0.726496
-					}
-				},
-				{
-					"filename": "miningControl.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 139,
-						"h": 106
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 139,
-						"h": 106
-					},
-					"frame": {
-						"x": 600,
-						"y": 326,
-						"w": 139,
-						"h": 106
-					},
-					"anchor": {
-						"x": 0.47482,
-						"y": 1
-					}
-				},
-				{
-					"filename": "flipper.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 140,
-						"h": 50
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 140,
-						"h": 50
-					},
-					"frame": {
-						"x": 1,
-						"y": 457,
-						"w": 140,
-						"h": 50
-					},
-					"anchor": {
-						"x": 0.142857,
-						"y": 0.44
-					}
-				},
-				{
-					"filename": "top_hatch.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 157,
-						"h": 76
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 157,
-						"h": 76
-					},
-					"frame": {
-						"x": 691,
-						"y": 245,
-						"w": 157,
-						"h": 76
-					},
-					"anchor": {
-						"x": 0.490446,
-						"y": 0.986842
-					}
-				},
-				{
-					"filename": "backInsideDecal.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 89,
-						"h": 102
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 89,
-						"h": 102
-					},
-					"frame": {
-						"x": 741,
-						"y": 323,
-						"w": 89,
-						"h": 102
-					},
-					"anchor": {
-						"x": 0.11236,
-						"y": 0.676471
-					}
-				},
-				{
-					"filename": "gun_base.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 120,
-						"h": 45
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 120,
-						"h": 45
-					},
-					"frame": {
-						"x": 143,
-						"y": 457,
-						"w": 120,
-						"h": 45
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.966667
-					}
-				},
-				{
-					"filename": "miningLaser.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 153,
-						"h": 57
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 153,
-						"h": 57
-					},
-					"frame": {
-						"x": 600,
-						"y": 434,
-						"w": 153,
-						"h": 57
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
-					}
-				},
-				{
-					"filename": "top_hatch_lid.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 49,
-						"h": 100
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 49,
-						"h": 100
-					},
-					"frame": {
-						"x": 967,
-						"y": 1,
-						"w": 49,
-						"h": 100
-					},
-					"anchor": {
-						"x": 0.428571,
-						"y": 0.95
-					}
-				},
-				{
-					"filename": "top_plate.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 105,
-						"h": 77
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 105,
-						"h": 77
-					},
-					"frame": {
-						"x": 755,
-						"y": 427,
-						"w": 105,
-						"h": 77
-					},
-					"anchor": {
-						"x": 0,
-						"y": 0
-					}
-				},
-				{
-					"filename": "frontHardpoint.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 86,
-						"h": 90
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 86,
-						"h": 90
-					},
-					"frame": {
-						"x": 850,
-						"y": 245,
-						"w": 86,
-						"h": 90
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 0.5
 					}
 				},
 				{
@@ -449,8 +149,8 @@
 						"h": 79
 					},
 					"frame": {
-						"x": 832,
-						"y": 337,
+						"x": 519,
+						"y": 416,
 						"w": 71,
 						"h": 79
 					},
@@ -460,49 +160,24 @@
 					}
 				},
 				{
-					"filename": "gun_turret.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 39,
-						"h": 87
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 39,
-						"h": 87
-					},
-					"frame": {
-						"x": 967,
-						"y": 103,
-						"w": 39,
-						"h": 87
-					},
-					"anchor": {
-						"x": 0.5,
-						"y": 1.06322
-					}
-				},
-				{
-					"filename": "propeller.png",
+					"filename": "animProp_ 1.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
 						"w": 55,
-						"h": 146
+						"h": 153
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
 						"w": 55,
-						"h": 146
+						"h": 153
 					},
 					"frame": {
-						"x": 938,
-						"y": 203,
+						"x": 579,
+						"y": 214,
 						"w": 55,
-						"h": 146
+						"h": 153
 					},
 					"anchor": {
 						"x": 0.5,
@@ -510,24 +185,399 @@
 					}
 				},
 				{
-					"filename": "flair2.png",
+					"filename": "gun_base.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 120,
+						"h": 45
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 120,
+						"h": 45
+					},
+					"frame": {
+						"x": 579,
+						"y": 369,
+						"w": 120,
+						"h": 45
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.966667
+					}
+				},
+				{
+					"filename": "animProp_ 10.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 636,
+						"y": 214,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 11.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 693,
+						"y": 214,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "top_plate.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 105,
+						"h": 77
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 105,
+						"h": 77
+					},
+					"frame": {
+						"x": 592,
+						"y": 416,
+						"w": 105,
+						"h": 77
+					},
+					"anchor": {
+						"x": 0,
+						"y": 0
+					}
+				},
+				{
+					"filename": "top_hatch.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 157,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 157,
+						"h": 76
+					},
+					"frame": {
+						"x": 699,
+						"y": 416,
+						"w": 157,
+						"h": 76
+					},
+					"anchor": {
+						"x": 0.490446,
+						"y": 0.986842
+					}
+				},
+				{
+					"filename": "animProp_ 12.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 750,
+						"y": 214,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 13.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 807,
+						"y": 214,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "moveControl.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
 						"w": 89,
-						"h": 59
+						"h": 117
 					},
 					"spriteSourceSize": {
 						"x": 0,
 						"y": 0,
 						"w": 89,
-						"h": 59
+						"h": 117
 					},
 					"frame": {
-						"x": 905,
-						"y": 351,
+						"x": 858,
+						"y": 369,
 						"w": 89,
-						"h": 59
+						"h": 117
+					},
+					"anchor": {
+						"x": 0.52809,
+						"y": 0.726496
+					}
+				},
+				{
+					"filename": "animProp_ 14.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 843,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "flipper.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 140,
+						"h": 50
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 140,
+						"h": 50
+					},
+					"frame": {
+						"x": 843,
+						"y": 156,
+						"w": 140,
+						"h": 50
+					},
+					"anchor": {
+						"x": 0.142857,
+						"y": 0.44
+					}
+				},
+				{
+					"filename": "animProp_ 15.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 900,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 16.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 957,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 17.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 864,
+						"y": 208,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 18.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 921,
+						"y": 208,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "weaponControl.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 143,
+						"h": 131
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 143,
+						"h": 131
+					},
+					"frame": {
+						"x": 949,
+						"y": 363,
+						"w": 143,
+						"h": 131
+					},
+					"anchor": {
+						"x": 0.503497,
+						"y": 0.992366
+					}
+				},
+				{
+					"filename": "animProp_ 19.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 978,
+						"y": 208,
+						"w": 55,
+						"h": 153
 					},
 					"anchor": {
 						"x": 0.5,
@@ -549,10 +599,735 @@
 						"h": 47
 					},
 					"frame": {
-						"x": 265,
-						"y": 457,
+						"x": 985,
+						"y": 156,
 						"w": 60,
 						"h": 47
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1014,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 20.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1035,
+						"y": 205,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 21.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1071,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 22.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1092,
+						"y": 156,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 23.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1128,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 24.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1094,
+						"y": 311,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 25.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1149,
+						"y": 156,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 26.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1185,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 27.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1151,
+						"y": 311,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 28.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1206,
+						"y": 156,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 29.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1242,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1208,
+						"y": 311,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 30.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1263,
+						"y": 156,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 31.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1299,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 32.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1265,
+						"y": 311,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 33.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1320,
+						"y": 156,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 34.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1356,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 35.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1322,
+						"y": 311,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1377,
+						"y": 156,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1413,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 6.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1379,
+						"y": 311,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 7.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1434,
+						"y": 156,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "animProp_ 8.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1470,
+						"y": 1,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "miningLaser.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 153,
+						"h": 57
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 153,
+						"h": 57
+					},
+					"frame": {
+						"x": 1527,
+						"y": 1,
+						"w": 153,
+						"h": 57
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "miningControl.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 139,
+						"h": 106
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 139,
+						"h": 106
+					},
+					"frame": {
+						"x": 1527,
+						"y": 60,
+						"w": 139,
+						"h": 106
+					},
+					"anchor": {
+						"x": 0.47482,
+						"y": 1
+					}
+				},
+				{
+					"filename": "animProp_ 9.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 55,
+						"h": 153
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 55,
+						"h": 153
+					},
+					"frame": {
+						"x": 1436,
+						"y": 311,
+						"w": 55,
+						"h": 153
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "backInsideDecal.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 89,
+						"h": 102
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 89,
+						"h": 102
+					},
+					"frame": {
+						"x": 1491,
+						"y": 168,
+						"w": 89,
+						"h": 102
+					},
+					"anchor": {
+						"x": 0.11236,
+						"y": 0.676471
+					}
+				},
+				{
+					"filename": "flair2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 89,
+						"h": 59
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 89,
+						"h": 59
+					},
+					"frame": {
+						"x": 1582,
+						"y": 168,
+						"w": 89,
+						"h": 59
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 0.5
+					}
+				},
+				{
+					"filename": "frontHardpoint.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 86,
+						"h": 90
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 86,
+						"h": 90
+					},
+					"frame": {
+						"x": 1582,
+						"y": 229,
+						"w": 86,
+						"h": 90
 					},
 					"anchor": {
 						"x": 0.5,
@@ -574,14 +1349,89 @@
 						"h": 63
 					},
 					"frame": {
-						"x": 862,
-						"y": 418,
+						"x": 1493,
+						"y": 272,
 						"w": 76,
 						"h": 63
 					},
 					"anchor": {
 						"x": 0.5,
 						"y": 0.5
+					}
+				},
+				{
+					"filename": "top_hatch_lid.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 49,
+						"h": 100
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 49,
+						"h": 100
+					},
+					"frame": {
+						"x": 1493,
+						"y": 337,
+						"w": 49,
+						"h": 100
+					},
+					"anchor": {
+						"x": 0.428571,
+						"y": 0.95
+					}
+				},
+				{
+					"filename": "back_armor.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 137,
+						"h": 71
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 137,
+						"h": 71
+					},
+					"frame": {
+						"x": 1544,
+						"y": 337,
+						"w": 137,
+						"h": 71
+					},
+					"anchor": {
+						"x": 0.481752,
+						"y": 0.239437
+					}
+				},
+				{
+					"filename": "gun_turret.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 39,
+						"h": 87
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 39,
+						"h": 87
+					},
+					"frame": {
+						"x": 1544,
+						"y": 410,
+						"w": 39,
+						"h": 87
+					},
+					"anchor": {
+						"x": 0.5,
+						"y": 1.06322
 					}
 				}
 			]
@@ -590,6 +1440,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:d116718b242752b05f0ea8feac81dec0:78b356047650136db87d92b9353621eb:7c79e3da661c4dd233457c0b7ec6f4f8$"
+		"smartupdate": "$TexturePacker:SmartUpdate:1dfe016c7900d7ccfac05259d30ce6bc:3013e0c58c39f5f66ed295824d1e4100:7c79e3da661c4dd233457c0b7ec6f4f8$"
 	}
 }
